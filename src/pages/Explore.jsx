@@ -64,7 +64,7 @@ const Explore = () => {
         {structures.map((ds, index) => (
           <div
             key={index}
-            className="bg-gray-800 p-8 rounded-xl text-center hover:bg-purple-600 transition cursor-pointer"
+            className="bg-gray-800 shadow-lg p-8 rounded-xl text-center hover:bg-purple-600 hover:scale-105 transition cursor-pointer"
             onClick={() => navigate("/dashboard")}
           >
             {ds}
