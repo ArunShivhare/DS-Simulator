@@ -108,7 +108,7 @@ const Visualizer = () => {
                       key={lang}
                       onClick={() => setLanguage(lang)}
                       className={`px-3 py-1 rounded capitalize ${
-                        language === lang ? "bg-purple-500" : "bg-gray-700"
+                        language === lang ? "bg-black/10" : "bg-gray-700"
                       }`}
                     >
                       {lang}
