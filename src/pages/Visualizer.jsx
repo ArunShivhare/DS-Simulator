@@ -1,10 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { codeSnippets } from "../data/codeSnippets";
+import { visualizationSteps } from "../data/visualizationSteps";
+import { motion } from "framer-motion";
 
 const operationsMap = {
-  array: ["Push", "Pop"],
-  stack: ["Push", "Pop"],
+  array: ["Insert", "Delete"],
+  stack: ["Push", "Pop", "Top"],
   queue: ["Enqueue", "Dequeue"],
   linkedlist: ["Insert", "Delete", "Traverse"],
 };
@@ -14,14 +16,307 @@ const Visualizer = () => {
 
   const [value, setValue] = useState("");
   const [selectedOp, setSelectedOp] = useState("");
+  const [structure, setStructure] = useState([]);
+  const [steps, setSteps] = useState([]);
+  const [currentStep, setCurrentStep] = useState(0);
   const [mode, setMode] = useState("visual"); // visual | code
   const [open, setOpen] = useState(false);
   const [language, setLanguage] = useState("js");
+  const [highlightIndex, setHighlightIndex] = useState(null);
+  const [topIndex, setTopIndex] = useState(-1);
+  const [frontIndex, setFrontIndex] = useState(0);
+  const [rearIndex, setRearIndex] = useState(-1);
+  const [llHighlightIndex, setLlHighlightIndex] = useState(null);
+  const [tempIndex, setTempIndex] = useState(null);
+
   const code =
     codeSnippets[type]?.[selectedOp]?.[language] ||
     "// Select operation to view code";
 
   const operations = operationsMap[type] || [];
+
+  const executeStep = (step) => {
+    switch (step.type) {
+      case "highlight":
+        setHighlightIndex(step.index);
+        break;
+
+      case "insert":
+        setStructure((prev) => [...prev, Number(step.value)]);
+        break;
+
+      case "enqueue":
+        setStructure((prev) => {
+          const newArr = [...prev, Number(step.value)];
+          setRearIndex(newArr.length - 1);
+          if (newArr.length === 1) setFrontIndex(0);
+          return newArr;
+        });
+        break;
+
+      case "push":
+        setStructure((prev) => {
+          const newArr = [...prev, Number(step.value)];
+          setTopIndex(newArr.length - 1);
+          return newArr;
+        });
+        break;
+
+      case "delete":
+        setStructure((prev) => {
+          const newArr = prev.slice(0, -1);
+
+          // Fix highlight after removal
+          setHighlightIndex(newArr.length - 1);
+
+          return newArr;
+        });
+        break;
+
+      case "pop":
+        setStructure((prev) => {
+          const newArr = prev.slice(0, -1);
+          setTopIndex(newArr.length - 1);
+          return newArr;
+        });
+        break;
+
+      case "highlightTop":
+        setTopIndex(structure.length - 1);
+        break;
+
+      case "dequeue":
+        setStructure((prev) => {
+          const newArr = prev.slice(1);
+
+          if (newArr.length === 0) {
+            setFrontIndex(0);
+            setRearIndex(-1);
+          } else {
+            setFrontIndex(0);
+            setRearIndex(newArr.length - 1);
+          }
+
+          return newArr;
+        });
+        break;
+
+      case "ll-insert-head":
+        setStructure((prev) => [Number(step.value), ...prev]);
+        break;
+
+      case "ll-delete-head":
+        setStructure((prev) => prev.slice(1));
+        break;
+
+      case "ll-traverse":
+        setLlHighlightIndex(step.index);
+        setTempIndex(step.index);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    if (currentStep < steps.length) {
+      const delay =
+        type === "linkedlist" && selectedOp === "Traverse"
+          ? 800 // slow traverse 🔥
+          : 100; // normal speed
+
+      const timer = setTimeout(() => {
+        executeStep(steps[currentStep]);
+        setCurrentStep((prev) => prev + 1);
+      }, delay);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, steps, type, selectedOp]);
+
+  const handleSimulate = () => {
+    const generatedSteps =
+      visualizationSteps[type]?.[selectedOp]?.(structure, value) || [];
+
+    setSteps(generatedSteps);
+    setCurrentStep(0);
+  };
+
+  useEffect(() => {
+    if (currentStep >= steps.length) {
+      const timer = setTimeout(() => {
+        setTempIndex(null);
+        setLlHighlightIndex(null);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, steps]);
+
+  const renderStack = () => (
+    <div className="flex flex-col items-center justify-end h-80">
+      {/* Stack Container */}
+      <div className="flex flex-col-reverse items-center gap-2 border-2 border-gray-600 p-4 rounded-lg min-w-[120px] max-h-[300px] overflow-y-auto">
+        {structure.map((item, index) => (
+          <div key={index} className="flex flex-col items-center">
+            {/* Top Pointer */}
+            {index === topIndex && (
+              <div className="text-yellow-400 text-sm mb-1 flex flex-col items-center">
+                <span>Top</span>
+                <span>↓</span>
+              </div>
+            )}
+
+            <motion.div
+              initial={{ scale: 0, y: -30 }}
+              animate={{ scale: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`w-20 h-10 flex items-center justify-center rounded text-white font-semibold shadow
+              ${index === topIndex ? "bg-yellow-500" : "bg-indigo-500"}`}
+            >
+              {item}
+            </motion.div>
+
+            {/* Index */}
+            <span className="text-xs text-gray-400 mt-1">{index}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Empty Stack Indicator */}
+      {structure.length === 0 && (
+        <div className="text-gray-400 mt-4">Stack is Empty (Top = -1)</div>
+      )}
+    </div>
+  );
+
+  const renderQueue = () => (
+    <div className="flex flex-col items-center gap-6">
+      {/* Queue Row */}
+      <div className="flex items-center gap-6">
+        {structure.map((item, index) => (
+          <div key={index} className="relative flex flex-col items-center">
+            {/* FRONT POINTER */}
+            {index === frontIndex && (
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-green-400 text-xs">
+                <span>Front</span>
+                <span>↓</span>
+              </div>
+            )}
+
+            {/* NODE */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className={`w-14 h-12 flex items-center justify-center rounded-lg text-white font-semibold shadow
+              ${
+                index === frontIndex
+                  ? "bg-green-500"
+                  : index === rearIndex
+                    ? "bg-yellow-500"
+                    : "bg-indigo-500"
+              }`}
+            >
+              {item}
+            </motion.div>
+
+            {/* REAR POINTER */}
+            {index === rearIndex && (
+              <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-yellow-400 text-xs">
+                <span>↑</span>
+                <span>Rear</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* EMPTY STATE */}
+      {structure.length === 0 && (
+        <div className="text-gray-400">
+          Queue is Empty (Front = 0, Rear = -1)
+        </div>
+      )}
+    </div>
+  );
+
+  const renderArray = () => (
+    <div className="flex flex-col items-center gap-2">
+      {/* Array Boxes */}
+      <div className="flex gap-6 items-end">
+        {structure.map((item, index) => (
+          <div key={index} className="flex flex-col items-center">
+            {/* Pointer */}
+            {highlightIndex === index && (
+              <div className="text-yellow-400 text-sm mb-1">↓</div>
+            )}
+
+            <motion.div
+              initial={{ scale: 0, y: -40 }}
+              animate={{ scale: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`w-14 h-12 flex items-center justify-center rounded-lg text-white font-semibold shadow-lg
+              ${highlightIndex === index ? "bg-yellow-500" : "bg-purple-500"}`}
+            >
+              {item}
+            </motion.div>
+
+            {/* Index BELOW */}
+            <span className="text-xs mt-2 text-gray-400">{index}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderLinkedList = () => (
+    <div className="flex items-center justify-center gap-6">
+      {structure.map((item, index) => (
+        <div key={index} className="relative flex items-center">
+          {/* HEAD POINTER */}
+          {index === 0 && (
+            <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center text-purple-400 text-xs font-semibold">
+              <span>Head</span>
+              <span>↓</span>
+            </div>
+          )}
+
+          {/* TEMP POINTER (MOVING 🔥) */}
+          {tempIndex === index && (
+            <div className="absolute -top-8 right-1/2 -translate-x-1/2 flex flex-col items-center text-yellow-400 text-xs font-semibold">
+              <span>temp</span>
+              <span>↓</span>
+            </div>
+          )}
+
+          {/* NODE */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className={`w-14 h-12 flex items-center justify-center rounded-lg text-white font-semibold shadow
+            ${
+              llHighlightIndex === index
+                ? "bg-yellow-500 scale-110"
+                : "bg-pink-500"
+            }`}
+          >
+            {item}
+          </motion.div>
+
+          {/* ARROW */}
+          <span className="mx-3 text-xl text-gray-400">→</span>
+        </div>
+      ))}
+
+      {/* NULL */}
+      {structure.length > 0 && (
+        <span className="text-gray-400 font-semibold">NULL</span>
+      )}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-10">
@@ -65,18 +360,23 @@ const Visualizer = () => {
           </div>
 
           {/* Input */}
-          {selectedOp !== "Pop" && selectedOp !== "Dequeue" && (
-            <input
-              type="number"
-              placeholder="Enter value"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              className="w-full p-2 mb-4 text-white bg-gray-800 rounded"
-            />
-          )}
+          {selectedOp !== "Pop" &&
+            selectedOp !== "Dequeue" &&
+            selectedOp !== "Delete" && (
+              <input
+                type="number"
+                placeholder="Enter value"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                className="w-full p-2 mb-4 text-white bg-gray-800 rounded"
+              />
+            )}
 
           {/* Buttons */}
-          <button className="w-full bg-linear-to-r from-purple-500 to-indigo-500 p-2 rounded mb-3 hover:scale-102 transition">
+          <button
+            onClick={handleSimulate}
+            className="w-full bg-linear-to-r from-purple-500 to-indigo-500 p-2 rounded mb-3"
+          >
             Simulate ▶
           </button>
 
@@ -90,14 +390,24 @@ const Visualizer = () => {
         </div>
 
         {/* RIGHT PANEL */}
-        <div className="flex-1 bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center">
-          <pre className="text-sm text-green-400">
+        <div className="flex-1 overflow-x-scroll bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center">
+          <pre className="text-sm text-green-400 m-auto">
             {mode === "visual" ? (
               <div className="text-center">
-                <p className="text-gray-300 mb-4">Visualization Area</p>
-                <p className="text-sm text-gray-500">
-                  (Your animation will appear here)
-                </p>
+                <div className="flex gap-6 flex-wrap justify-center items-end">
+                  {/* TOP OPERATION DISPLAY */}
+                  {type === "stack" && selectedOp === "Top" && (
+                    <div className="mb-4 text-center text-lg text-yellow-400 font-semibold">
+                      {structure.length > 0
+                        ? `Top Element: ${structure[topIndex]}`
+                        : "Stack is Empty"}
+                    </div>
+                  )}
+                  {type === "array" && renderArray()}
+                  {type === "stack" && renderStack()}
+                  {type === "queue" && renderQueue()}
+                  {type === "linkedlist" && renderLinkedList()}
+                </div>
               </div>
             ) : (
               <div className="w-full">
