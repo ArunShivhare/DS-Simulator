@@ -65,16 +65,18 @@ const Visualizer = () => {
           </div>
 
           {/* Input */}
-          <input
-            type="number"
-            placeholder="Enter value"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            className="w-full p-2 mb-4 text-white rounded"
-          />
+          {selectedOp !== "Pop" && selectedOp !== "Dequeue" && (
+            <input
+              type="number"
+              placeholder="Enter value"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="w-full p-2 mb-4 text-white bg-gray-800 rounded"
+            />
+          )}
 
           {/* Buttons */}
-          <button className="w-full bg-linear-to-r from-purple-500 to-indigo-500 p-2 rounded mb-3 hover:scale-105 transition">
+          <button className="w-full bg-linear-to-r from-purple-500 to-indigo-500 p-2 rounded mb-3 hover:scale-102 transition">
             Simulate ▶
           </button>
 
@@ -89,71 +91,38 @@ const Visualizer = () => {
 
         {/* RIGHT PANEL */}
         <div className="flex-1 bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center">
-          {mode === "visual" ? (
-            <div className="text-center">
-              <p className="text-gray-300 mb-4">Visualization Area</p>
-              <p className="text-sm text-gray-500">
-                (Your animation will appear here)
-              </p>
-            </div>
-          ) : (
-            <pre className="text-sm text-green-400">
-              {mode === "visual" ? (
-                <div className="text-center">
-                  <p className="text-gray-300 mb-4">Visualization Area</p>
-                  <p className="text-sm text-gray-500">
-                    (Your animation will appear here)
-                  </p>
+          <pre className="text-sm text-green-400">
+            {mode === "visual" ? (
+              <div className="text-center">
+                <p className="text-gray-300 mb-4">Visualization Area</p>
+                <p className="text-sm text-gray-500">
+                  (Your animation will appear here)
+                </p>
+              </div>
+            ) : (
+              <div className="w-full">
+                {/* Language Toggle */}
+                <div className="flex gap-3 mb-4 justify-center">
+                  {["js", "cpp", "Java", "Python"].map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => setLanguage(lang)}
+                      className={`px-3 py-1 rounded capitalize ${
+                        language === lang ? "bg-purple-500" : "bg-gray-700"
+                      }`}
+                    >
+                      {lang}
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                <div className="w-full">
-                  {/* Language Toggle */}
-                  <div className="flex gap-3 mb-4 justify-center">
-                    <button
-                      onClick={() => setLanguage("js")}
-                      className={`px-3 py-1 rounded ${
-                        language === "js" ? "bg-black/10" : "bg-gray-700"
-                      }`}
-                    >
-                      JS
-                    </button>
 
-                    <button
-                      onClick={() => setLanguage("cpp")}
-                      className={`px-3 py-1 rounded ${
-                        language === "cpp" ? "bg-black/10" : "bg-gray-700"
-                      }`}
-                    >
-                      C++
-                    </button>
-
-                    <button
-                      onClick={() => setLanguage("Java")}
-                      className={`px-3 py-1 rounded ${
-                        language === "Java" ? "bg-black/10" : "bg-gray-700"
-                      }`}
-                    >
-                      Java
-                    </button>
-
-                    <button
-                      onClick={() => setLanguage("Python")}
-                      className={`px-3 py-1 rounded ${
-                        language === "Python" ? "bg-black/10" : "bg-gray-700"
-                      }`}
-                    >
-                      Python
-                    </button>
-                  </div>
-
-                  {/* Code Block */}
-                  <pre className="bg-black/10 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
-                    {code}
-                  </pre>
-                </div>
-              )}
-            </pre>
-          )}
+                {/* Code Block */}
+                <pre className="bg-black/10 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
+                  {code}
+                </pre>
+              </div>
+            )}
+          </pre>
         </div>
       </div>
     </div>
