@@ -3,7 +3,7 @@ import { useState } from "react";
 import { codeSnippets } from "../data/codeSnippets";
 
 const operationsMap = {
-  array: ["Push", "Pop", "Insert", "Delete"],
+  array: ["Push", "Pop"],
   stack: ["Push", "Pop"],
   queue: ["Enqueue", "Dequeue"],
   linkedlist: ["Insert", "Delete", "Traverse"],
@@ -112,7 +112,7 @@ const Visualizer = () => {
                     <button
                       onClick={() => setLanguage("js")}
                       className={`px-3 py-1 rounded ${
-                        language === "js" ? "bg-purple-500" : "bg-gray-700"
+                        language === "js" ? "bg-black/10" : "bg-gray-700"
                       }`}
                     >
                       JS
@@ -121,15 +121,33 @@ const Visualizer = () => {
                     <button
                       onClick={() => setLanguage("cpp")}
                       className={`px-3 py-1 rounded ${
-                        language === "cpp" ? "bg-purple-500" : "bg-gray-700"
+                        language === "cpp" ? "bg-black/10" : "bg-gray-700"
                       }`}
                     >
                       C++
                     </button>
+
+                    <button
+                      onClick={() => setLanguage("Java")}
+                      className={`px-3 py-1 rounded ${
+                        language === "Java" ? "bg-black/10" : "bg-gray-700"
+                      }`}
+                    >
+                      Java
+                    </button>
+
+                    <button
+                      onClick={() => setLanguage("Python")}
+                      className={`px-3 py-1 rounded ${
+                        language === "Python" ? "bg-black/10" : "bg-gray-700"
+                      }`}
+                    >
+                      Python
+                    </button>
                   </div>
 
                   {/* Code Block */}
-                  <pre className="bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
+                  <pre className="bg-black/10 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
                     {code}
                   </pre>
                 </div>
