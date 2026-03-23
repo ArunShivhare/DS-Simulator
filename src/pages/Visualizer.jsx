@@ -5,15 +5,31 @@ import { visualizationSteps } from "../data/visualizationSteps";
 import { motion } from "framer-motion";
 
 const operationsMap = {
-  array: ["Insert", "Delete"],
+  array: ["Insert", "Delete", "Linear Search", "Binary Search"],
   stack: ["Push", "Pop", "Top"],
   queue: ["Enqueue", "Dequeue"],
-  linkedlist: ["Insert", "Delete", "Traverse"],
+  linkedlist: [
+    "Insert Head",
+    "Insert Tail",
+    "Delete Head",
+    "Delete Tail",
+    "Traverse",
+  ],
+};
+
+const isSorted = (arr) => {
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < arr[i - 1]) return false;
+  }
+  return true;
 };
 
 const Visualizer = () => {
   const { type } = useParams();
 
+  const [low, setLow] = useState(null);
+  const [high, setHigh] = useState(null);
+  const [mid, setMid] = useState(null);
   const [value, setValue] = useState("");
   const [selectedOp, setSelectedOp] = useState("");
   const [structure, setStructure] = useState([]);
@@ -28,6 +44,8 @@ const Visualizer = () => {
   const [rearIndex, setRearIndex] = useState(-1);
   const [llHighlightIndex, setLlHighlightIndex] = useState(null);
   const [tempIndex, setTempIndex] = useState(null);
+  const [searchResult, setSearchResult] = useState(null);
+  const [infoMessage, setInfoMessage] = useState("");
 
   const code =
     codeSnippets[type]?.[selectedOp]?.[language] ||
@@ -101,12 +119,52 @@ const Visualizer = () => {
         });
         break;
 
+      case "search-check":
+        setHighlightIndex(step.index);
+        break;
+
+      case "search-found":
+        setHighlightIndex(step.index);
+        setSearchResult(step.index);
+        break;
+
+      case "search-not-found":
+        setSearchResult(-1);
+        break;
+
+      case "bs-check":
+        setLow(step.low);
+        setHigh(step.high);
+        setMid(step.mid);
+        break;
+
+      case "bs-found":
+        setMid(step.index);
+        setSearchResult(step.index);
+        break;
+
+      case "bs-not-found":
+        setSearchResult(-1);
+        break;
+
+      // INSERT HEAD
       case "ll-insert-head":
         setStructure((prev) => [Number(step.value), ...prev]);
         break;
 
+      // INSERT TAIL
+      case "ll-insert-tail":
+        setStructure((prev) => [...prev, Number(step.value)]);
+        break;
+
+      // DELETE HEAD
       case "ll-delete-head":
         setStructure((prev) => prev.slice(1));
+        break;
+
+      // DELETE TAIL
+      case "ll-delete-tail":
+        setStructure((prev) => prev.slice(0, -1));
         break;
 
       case "ll-traverse":
@@ -121,10 +179,22 @@ const Visualizer = () => {
 
   useEffect(() => {
     if (currentStep < steps.length) {
-      const delay =
-        type === "linkedlist" && selectedOp === "Traverse"
-          ? 800 // slow traverse 🔥
-          : 100; // normal speed
+      let delay = 100; // default fast
+
+      // Linked List Traverse
+      if (type === "linkedlist" && selectedOp === "Traverse") {
+        delay = 800;
+      }
+
+      // Array Linear Search
+      else if (type === "array" && selectedOp === "Linear Search") {
+        delay = 800;
+      }
+
+      // Array Binary Search
+      else if (type === "array" && selectedOp === "Binary Search") {
+        delay = 1200;
+      }
 
       const timer = setTimeout(() => {
         executeStep(steps[currentStep]);
@@ -136,6 +206,36 @@ const Visualizer = () => {
   }, [currentStep, steps, type, selectedOp]);
 
   const handleSimulate = () => {
+    setSearchResult(null);
+    setHighlightIndex(null);
+    setLow(null);
+    setMid(null);
+    setHigh(null);
+    setInfoMessage("");
+
+    // 🟣 Handle Binary Search separately
+    if (type === "array" && selectedOp === "Binary Search") {
+      if (!isSorted(structure)) {
+        setInfoMessage("Array not sorted. Sorting first... 🔄");
+
+        const sorted = [...structure].sort((a, b) => a - b);
+        setStructure(sorted);
+
+        // Delay to show sorting message
+        setTimeout(() => {
+          const steps =
+            visualizationSteps[type]?.[selectedOp]?.(sorted, value) || [];
+
+          setSteps(steps);
+          setCurrentStep(0);
+          setInfoMessage("");
+        }, 1000);
+
+        return;
+      }
+    }
+
+    // Default flow
     const generatedSteps =
       visualizationSteps[type]?.[selectedOp]?.(structure, value) || [];
 
@@ -146,9 +246,21 @@ const Visualizer = () => {
   useEffect(() => {
     if (currentStep >= steps.length) {
       const timer = setTimeout(() => {
+        // Link list
         setTempIndex(null);
         setLlHighlightIndex(null);
-      }, 500);
+
+        // Array (Linear Search)
+        setHighlightIndex(null);
+
+        // Binary Search
+        setLow(null);
+        setMid(null);
+        setHigh(null);
+
+        // ✅ ADD THIS (IMPORTANT)
+        setSearchResult(null);
+      }, 2000);
 
       return () => clearTimeout(timer);
     }
@@ -253,16 +365,28 @@ const Visualizer = () => {
               <div className="text-yellow-400 text-sm mb-1">↓</div>
             )}
 
+            {/* LOW POINTER */}
+            {low === index && <div className="text-green-400 text-xs">L</div>}
+            {/* MID POINTER */}
+            {mid === index && <div className="text-yellow-400 text-xs">M</div>}
+            {/* HIGH POINTER */}
+            {high === index && <div className="text-red-400 text-xs">H</div>}
+
             <motion.div
               initial={{ scale: 0, y: -40 }}
               animate={{ scale: 1, y: 0 }}
               transition={{ duration: 0.3 }}
               className={`w-14 h-12 flex items-center justify-center rounded-lg text-white font-semibold shadow-lg
-              ${highlightIndex === index ? "bg-yellow-500" : "bg-purple-500"}`}
+              ${
+                mid === index
+                  ? "bg-yellow-500" // MID (main focus)
+                  : highlightIndex === index
+                    ? "bg-yellow-500"
+                    : "bg-purple-500"
+              }`}
             >
               {item}
             </motion.div>
-
             {/* Index BELOW */}
             <span className="text-xs mt-2 text-gray-400">{index}</span>
           </div>
@@ -280,6 +404,12 @@ const Visualizer = () => {
             <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center text-purple-400 text-xs font-semibold">
               <span>Head</span>
               <span>↓</span>
+            </div>
+          )}
+          {/* Tail pointer */}
+          {index === structure.length - 1 && (
+            <div className="absolute -bottom-10 text-xs text-pink-200">
+              Tail ↑
             </div>
           )}
 
@@ -362,7 +492,9 @@ const Visualizer = () => {
           {/* Input */}
           {selectedOp !== "Pop" &&
             selectedOp !== "Dequeue" &&
-            selectedOp !== "Delete" && (
+            selectedOp !== "Delete" &&
+            selectedOp !== "Delete Head" &&
+            selectedOp !== "Delete Tail" && (
               <input
                 type="number"
                 placeholder="Enter value"
@@ -403,6 +535,36 @@ const Visualizer = () => {
                         : "Stack is Empty"}
                     </div>
                   )}
+
+                  {selectedOp === "Linear Search" && searchResult !== null && (
+                    <div className="mb-4 text-lg font-semibold text-center">
+                      {searchResult === -1 ? (
+                        <span className="text-red-400">Value Not Found ❌</span>
+                      ) : (
+                        <span className="text-green-400">
+                          Found at index: {searchResult} ✅
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {infoMessage && (
+                    <div className="mb-4 text-yellow-400 text-center font-semibold">
+                      {infoMessage}
+                    </div>
+                  )}
+                  {selectedOp === "Binary Search" && searchResult !== null && (
+                    <div className="mb-4 text-lg text-center">
+                      {searchResult === -1 ? (
+                        <span className="text-red-400">Not Found ❌</span>
+                      ) : (
+                        <span className="text-green-400">
+                          Found at index: {searchResult}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   {type === "array" && renderArray()}
                   {type === "stack" && renderStack()}
                   {type === "queue" && renderQueue()}
