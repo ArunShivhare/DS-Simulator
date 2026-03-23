@@ -14,13 +14,13 @@ void insertAtHead(int value) {
   newNode->next = head;
   head = newNode;
 }`,
-    java: `// Insert at beginning
+    Java: `// Insert at beginning
 void insertAtHead(int value) {
     Node newNode = new Node(value);
     newNode.next = head;
     head = newNode;
 }`,
-    python: `# Insert at beginning
+    Python: `# Insert at beginning
 def insert_at_head(value):
     global head
     new_node = Node(value)
@@ -47,7 +47,7 @@ void insertAtTail(int value) {
   while (temp->next) temp = temp->next;
   temp->next = newNode;
 }`,
-    java: `// Insert at end
+    Java: `// Insert at end
 void insertAtTail(int value) {
     Node newNode = new Node(value);
     if (head == null) { head = newNode; return; }
@@ -55,7 +55,7 @@ void insertAtTail(int value) {
     while (temp.next != null) temp = temp.next;
     temp.next = newNode;
 }`,
-    python: `# Insert at end
+    Python: `# Insert at end
 def insert_at_tail(value):
     global head
     new_node = Node(value)
@@ -81,12 +81,12 @@ void deleteHead() {
   head = head->next;
   delete temp;
 }`,
-    java: `// Delete first node
+    Java: `// Delete first node
 void deleteHead() {
     if (head == null) return;
     head = head.next;
 }`,
-    python: `# Delete first node
+    Python: `# Delete first node
 def delete_head():
     global head
     if not head: return
@@ -111,7 +111,7 @@ void deleteTail() {
   delete temp->next;
   temp->next = nullptr;
 }`,
-    java: `// Delete last node
+    Java: `// Delete last node
 void deleteTail() {
     if (head == null) return;
     if (head.next == null) { head = null; return; }
@@ -119,7 +119,7 @@ void deleteTail() {
     while (temp.next.next != null) temp = temp.next;
     temp.next = null;
 }`,
-    python: `# Delete last node
+    Python: `# Delete last node
 def delete_tail():
     global head
     if not head: return
@@ -149,7 +149,7 @@ void traverse() {
     temp = temp->next;
   }
 }`,
-    java: `// Traverse
+    Java: `// Traverse
 void traverse() {
     Node temp = head;
     while (temp != null) {
@@ -157,7 +157,7 @@ void traverse() {
         temp = temp.next;
     }
 }`,
-    python: `# Traverse
+    Python: `# Traverse
 def traverse():
     temp = head
     while temp:
