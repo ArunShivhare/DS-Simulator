@@ -452,7 +452,7 @@ const Visualizer = () => {
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-10">
       {/* Heading */}
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 mt-20">
-        {type.toUpperCase()} Visualizer 🚀
+        {type.toUpperCase()} Visualizer
       </h2>
 
       <div className="flex flex-col md:flex-row gap-6">
