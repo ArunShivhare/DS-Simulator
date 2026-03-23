@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Home = ({ user }) => {
   const navigate = useNavigate();
 
   return (
@@ -22,7 +22,7 @@ const Home = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate(user ? "/dashboard" : "/login")}
               className="px-6 py-3 bg-linear-to-r from-purple-500 to-indigo-500 rounded-xl font-semibold shadow-lg hover:scale-105 transition"
             >
               Start Learning 🚀

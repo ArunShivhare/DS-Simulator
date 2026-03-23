@@ -21,7 +21,7 @@ const features = [
 
 const structures = ["Array", "Stack", "Queue", "Linked List"];
 
-const Explore = () => {
+const Explore = ({user}) => {
   const navigate = useNavigate();
 
   return (
@@ -65,7 +65,6 @@ const Explore = () => {
           <div
             key={index}
             className="bg-gray-800 shadow-lg p-8 rounded-xl text-center hover:bg-purple-600 hover:scale-105 transition cursor-pointer"
-            onClick={() => navigate("/dashboard")}
           >
             {ds}
           </div>
@@ -73,15 +72,20 @@ const Explore = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="text-center">
+      <div className="flex flex-col sm:flex-row gap-10 justify-center"> 
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate(user ? "/dashboard" : "/login")}
           className="px-8 py-4 bg-linear-to-r from-purple-500 to-indigo-500 rounded-xl font-semibold shadow-lg hover:scale-105 transition"
         >
           Start Learning Now 🚀
         </button>
+        <button
+              onClick={() => navigate("/")}
+              className="px-6 py-3 border border-gray-500 rounded-xl hover:bg-gray-800 transition"
+            >
+              Back To Home
+        </button>
       </div>
-
     </div>
   );
 };

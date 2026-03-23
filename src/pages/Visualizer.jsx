@@ -157,7 +157,7 @@ const Visualizer = () => {
   const renderStack = () => (
     <div className="flex flex-col items-center justify-end h-80">
       {/* Stack Container */}
-      <div className="flex flex-col-reverse items-center gap-2 border-2 border-gray-600 p-4 rounded-lg min-w-[120px] max-h-[300px] overflow-y-auto">
+      <div className="flex flex-col-reverse items-center gap-2 border-2 border-gray-600 p-4 rounded-lg min-w-30 max-h-75 overflow-y-auto">
         {structure.map((item, index) => (
           <div key={index} className="flex flex-col items-center">
             {/* Top Pointer */}
