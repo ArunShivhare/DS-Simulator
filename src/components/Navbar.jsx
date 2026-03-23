@@ -14,10 +14,11 @@ const Navbar = ({ user }) => {
       {/* Logo */}
       <div
         onClick={() => navigate("/")}
-        className="text-xl font-bold cursor-pointer"
+        className="flex text-xl font-bold cursor-pointer"
       >
-        <span className="text-white">DS</span>{" "}
-        <span className="text-purple-400">Visualizer</span> 🚀
+        <span className="text-white mx-1">DS</span>{" "}
+        <span className="text-purple-400">Visualizer</span>
+        <span className="mx-2"><img width={60} src="/logo.png" alt="" /></span>
       </div>
 
       {/* Right Side */}

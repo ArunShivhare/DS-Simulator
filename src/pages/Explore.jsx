@@ -29,8 +29,9 @@ const Explore = ({user}) => {
 
       {/* Heading */}
       <div className="text-center mb-16 mt-10">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Explore Features 🚀
+        <h1 className="flex justify-center items-center text-4xl md:text-5xl font-bold mb-4">
+          Explore Features 
+        <span className="mx-2"><img width={100} src="/logo.png" alt="" /></span>
         </h1>
         <p className="text-gray-300 max-w-2xl mx-auto">
           A powerful visual learning tool to master data structures with
@@ -77,7 +78,7 @@ const Explore = ({user}) => {
           onClick={() => navigate(user ? "/dashboard" : "/login")}
           className="px-8 py-4 bg-linear-to-r from-purple-500 to-indigo-500 rounded-xl font-semibold shadow-lg hover:scale-105 transition"
         >
-          Start Learning Now 🚀
+          Start Learning Now 
         </button>
         <button
               onClick={() => navigate("/")}

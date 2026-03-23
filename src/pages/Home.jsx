@@ -25,7 +25,7 @@ const Home = ({ user }) => {
               onClick={() => navigate(user ? "/dashboard" : "/login")}
               className="px-6 py-3 bg-linear-to-r from-purple-500 to-indigo-500 rounded-xl font-semibold shadow-lg hover:scale-105 transition"
             >
-              Start Learning 🚀
+              Start Learning
             </button>
 
             <button

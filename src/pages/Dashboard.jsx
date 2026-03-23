@@ -32,7 +32,7 @@ const Dashboard = () => {
       {/* Heading */}
       <div className="text-center mb-14 mt-10">
         <h2 className="text-4xl font-bold mb-4">
-          Choose Data Structure 🚀
+          Choose Data Structure 
         </h2>
         <p className="text-gray-300">
           Select a data structure to visualize and understand its operations.
