@@ -494,7 +494,8 @@ const Visualizer = () => {
             selectedOp !== "Dequeue" &&
             selectedOp !== "Delete" &&
             selectedOp !== "Delete Head" &&
-            selectedOp !== "Delete Tail" && (
+            selectedOp !== "Delete Tail" &&
+            selectedOp !== "Traverse" && (
               <input
                 type="number"
                 placeholder="Enter value"
