@@ -1,8 +1,9 @@
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-const Login = () => {
+const Login = ({user}) => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -14,14 +15,16 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user]);
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-
       <div className="bg-white/10 backdrop-blur-lg p-10 rounded-2xl shadow-xl text-center w-87">
-
-        <h2 className="text-3xl font-bold mb-4">
-          Welcome Back 👋
-        </h2>
+        <h2 className="text-3xl font-bold mb-4">Welcome Back 👋</h2>
 
         <p className="text-gray-300 mb-6 text-sm">
           Login to continue your DSA journey
@@ -38,9 +41,7 @@ const Login = () => {
           />
           Sign in with Google
         </button>
-
       </div>
-
     </div>
   );
 };

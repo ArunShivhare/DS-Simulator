@@ -10,7 +10,7 @@ const AppRoutes = ({ user }) => {
   return (
     <Routes>
       <Route path="/" element={<Home user={user} />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<Login user={user}/>} />
 
       {/* Protected Routes */}
       <Route
