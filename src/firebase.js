@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCpy6gqXTTvT-9-yxuwU9Fcn-GPF-Qki_w",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "ds-simulator-68bd1.firebaseapp.com",
   projectId: "ds-simulator-68bd1",
   storageBucket: "ds-simulator-68bd1.firebasestorage.app",
