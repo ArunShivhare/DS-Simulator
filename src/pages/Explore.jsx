@@ -19,19 +19,25 @@ const features = [
   },
 ];
 
-const structures = ["Array", "Stack", "Queue", "Linked List"];
+const structures = [
+  { name: "Array", path: "/learn/array" },
+  { name: "Stack", path: "/learn/stack" },
+  { name: "Queue", path: "/learn/queue" },
+  { name: "Linked List", path: "/learn/linkedlist" },
+];
 
-const Explore = ({user}) => {
+const Explore = ({ user }) => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-16">
-
       {/* Heading */}
       <div className="text-center mb-16 mt-10">
         <h1 className="flex justify-center items-center text-4xl md:text-5xl font-bold mb-4">
-          Explore Features 
-        <span className="mx-2"><img width={100} src="/logo.png" alt="" /></span>
+          Explore Features
+          <span className="mx-2">
+            <img width={100} src="/logo.png" alt="" />
+          </span>
         </h1>
         <p className="text-gray-300 max-w-2xl mx-auto">
           A powerful visual learning tool to master data structures with
@@ -56,35 +62,34 @@ const Explore = ({user}) => {
 
       {/* Data Structures Section */}
       <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold mb-6">
-          Supported Data Structures
-        </h2>
+        <h2 className="text-3xl font-bold mb-6">Supported Data Structures</h2>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
         {structures.map((ds, index) => (
           <div
             key={index}
+            onClick={() => navigate(ds.path)}
             className="bg-gray-800 shadow-lg p-8 rounded-xl text-center hover:bg-purple-600 hover:scale-105 transition cursor-pointer"
           >
-            {ds}
+            {ds.name}
           </div>
         ))}
       </div>
 
       {/* CTA Section */}
-      <div className="flex flex-col sm:flex-row gap-10 justify-center"> 
+      <div className="flex flex-col sm:flex-row gap-10 justify-center">
         <button
           onClick={() => navigate(user ? "/dashboard" : "/login")}
           className="px-8 py-4 bg-linear-to-r from-purple-500 to-indigo-500 rounded-xl font-semibold shadow-lg hover:scale-105 transition"
         >
-          Start Learning Now 
+          Start Learning Now
         </button>
         <button
-              onClick={() => navigate("/")}
-              className="px-6 py-3 border border-gray-500 rounded-xl hover:bg-gray-800 transition"
-            >
-              Back To Home
+          onClick={() => navigate("/")}
+          className="px-6 py-3 border border-gray-500 rounded-xl hover:bg-gray-800 transition"
+        >
+          Back To Home
         </button>
       </div>
     </div>

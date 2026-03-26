@@ -5,12 +5,14 @@ import Visualizer from "../pages/Visualizer";
 import Explore from "../pages/Explore";
 import Login from "../pages/Login";
 import ProtectedRoute from "../components/ProtectedRoute";
+import ArrayPage from "../pages/Array";
 
 const AppRoutes = ({ user }) => {
   return (
     <Routes>
       <Route path="/" element={<Home user={user} />} />
-      <Route path="/login" element={<Login user={user}/>} />
+      <Route path="/login" element={<Login user={user} />} />
+      <Route path="/learn/array" element={<ArrayPage />} />
 
       {/* Protected Routes */}
       <Route
