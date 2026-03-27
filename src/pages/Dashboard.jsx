@@ -39,8 +39,11 @@ const Dashboard = () => {
 
       {/* 🔥 HERO SECTION */}
       <div className="text-center mb-16 mt-10 max-w-3xl mx-auto">
-        <h2 className="text-5xl font-extrabold mb-4 bg-linear-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-          Master Data Structures 🚀
+        <h2 className="text-5xl flex justify-center items-center font-extrabold mb-4 bg-linear-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+          Master Data Structures 
+          <span className="mx-2">
+            <img width={100} src="/logo.png" alt="" />
+          </span>
         </h2>
         <p className="text-gray-400 text-lg">
           Learn, visualize, and practice core data structures — all in one place.
