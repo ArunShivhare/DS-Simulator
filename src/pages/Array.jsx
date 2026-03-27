@@ -44,7 +44,7 @@ const ArrayPage = () => {
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-24 font-sans">
       {/* 1. Header with Multi-Structure Visuals */}
       <div className="max-w-7xl mx-auto text-center mb-24">
-        <h1 className="text-7xl md:text-8xl font-black mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-green-400 leading-tight">
+        <h1 className="text-7xl md:text-8xl font-black mb-8 bg-clip-text text-transparent bg-linear-to-r from-purple-400 via-blue-400 to-green-400 leading-tight">
           Arrays & Vectors 📦
         </h1>
         <p className="text-gray-300 text-2xl md:text-3xl max-w-4xl mx-auto leading-relaxed mb-16">
@@ -96,7 +96,7 @@ const ArrayPage = () => {
                     className={`w-16 h-16 rounded-xl flex items-center justify-center font-black text-2xl shadow-lg transition-all hover:scale-110 hover:-translate-y-2
                     ${
                       i === 0
-                        ? "bg-gradient-to-br from-purple-500 to-indigo-600 ring-2 ring-purple-300"
+                        ? "bg-linear-to-br from-purple-500 to-indigo-600 ring-2 ring-purple-300"
                         : "bg-gray-700 text-gray-300 opacity-80"
                     }`}
                   >
@@ -136,7 +136,7 @@ const ArrayPage = () => {
       {/* Structural Overview */}
       {/* 2. Structural Overview: Types of Arrays */}
       <div className="max-w-6xl mx-auto mb-24">
-        <h2 className="text-4xl font-black mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400 uppercase tracking-tighter">
+        <h2 className="text-4xl font-black mb-12 text-center bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-blue-400 uppercase tracking-tighter">
           Structural Varieties
         </h2>
 
@@ -336,7 +336,7 @@ const ArrayPage = () => {
             <h4 className="text-green-400 font-bold mb-4 uppercase tracking-widest text-sm">
               Implemented as Queue
             </h4>
-            <div className="flex gap-1 w-full max-w-[150px] mx-auto border-y-2 border-green-500/50 p-2">
+            <div className="flex gap-1 w-full max-w-37.5 mx-auto border-y-2 border-green-500/50 p-2">
               <div className="h-8 w-8 bg-green-500/30 rounded-sm"></div>
               <div className="h-8 w-8 bg-green-500/60 rounded-sm"></div>
               <div className="h-8 w-8 bg-green-500 rounded-sm translate-x-2 transition-transform"></div>
@@ -787,7 +787,7 @@ const ArrayPage = () => {
       {/* Solving Patterns (NEW) */}
       {/* 9. Expert Solving Patterns: Your Array Toolkit */}
       <div className="max-w-6xl mx-auto mb-24">
-        <h2 className="text-4xl font-black mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500 uppercase tracking-tighter">
+        <h2 className="text-4xl font-black mb-12 text-center bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-blue-500 uppercase tracking-tighter">
           Essential Solving Patterns
         </h2>
 
@@ -845,7 +845,7 @@ const ArrayPage = () => {
       {/* Practice Roadmap */}
       {/* 10. Final Practice Roadmap: The 30-Day Challenge */}
       <div className="max-w-6xl mx-auto mb-24">
-        <h2 className="text-4xl md:text-5xl font-black mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 uppercase tracking-tighter">
+        <h2 className="text-4xl md:text-5xl font-black mb-12 text-center bg-clip-text text-transparent bg-linear-to-r from-yellow-400 to-orange-500 uppercase tracking-tighter">
           The 30-Day Practice Roadmap 🎯
         </h2>
 
@@ -1032,10 +1032,10 @@ const ArrayPage = () => {
 
           <button
             onClick={() => (window.location.href = "/visualizer/array")}
-            className="group relative px-10 py-10 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 rounded-3xl font-black text-4xl shadow-[0_0_50px_rgba(139,92,246,0.3)] hover:shadow-[0_0_80px_rgba(139,92,246,0.6)] transition-all transform hover:scale-110 active:scale-95 cursor-pointer overflow-hidden"
+            className="group relative px-10 py-10 bg-linear-to-r from-purple-600 via-indigo-600 to-blue-600 rounded-3xl font-black text-4xl shadow-[0_0_50px_rgba(139,92,246,0.3)] hover:shadow-[0_0_80px_rgba(139,92,246,0.6)] transition-all transform hover:scale-110 active:scale-95 cursor-pointer overflow-hidden"
           >
             {/* Subtle Shine Effect */}
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+            <div className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
 
             <span className="relative flex items-center gap-4">
               OPEN VISUALIZER{" "}
