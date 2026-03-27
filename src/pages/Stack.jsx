@@ -196,7 +196,7 @@ const StackPage = () => {
       </div>
 
       {/* 5. Complexity Matrix */}
-      <div className="max-w-6xl mx-auto mb-24 overflow-hidden rounded-3xl border border-gray-700 bg-gray-800/20 shadow-2xl">
+      <div className="max-w-6xl mx-auto mb-24 overflow-x-auto rounded-3xl border border-gray-700 bg-gray-800/20 shadow-2xl">
         <table className="w-full text-left">
           <thead className="bg-gray-800/80 text-gray-400 text-lg uppercase tracking-widest">
             <tr>

@@ -54,7 +54,7 @@ const QueuePage = () => {
       </div>
 
       {/* 2. Core Principle & Correct Horizontal Visual */}
-      <div className="max-w-6xl mx-auto mb-24 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-6xl mx-auto mb-24 grid md:grid-cols-2 gap-12 items-center overflow-x-auto">
         <div className="space-y-6">
           <h2 className="text-3xl font-bold text-green-400 border-b border-green-500/20 pb-2 inline-block">
             The FIFO Principle
@@ -237,7 +237,7 @@ const QueuePage = () => {
       </div>
 
       {/* 6. Language Implementation */}
-      <div className="max-w-6xl mx-auto mb-24 grid md:grid-cols-2 gap-8">
+      <div className="max-w-6xl mx-auto mb-24 grid md:grid-cols-2 gap-8 overflow-x-auto">
         <div className="bg-gray-900/60 p-8 rounded-2xl border border-gray-700">
           <h4 className="text-green-400 font-bold mb-4 text-xl">
             JavaScript (Queue)
@@ -261,7 +261,7 @@ const QueuePage = () => {
       </div>
 
       {/* 5. Complexity Table */}
-      <div className="max-w-6xl mx-auto mb-24 overflow-hidden rounded-3xl border border-gray-700 bg-gray-800/20 shadow-2xl">
+      <div className="max-w-6xl mx-auto mb-24 overflow-x-auto rounded-3xl border border-gray-700 bg-gray-800/20 shadow-2xl">
         <table className="w-full text-left">
           <thead className="bg-gray-800/80 text-gray-400 text-lg uppercase tracking-widest">
             <tr>

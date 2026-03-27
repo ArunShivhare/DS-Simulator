@@ -54,7 +54,7 @@ const ArrayPage = () => {
       </div>
 
       {/* 2. Array Core Principle & Memory Visual */}
-      <div className="max-w-6xl mx-auto mb-24 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-6xl mx-auto mb-24 grid md:grid-cols-2 gap-12 items-center overflow-x-auto">
         <div className="space-y-6">
           <h2 className="text-3xl font-bold text-purple-400 border-b border-purple-500/20 pb-2 inline-block">
             Contiguous Memory
@@ -66,7 +66,7 @@ const ArrayPage = () => {
             <span className="text-purple-400 font-bold"> instantly</span> using
             its index.
           </p>
-          <div className="bg-purple-900/10 border border-purple-500/20 p-6 rounded-2xl">
+          <div className="bg-purple-900/10 border border-purple-500/20 p-6 rounded-2xl my-10">
             <h4 className="text-purple-300 font-bold mb-2 text-lg uppercase tracking-tighter">
               The Index Formula:
             </h4>
@@ -133,7 +133,6 @@ const ArrayPage = () => {
         </div>
       </div>
 
-      {/* Structural Overview */}
       {/* 2. Structural Overview: Types of Arrays */}
       <div className="max-w-6xl mx-auto mb-24">
         <h2 className="text-4xl font-black mb-12 text-center bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-blue-400 uppercase tracking-tighter">
@@ -215,10 +214,9 @@ const ArrayPage = () => {
         </div>
       </div>
 
-      {/* Hardware Deep Dive (NEW) */}
       {/* 3. Hardware Deep Dive: Cache Locality */}
       <div className="max-w-6xl mx-auto mb-24">
-        <div className="bg-blue-900/10 border border-blue-500/30 p-10 rounded-3xl shadow-2xl overflow-hidden relative">
+        <div className="bg-blue-900/10 border border-blue-500/30 p-10 rounded-3xl shadow-2xl overflow-hidden relative overflow-x-auto">
           {/* Background Accent */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
 
@@ -643,7 +641,7 @@ const ArrayPage = () => {
       </div>
 
       {/* 7. Performance Matrix: Time Complexity */}
-      <div className="max-w-6xl mx-auto mb-24 overflow-hidden rounded-3xl border border-gray-700 bg-gray-800/20 shadow-2xl">
+      <div className="max-w-6xl mx-auto mb-24 overflow-x-auto rounded-3xl border border-gray-700 bg-gray-800/20 shadow-2xl">
         <table className="w-full text-left border-collapse">
           <thead className="bg-gray-800/80 text-gray-400 text-lg uppercase tracking-widest">
             <tr>

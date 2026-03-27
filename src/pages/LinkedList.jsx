@@ -21,7 +21,7 @@ const LinkedListPage = () => {
       </div>
 
       {/* 2. Core Principle & Visual */}
-      <div className="max-w-6xl mx-auto mb-24 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-6xl mx-auto mb-24 grid md:grid-cols-2 gap-12 items-center overflow-x-auto">
         <div className="space-y-6">
           <h2 className="text-3xl font-bold text-pink-400 border-b border-pink-500/20 pb-2 inline-block">The Pointer Concept</h2>
           <p className="text-xl text-gray-300 leading-relaxed">
@@ -147,7 +147,7 @@ const LinkedListPage = () => {
       </div>
 
       {/* 5. Complexity Table */}
-      <div className="max-w-6xl mx-auto mb-24 overflow-hidden rounded-3xl border border-gray-700 bg-gray-800/20 shadow-2xl">
+      <div className="max-w-6xl mx-auto mb-24 overflow-x-auto rounded-3xl border border-gray-700 bg-gray-800/20 shadow-2xl">
         <table className="w-full text-left">
           <thead className="bg-gray-800/80 text-gray-400 text-lg uppercase tracking-widest">
             <tr>
