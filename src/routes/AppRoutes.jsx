@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import ProtectedRoute from "../components/ProtectedRoute";
 import ArrayPage from "../pages/Array";
 import StackPage from "../pages/Stack";
+import QueuePage from "../pages/Queue";
 
 const AppRoutes = ({ user }) => {
   return (
@@ -15,6 +16,7 @@ const AppRoutes = ({ user }) => {
       <Route path="/login" element={<Login user={user} />} />
       <Route path="/learn/array" element={<ArrayPage />} />
       <Route path="/learn/stack" element={<StackPage />} />
+      <Route path="/learn/queue" element={<QueuePage />} />
 
       {/* Protected Routes */}
       <Route
