@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = ({ user }) => {
   const navigate = useNavigate();
@@ -18,13 +19,23 @@ const Navbar = ({ user }) => {
       >
         <span className="text-white mx-1">DS</span>{" "}
         <span className="text-purple-400">Visualizer</span>
-        <span className="mx-2"><img width={60} src="/logo.png" alt="" /></span>
+        <span className="mx-2">
+          <img width={60} src="/logo.png" alt="" />
+        </span>
       </div>
 
       {/* Right Side */}
       <div className="flex items-center gap-4">
         {user ? (
           <>
+            {/* Profile Icon */}
+            <button
+              onClick={() => navigate("/progress")}
+              className="text-2xl text-gray-300 hover:text-purple-400 transition"
+            >
+              <FaUserCircle />
+            </button>
+
             <span className="text-sm text-gray-300">{user.displayName}</span>
 
             <button

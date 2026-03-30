@@ -9,6 +9,8 @@ import ArrayPage from "../pages/Array";
 import StackPage from "../pages/Stack";
 import QueuePage from "../pages/Queue";
 import LinkedListPage from "../pages/LinkedList";
+import Progress from "../pages/Progress";
+import Quiz from "../pages/Quiz";
 
 const AppRoutes = ({ user }) => {
   return (
@@ -19,6 +21,7 @@ const AppRoutes = ({ user }) => {
       <Route path="/learn/stack" element={<StackPage />} />
       <Route path="/learn/queue" element={<QueuePage />} />
       <Route path="/learn/linkedlist" element={<LinkedListPage />} />
+      <Route path="/explore" element={<Explore user={user} />} />
 
       {/* Protected Routes */}
       <Route
@@ -39,7 +42,23 @@ const AppRoutes = ({ user }) => {
         }
       />
 
-      <Route path="/explore" element={<Explore user={user} />} />
+      <Route
+        path="/progress"
+        element={
+          <ProtectedRoute user={user}>
+            <Progress />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/quiz/:type"
+        element={
+          <ProtectedRoute user={user}>
+            <Quiz />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 };
