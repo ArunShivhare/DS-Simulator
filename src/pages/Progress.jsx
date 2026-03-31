@@ -79,9 +79,18 @@ const Progress = () => {
     }
   };
 
+  const isVisited = (type, index) => {
+  const visited =
+    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+
+  return visited[type]?.[index];
+};
+
   useEffect(() => {
     loadProgress();
   }, []);
+
+  const stepLabels = ["Intro", "Implementation", "Visualization", "Practice"];
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8 py-24">
@@ -95,17 +104,39 @@ const Progress = () => {
           return (
             <div key={type} className="bg-gray-800 p-6 rounded-xl shadow">
               <h2 className="text-xl mb-4 uppercase text-purple-400">{type}</h2>
+              <button onClick={() => navigate("/leaderboard")}>
+                View Leaderboard 🏆
+              </button>
 
               {/* CHECKBOXES */}
-              <div className="space-y-2">
+              <div className="space-y-2 ">
                 {checkedArray.map((checked, i) => (
                   <label key={i} className="flex items-center gap-2">
                     <input
                       type="checkbox"
                       checked={checked}
+                      disabled={
+                        (!checkedArray[i - 1] && i !== 0) || !isVisited(type, i)
+                      }
                       onChange={() => handleCheck(type, i)}
                     />
-                    Step {i + 1}
+
+                    <span
+                      onClick={() => {
+                        if (!isVisited(type, i)) {
+                          // 🔥 redirect user to correct page
+                          if (i === 0)
+                            navigate(`/learn/${type}`); // intro page
+                          else if (i === 1)
+                            navigate(`/learn/${type}`); // same page (implementation)
+                          else if (i === 2) navigate(`/visualizer/${type}`);
+                          else if (i === 3) navigate(`/quiz/${type}`);
+                        }
+                      }}
+                      className="cursor-pointer"
+                    >
+                      {stepLabels[i]}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -124,7 +155,7 @@ const Progress = () => {
               )}
               {quizScores[type] !== undefined && (
                 <div className="mt-2 text-yellow-400 text-sm">
-                  Score: {quizScores[type]}
+                  Score: {quizScores[type]?.score} / {quizScores[type]?.total}
                 </div>
               )}
               {progress === 100 && (

@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 
 const QueuePage = () => {
   const problems = {
@@ -39,6 +40,18 @@ const QueuePage = () => {
       "Minimum Height Trees",
     ],
   };
+
+  useEffect(() => {
+  const visited =
+    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+
+  if (!visited["queue"]) visited["queue"] = [];
+
+  visited["queue"][0] = true; // Intro
+  visited["queue"][1] = true; // Implementation
+
+  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+}, []);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-24 font-sans selection:bg-green-500/30">

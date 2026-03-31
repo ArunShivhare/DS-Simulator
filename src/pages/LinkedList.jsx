@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 
 const LinkedListPage = () => {
   const problems = {
@@ -6,6 +7,18 @@ const LinkedListPage = () => {
     medium: ["Add Two Numbers", "Reorder List", "Partition List", "Rotate List", "Flatten Linked List", "Swap Nodes in Pairs", "Sort List", "Odd Even Linked List", "Remove Nth Node", "Copy List with Random Pointer"],
     hard: ["Merge K Sorted Lists", "Reverse Nodes in K Group", "LRU Cache", "Flatten Multilevel List", "Clone Graph", "Intersection Detection (Optimized)", "Cycle Detection (Floyd)", "Palindrome O(1) Space", "Split List Parts", "Critical Points"],
   };
+
+  useEffect(() => {
+  const visited =
+    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+
+  if (!visited["linkedlist"]) visited["linkedlist"] = [];
+
+  visited["linkedlist"][0] = true; // Intro
+  visited["linkedlist"][1] = true; // Implementation
+
+  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+}, []);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-24 font-sans selection:bg-pink-500/30">

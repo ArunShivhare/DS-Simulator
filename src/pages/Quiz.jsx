@@ -3,6 +3,7 @@ import { quizData } from "../data/quizData";
 import { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
+import { useEffect } from "react";
 
 const Quiz = () => {
   const { type } = useParams();
@@ -42,8 +43,14 @@ const Quiz = () => {
       await setDoc(
         doc(db, "users", user.uid),
         {
+          name: user.displayName,
+          email: user.email,
           quizzes: {
-            [type]: finalScore,
+            [type]: {
+              score: finalScore,
+              total: questions.length,
+              timestamp: Date.now(),
+            },
           },
         },
         { merge: true },
@@ -52,6 +59,16 @@ const Quiz = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const visited = JSON.parse(localStorage.getItem("visitedSteps")) || {};
+
+    if (!visited[type]) visited[type] = [];
+
+    visited[type][3] = true; // Practice
+
+    localStorage.setItem("visitedSteps", JSON.stringify(visited));
+  }, [type]);
 
   if (questions.length === 0) {
     return <div className="text-white p-10">No questions found</div>;

@@ -11,6 +11,7 @@ import QueuePage from "../pages/Queue";
 import LinkedListPage from "../pages/LinkedList";
 import Progress from "../pages/Progress";
 import Quiz from "../pages/Quiz";
+import Leaderboard from "../pages/Leaderboard";
 
 const AppRoutes = ({ user }) => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes = ({ user }) => {
       <Route path="/learn/queue" element={<QueuePage />} />
       <Route path="/learn/linkedlist" element={<LinkedListPage />} />
       <Route path="/explore" element={<Explore user={user} />} />
+      <Route path="/leaderboard" element={<Leaderboard />} />
 
       {/* Protected Routes */}
       <Route

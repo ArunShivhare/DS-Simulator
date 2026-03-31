@@ -448,6 +448,17 @@ const Visualizer = () => {
     </div>
   );
 
+  useEffect(() => {
+  const visited =
+    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+
+  if (!visited[type]) visited[type] = [];
+
+  visited[type][2] = true; // Visualization
+
+  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+}, [type]);
+
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-10">
       {/* Heading */}

@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 
 const ArrayPage = () => {
   const problems = {
@@ -39,6 +40,18 @@ const ArrayPage = () => {
       "Burst Balloons",
     ],
   };
+
+  useEffect(() => {
+  const visited =
+    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+
+  if (!visited["array"]) visited["array"] = [];
+
+  visited["array"][0] = true; // Intro
+  visited["array"][1] = true; // Implementation
+
+  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+}, []);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-24 font-sans">
