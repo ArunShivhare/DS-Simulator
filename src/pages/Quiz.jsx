@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { quizData } from "../data/quizData";
 import { useState } from "react";
-import { doc,getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
@@ -42,7 +42,9 @@ const Quiz = () => {
   };
 
   useEffect(() => {
-    checkAttempt();
+    if (quizId) {
+      checkAttempt();
+    }
   }, [quizId]);
 
   const handleAnswer = (selected) => {
@@ -101,13 +103,12 @@ const Quiz = () => {
 
     const latestQuiz = allQuizzes.sort((a, b) => b.createdAt - a.createdAt)[0];
 
-    setQuizId(latestQuiz?.id);
-
     const adminQuestions = latestQuiz?.questions || [];
 
     // 🔥 MERGE BOTH
     if (isAdminQuiz) {
       setQuestions(adminQuestions); // 🔥 only admin quiz
+      setQuizId(latestQuiz?.id);
     } else {
       setQuestions(baseQuestions); // 🔥 only predefined
     }
@@ -156,16 +157,16 @@ const Quiz = () => {
       </div>
     );
   }
-  
+
   if (isAdminQuiz && alreadyAttempted) {
-  return (
-    <div className="text-center text-white p-10 min-h-screen flex items-center justify-center">
-      <h2 className="text-2xl text-red-400">
-        You already attempted this test ❌
-      </h2>
-    </div>
-  );
-}
+    return (
+      <div className="text-center text-white p-10 min-h-screen flex items-center justify-center">
+        <h2 className="text-2xl text-red-400">
+          You already attempted this test ❌
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-6">
