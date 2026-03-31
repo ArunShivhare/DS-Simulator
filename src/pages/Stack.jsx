@@ -1,7 +1,11 @@
 import React from "react";
 import { useEffect } from "react";
+import { auth } from "../firebase";
 
 const StackPage = () => {
+  const user = auth.currentUser;
+const userId = user?.uid;
+
   const problems = {
     easy: [
       "Implement Stack using Array",
@@ -43,14 +47,14 @@ const StackPage = () => {
 
   useEffect(() => {
   const visited =
-    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+    JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
 
   if (!visited["stack"]) visited["stack"] = [];
 
   visited["stack"][0] = true; // Intro
   visited["stack"][1] = true; // Implementation
 
-  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+  localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
 }, []);
 
   return (

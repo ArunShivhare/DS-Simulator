@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { collection, getDocs } from "firebase/firestore";
 
 const structures = ["array", "stack", "queue", "linkedlist"];
 
@@ -9,6 +10,10 @@ const Progress = () => {
   const navigate = useNavigate();
 
   const [quizScores, setQuizScores] = useState({});
+  const [availableQuizzes, setAvailableQuizzes] = useState({});
+  const user = auth.currentUser;
+  const userId = user?.uid;
+  const [attempts, setAttempts] = useState({});
 
   const [progressState, setProgressState] = useState({
     array: [false, false, false, false],
@@ -47,6 +52,26 @@ const Progress = () => {
     }
   };
 
+  const loadAvailableQuizzes = async () => {
+    const types = ["array", "stack", "queue", "linkedlist"];
+
+    const quizMap = {};
+
+    try {
+      for (let type of types) {
+        const snapshot = await getDocs(
+          collection(db, "quizzes", type, "items"),
+        );
+
+        quizMap[type] = !snapshot.empty; // ✅ if quiz exists
+      }
+
+      setAvailableQuizzes(quizMap);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const loadProgress = async () => {
     const user = auth.currentUser;
 
@@ -68,6 +93,10 @@ const Progress = () => {
             }
           });
 
+          if (data.attempts) {
+            setAttempts(data.attempts);
+          }
+
           setProgressState(newState);
         }
         if (data.quizzes) {
@@ -80,14 +109,15 @@ const Progress = () => {
   };
 
   const isVisited = (type, index) => {
-  const visited =
-    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+    const visited =
+      JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
 
-  return visited[type]?.[index];
-};
+    return visited[type]?.[index];
+  };
 
   useEffect(() => {
     loadProgress();
+    loadAvailableQuizzes();
   }, []);
 
   const stepLabels = ["Intro", "Implementation", "Visualization", "Practice"];
@@ -153,17 +183,30 @@ const Progress = () => {
                   Completed ✅
                 </div>
               )}
+               {/* HISTORY */}
+              {attempts[type] && (
+                <div className="mt-2 text-xs text-gray-400">
+                  <p className="font-semibold text-gray-300">Attempts:</p>
+
+                  {Object.entries(attempts[type]).map(([id, attempt]) => (
+                    <div key={id}>
+                      Score: {attempt.score}/{attempt.total}
+                    </div>
+                  ))}
+                </div>
+              )}
               {quizScores[type] !== undefined && (
                 <div className="mt-2 text-yellow-400 text-sm">
                   Score: {quizScores[type]?.score} / {quizScores[type]?.total}
                 </div>
               )}
-              {progress === 100 && (
+              {/* ADMIN QUIZ */}
+              {availableQuizzes[type] && progress === 100 && (
                 <button
-                  onClick={() => navigate(`/quiz/${type}`)}
-                  className="mt-4 w-full bg-green-500 hover:bg-green-600 transition p-2 rounded-lg font-semibold"
+                  onClick={() => navigate(`/quiz/${type}/admin`)}
+                  className="mt-2 w-full bg-green-500 hover:bg-green-600 p-2 rounded-lg"
                 >
-                  Take Quiz 🚀
+                  New Test Available 🚀
                 </button>
               )}
             </div>

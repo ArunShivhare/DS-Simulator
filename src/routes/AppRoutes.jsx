@@ -12,6 +12,7 @@ import LinkedListPage from "../pages/LinkedList";
 import Progress from "../pages/Progress";
 import Quiz from "../pages/Quiz";
 import Leaderboard from "../pages/Leaderboard";
+import AdminQuiz from "../pages/AdminQuiz";
 
 const AppRoutes = ({ user }) => {
   return (
@@ -58,6 +59,24 @@ const AppRoutes = ({ user }) => {
         element={
           <ProtectedRoute user={user}>
             <Quiz />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/quiz/:type/admin"
+        element={
+          <ProtectedRoute user={user}>
+            <Quiz />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute user={user}>
+            <AdminQuiz />
           </ProtectedRoute>
         }
       />

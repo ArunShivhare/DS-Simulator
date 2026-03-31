@@ -1,7 +1,11 @@
 import React from "react";
 import { useEffect } from "react";
+import { auth } from "../firebase";
 
 const LinkedListPage = () => {
+  const user = auth.currentUser;
+const userId = user?.uid;
+
   const problems = {
     easy: ["Reverse Linked List", "Find Middle Node", "Detect Cycle", "Merge Two Lists", "Delete Node", "Remove Duplicates", "Intersection of Lists", "Nth Node from End", "Palindrome Linked List", "Linked List Length"],
     medium: ["Add Two Numbers", "Reorder List", "Partition List", "Rotate List", "Flatten Linked List", "Swap Nodes in Pairs", "Sort List", "Odd Even Linked List", "Remove Nth Node", "Copy List with Random Pointer"],
@@ -10,14 +14,14 @@ const LinkedListPage = () => {
 
   useEffect(() => {
   const visited =
-    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+    JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
 
   if (!visited["linkedlist"]) visited["linkedlist"] = [];
 
   visited["linkedlist"][0] = true; // Intro
   visited["linkedlist"][1] = true; // Implementation
 
-  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+  localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
 }, []);
 
   return (

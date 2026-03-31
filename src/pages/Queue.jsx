@@ -1,7 +1,11 @@
 import React from "react";
 import { useEffect } from "react";
+import { auth } from "../firebase";
 
 const QueuePage = () => {
+  const user = auth.currentUser;
+const userId = user?.uid;
+
   const problems = {
     easy: [
       "Implement Queue using Array",
@@ -43,14 +47,14 @@ const QueuePage = () => {
 
   useEffect(() => {
   const visited =
-    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+    JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
 
   if (!visited["queue"]) visited["queue"] = [];
 
   visited["queue"][0] = true; // Intro
   visited["queue"][1] = true; // Implementation
 
-  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+  localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
 }, []);
 
   return (

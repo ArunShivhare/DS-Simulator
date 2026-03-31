@@ -25,10 +25,25 @@ const Leaderboard = () => {
     fetchLeaderboard();
   }, []);
 
+    const getBestScore = (user, type) => {
+    const attempts = user.attempts?.[type];
+    if (!attempts) return null;
+
+    return Object.values(attempts).reduce(
+      (max, curr) => (curr.score > (max?.score || 0) ? curr : max),
+      null,
+    );
+  };
+
   // 🔥 SORT USERS (ARRAY QUIZ FOR NOW)
   const sortedUsers = users
-    .filter((u) => u.quizzes?.[activeTab]?.score !== undefined)
-    .sort((a, b) => b.quizzes[activeTab].score - a.quizzes[activeTab].score);
+  .filter((u) => getBestScore(u, activeTab))
+  .sort((a, b) => {
+    const aBest = getBestScore(a, activeTab);
+    const bBest = getBestScore(b, activeTab);
+
+    return (bBest?.score || 0) - (aBest?.score || 0);
+  });
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8 py-24">
@@ -65,8 +80,8 @@ const Leaderboard = () => {
 
             {/* Score */}
             <span className="text-purple-400 font-semibold">
-              {user.quizzes[activeTab].score} /{" "}
-              {user.quizzes[activeTab].total}
+              {getBestScore(user, activeTab)?.score} /{" "}
+              {getBestScore(user, activeTab)?.total}
             </span>
           </div>
         ))}

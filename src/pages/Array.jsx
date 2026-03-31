@@ -1,7 +1,11 @@
 import React from "react";
 import { useEffect } from "react";
+import { auth } from "../firebase";
 
 const ArrayPage = () => {
+  const user = auth.currentUser;
+const userId = user?.uid;
+
   const problems = {
     easy: [
       "Find Maximum Element",
@@ -43,14 +47,14 @@ const ArrayPage = () => {
 
   useEffect(() => {
   const visited =
-    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+    JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
 
   if (!visited["array"]) visited["array"] = [];
 
   visited["array"][0] = true; // Intro
   visited["array"][1] = true; // Implementation
 
-  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+  localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
 }, []);
 
   return (

@@ -1,18 +1,49 @@
 import { useParams } from "react-router-dom";
 import { quizData } from "../data/quizData";
 import { useState } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { doc,getDoc, setDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useEffect } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { useCallback } from "react";
+import { useLocation } from "react-router-dom";
 
 const Quiz = () => {
   const { type } = useParams();
 
-  const questions = quizData[type] || [];
+  const location = useLocation();
+  const isAdminQuiz = location.pathname.includes("admin");
+
+  const baseQuestions = quizData[type] || [];
 
   const [current, setCurrent] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [questions, setQuestions] = useState([]);
+  const user = auth.currentUser;
+  const userId = user?.uid;
+  const [quizId, setQuizId] = useState(null);
+  const [alreadyAttempted, setAlreadyAttempted] = useState(false);
+
+  const checkAttempt = async () => {
+    const user = auth.currentUser;
+    if (!user || !quizId) return;
+
+    const docRef = doc(db, "users", user.uid);
+    const snap = await getDoc(docRef);
+
+    if (snap.exists()) {
+      const data = snap.data();
+
+      if (data.attempts?.[type]?.[quizId]) {
+        setAlreadyAttempted(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    checkAttempt();
+  }, [quizId]);
 
   const handleAnswer = (selected) => {
     const isCorrect = selected === questions[current].answer;
@@ -43,13 +74,13 @@ const Quiz = () => {
       await setDoc(
         doc(db, "users", user.uid),
         {
-          name: user.displayName,
-          email: user.email,
-          quizzes: {
+          attempts: {
             [type]: {
-              score: finalScore,
-              total: questions.length,
-              timestamp: Date.now(),
+              [quizId]: {
+                score: finalScore,
+                total: questions.length,
+                timestamp: Date.now(),
+              },
             },
           },
         },
@@ -60,14 +91,41 @@ const Quiz = () => {
     }
   };
 
+  const fetchQuiz = useCallback(async () => {
+    const snapshot = await getDocs(collection(db, "quizzes", type, "items"));
+
+    const allQuizzes = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const latestQuiz = allQuizzes.sort((a, b) => b.createdAt - a.createdAt)[0];
+
+    setQuizId(latestQuiz?.id);
+
+    const adminQuestions = latestQuiz?.questions || [];
+
+    // 🔥 MERGE BOTH
+    if (isAdminQuiz) {
+      setQuestions(adminQuestions); // 🔥 only admin quiz
+    } else {
+      setQuestions(baseQuestions); // 🔥 only predefined
+    }
+  }, [type]);
+
   useEffect(() => {
-    const visited = JSON.parse(localStorage.getItem("visitedSteps")) || {};
+    fetchQuiz();
+  }, [fetchQuiz]);
+
+  useEffect(() => {
+    const visited =
+      JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
 
     if (!visited[type]) visited[type] = [];
 
     visited[type][3] = true; // Practice
 
-    localStorage.setItem("visitedSteps", JSON.stringify(visited));
+    localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
   }, [type]);
 
   if (questions.length === 0) {
@@ -98,6 +156,17 @@ const Quiz = () => {
       </div>
     );
   }
+  
+  if (isAdminQuiz && alreadyAttempted) {
+  return (
+    <div className="text-center text-white p-10 min-h-screen flex items-center justify-center">
+      <h2 className="text-2xl text-red-400">
+        You already attempted this test ❌
+      </h2>
+    </div>
+  );
+}
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-6">
       <h1 className="text-3xl mb-6 uppercase">{type} Quiz</h1>

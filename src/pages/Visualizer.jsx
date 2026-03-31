@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { codeSnippets } from "../data/codeSnippets";
 import { visualizationSteps } from "../data/visualizationSteps";
 import { motion } from "framer-motion";
+import { auth } from "../firebase";
 
 const operationsMap = {
   array: ["Insert", "Delete", "Linear Search", "Binary Search"],
@@ -27,6 +28,8 @@ const isSorted = (arr) => {
 const Visualizer = () => {
   const { type } = useParams();
 
+  const user = auth.currentUser;
+const userId = user?.uid;
   const [low, setLow] = useState(null);
   const [high, setHigh] = useState(null);
   const [mid, setMid] = useState(null);
@@ -450,13 +453,13 @@ const Visualizer = () => {
 
   useEffect(() => {
   const visited =
-    JSON.parse(localStorage.getItem("visitedSteps")) || {};
+    JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
 
   if (!visited[type]) visited[type] = [];
 
   visited[type][2] = true; // Visualization
 
-  localStorage.setItem("visitedSteps", JSON.stringify(visited));
+  localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
 }, [type]);
 
   return (
