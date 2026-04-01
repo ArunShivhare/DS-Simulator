@@ -67,16 +67,21 @@ const Quiz = () => {
     }
   };
 
-  const saveScore = async (finalScore) => {
+ const saveScore = async (finalScore) => {
   const user = auth.currentUser;
   if (!user) return;
 
   try {
+    const baseUserData = {
+      name: user.displayName || "Anonymous",
+      email: user.email,
+    };
+
     if (isAdminQuiz) {
-      // ✅ ADMIN QUIZ → attempts (NO CHANGE)
       await setDoc(
         doc(db, "users", user.uid),
         {
+          ...baseUserData, // ✅ ADD THIS
           attempts: {
             [type]: {
               [quizId]: {
@@ -90,10 +95,10 @@ const Quiz = () => {
         { merge: true }
       );
     } else {
-      // ✅ PRACTICE QUIZ → simple storage
       await setDoc(
         doc(db, "users", user.uid),
         {
+          ...baseUserData, // ✅ ADD THIS
           quizzes: {
             [type]: {
               score: finalScore,
