@@ -68,11 +68,12 @@ const Quiz = () => {
   };
 
   const saveScore = async (finalScore) => {
-    const user = auth.currentUser;
+  const user = auth.currentUser;
+  if (!user) return;
 
-    if (!user) return;
-
-    try {
+  try {
+    if (isAdminQuiz) {
+      // ✅ ADMIN QUIZ → attempts (NO CHANGE)
       await setDoc(
         doc(db, "users", user.uid),
         {
@@ -86,12 +87,28 @@ const Quiz = () => {
             },
           },
         },
-        { merge: true },
+        { merge: true }
       );
-    } catch (error) {
-      console.error(error);
+    } else {
+      // ✅ PRACTICE QUIZ → simple storage
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          quizzes: {
+            [type]: {
+              score: finalScore,
+              total: questions.length,
+              timestamp: Date.now(),
+            },
+          },
+        },
+        { merge: true }
+      );
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const fetchQuiz = useCallback(async () => {
     const snapshot = await getDocs(collection(db, "quizzes", type, "items"));
@@ -169,25 +186,79 @@ const Quiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-6">
-      <h1 className="text-3xl mb-6 uppercase">{type} Quiz</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white flex flex-col items-center justify-center p-6 py-24 font-sans">
+      {/* Decorative Background Glows */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
+      </div>
 
-      <div className="bg-gray-800 p-6 rounded-xl w-full max-w-md">
-        <h2 className="mb-4">
-          {current + 1}. {questions[current].question}
-        </h2>
-
-        <div className="space-y-2">
-          {questions[current].options.map((opt, i) => (
-            <button
-              key={i}
-              onClick={() => handleAnswer(opt)}
-              className="w-full bg-purple-500 hover:bg-purple-600 p-2 rounded"
-            >
-              {opt}
-            </button>
-          ))}
+      <div className="relative z-10 w-full max-w-2xl">
+        {/* Header Section */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400 mb-2">
+            {type} Challenge
+          </h1>
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-px w-12 bg-gray-700"></div>
+            <span className="text-gray-500 font-mono text-sm uppercase tracking-widest">
+              Question {current + 1} of {questions.length}
+            </span>
+            <div className="h-px w-12 bg-gray-700"></div>
+          </div>
         </div>
+
+        {/* Quiz Card */}
+        <div className="bg-gray-900/60 border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl backdrop-blur-md">
+          {/* Question Text */}
+          <h2 className="text-2xl md:text-3xl font-bold leading-tight mb-10 text-gray-100">
+            <span className="text-purple-500 font-black mr-2 opacity-50">
+              #
+            </span>
+            {questions[current].question}
+          </h2>
+
+          {/* Options Grid */}
+          <div className="grid gap-4">
+            {questions[current].options.map((opt, i) => (
+              <button
+                key={i}
+                onClick={() => handleAnswer(opt)}
+                className="group relative flex items-center w-full p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-500/50 hover:bg-purple-500/5 transition-all duration-300 text-left active:scale-[0.98]"
+              >
+                {/* Index Badge */}
+                <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-800 text-gray-400 text-xs font-bold mr-4 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                  {String.fromCharCode(65 + i)}
+                </span>
+
+                {/* Option Text */}
+                <span className="text-lg font-medium text-gray-300 group-hover:text-white transition-colors">
+                  {opt}
+                </span>
+
+                {/* Hover Glow Effect */}
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 bg-gradient-to-r from-purple-500/10 to-transparent pointer-events-none transition-opacity"></div>
+              </button>
+            ))}
+          </div>
+
+          {/* Progress Footer */}
+          <div className="mt-12 pt-8 border-t border-white/5">
+            <div className="w-full bg-black/40 h-2 rounded-full overflow-hidden p-0.5">
+              <div
+                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(168,85,247,0.4)]"
+                style={{
+                  width: `${((current + 1) / questions.length) * 100}%`,
+                }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Exit Hint */}
+        <p className="text-center mt-8 text-gray-600 text-sm font-medium uppercase tracking-widest italic opacity-50">
+          Select an answer to proceed automatically
+        </p>
       </div>
     </div>
   );

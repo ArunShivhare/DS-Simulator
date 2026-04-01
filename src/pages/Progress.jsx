@@ -177,12 +177,13 @@ const Progress = () => {
               {/* Roadmap Steps */}
               <div className="space-y-4 mb-10 relative z-10 flex-grow">
                 {checkedArray.map((checked, i) => {
-                  const isLocked =
-                    (!checkedArray[i - 1] && i !== 0) || !isVisited(type, i);
+                  const isLocked = i !== 0 && !checkedArray[i - 1];
+                  const isCheckboxDisabled = isLocked || !isVisited(type, i);
 
                   return (
                     <div
                       key={i}
+                      disabled={isCheckboxDisabled}
                       className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 border ${
                         checked
                           ? "bg-emerald-500/5 border-emerald-500/20"
