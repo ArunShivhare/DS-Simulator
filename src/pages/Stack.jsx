@@ -58,8 +58,11 @@ const userId = user?.uid;
 }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-24 font-sans selection:bg-blue-500/30">
-      {/* 1. Header */}
+  <div className="min-h-screen bg-gray-950 text-white px-6 py-24 font-sans">
+     {/* Background Accents */}
+      <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-purple-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+         {/* 1. Header */}
       <div className="max-w-6xl mx-auto text-center mb-20">
         <h1 className="text-6xl md:text-7xl font-black mb-6 bg-clip-text text-transparent bg-linear-to-r from-blue-400 via-purple-400 to-pink-400">
           Stack Data Structure 📚

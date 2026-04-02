@@ -8,49 +8,81 @@ const Navbar = ({ user }) => {
 
   const handleLogout = async () => {
     await signOut(auth);
+    navigate("/");
   };
 
   return (
-    <div className="fixed top-0 w-full bg-black/30 backdrop-blur-lg border-b border-white/10 px-6 py-4 flex justify-between items-center">
-      {/* Logo */}
+    <div className="fixed top-0 left-0 w-full z-[100] bg-black/40 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex justify-between items-center transition-all">
+      {/* 1. Logo Section */}
       <div
         onClick={() => navigate("/")}
-        className="flex text-xl font-bold cursor-pointer"
+        className="flex items-center gap-3 cursor-pointer group"
       >
-        <span className="text-white mx-1">DS</span>{" "}
-        <span className="text-purple-400">Visualizer</span>
-        <span className="mx-2">
-          <img width={60} src="/logo.png" alt="" />
-        </span>
+        <div className="relative">
+          <img
+            width={45}
+            src="/logo.png"
+            alt="Logo"
+            className="group-hover:rotate-12 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-purple-500/20 blur-lg rounded-full -z-10"></div>
+        </div>
+        <div className="hidden sm:block">
+          <span className="text-xl font-black tracking-tighter text-white uppercase">
+            DS
+          </span>
+          <span className="text-xl font-black tracking-tighter text-purple-500 uppercase ml-1">
+            Visualizer
+          </span>
+        </div>
       </div>
 
-      {/* Right Side */}
+      {/* 2. Right Side: Auth & Profile */}
       <div className="flex items-center gap-4">
         {user ? (
-          <>
-            {/* Profile Icon */}
-            <button
+          <div className="flex items-center gap-3">
+            {/* Glass Profile Badge */}
+            <div
               onClick={() => navigate("/progress")}
-              className="text-2xl text-gray-300 hover:text-purple-400 transition"
+              className="flex items-center gap-3 px-3 py-1.5 bg-white/5 border border-white/10 rounded-2xl cursor-pointer hover:bg-white/10 hover:border-purple-500/30 transition-all group"
             >
-              <FaUserCircle />
-            </button>
+              <div className="text-2xl text-purple-400 group-hover:scale-110 transition-transform">
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt="pfp"
+                    className="w-7 h-7 rounded-full border border-purple-500/50"
+                  />
+                ) : (
+                  <FaUserCircle />
+                )}
+              </div>
+              <div className="flex flex-col items-start leading-none">
+                {user.email === "simplesabanda07@gmail.com" && (
+                  <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest animate-pulse">
+                    Architect
+                  </span>
+                )}
+                <span className="text-xs font-bold text-gray-200 truncate max-w-[100px]">
+                  {user.displayName || "User"}
+                </span>
+              </div>
+            </div>
 
-            <span className="text-sm text-gray-300">{user.displayName}</span>
-
+            {/* Logout Button: Refined Ghost Style */}
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-linear-to-r from-red-200 to-pink-200 rounded-xl text-sm font-semibold shadow-md hover:scale-105 transition"
+              className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-red-400 border border-red-500/20 rounded-xl hover:bg-red-500/10 transition-all active:scale-95 shadow-lg shadow-red-950/20"
             >
               Logout
             </button>
-          </>
+          </div>
         ) : (
           <button
             onClick={() => navigate("/login")}
-            className="px-4 py-2 bg-linear-to-r from-purple-500 to-indigo-500 rounded-xl text-sm font-semibold"
+            className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-purple-900/20 active:scale-95"
           >
-            Login
+            Access Terminal
           </button>
         )}
       </div>

@@ -4,6 +4,7 @@ import { codeSnippets } from "../data/codeSnippets";
 import { visualizationSteps } from "../data/visualizationSteps";
 import { motion } from "framer-motion";
 import { auth } from "../firebase";
+import Navbar from "../components/Navbar";
 
 const operationsMap = {
   array: ["Insert", "Delete", "Linear Search", "Binary Search"],
@@ -29,7 +30,7 @@ const Visualizer = () => {
   const { type } = useParams();
 
   const user = auth.currentUser;
-const userId = user?.uid;
+  const userId = user?.uid;
   const [low, setLow] = useState(null);
   const [high, setHigh] = useState(null);
   const [mid, setMid] = useState(null);
@@ -269,334 +270,544 @@ const userId = user?.uid;
     }
   }, [currentStep, steps]);
 
-  const renderStack = () => (
-    <div className="flex flex-col items-center justify-end h-80">
-      {/* Stack Container */}
-      <div className="flex flex-col-reverse items-center gap-2 border-2 border-gray-600 p-4 rounded-lg min-w-30 max-h-75 overflow-y-auto">
-        {structure.map((item, index) => (
-          <div key={index} className="flex flex-col items-center">
-            {/* Top Pointer */}
-            {index === topIndex && (
-              <div className="text-yellow-400 text-sm mb-1 flex flex-col items-center">
-                <span>Top</span>
-                <span>↓</span>
-              </div>
-            )}
+ const renderStack = () => (
+  <div className="flex flex-col items-center justify-end min-h-[450px] py-10 w-full">
+    {/* Stack Container - 'The Well' */}
+    <div className="relative flex flex-col-reverse items-center gap-3 border-x-4 border-b-4 border-white/10 bg-white/5 p-10 rounded-b-[3rem] min-w-[280px] max-h-[400px] overflow-y-auto scrollbar-hide shadow-2xl backdrop-blur-sm">
+      
+      {/* Visual Top Rim Glow */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"></div>
 
-            <motion.div
-              initial={{ scale: 0, y: -30 }}
-              animate={{ scale: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className={`w-20 h-10 flex items-center justify-center rounded text-white font-semibold shadow
-              ${index === topIndex ? "bg-yellow-500" : "bg-indigo-500"}`}
-            >
-              {item}
-            </motion.div>
-
-            {/* Index */}
-            <span className="text-xs text-gray-400 mt-1">{index}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Empty Stack Indicator */}
-      {structure.length === 0 && (
-        <div className="text-gray-400 mt-4">Stack is Empty (Top = -1)</div>
-      )}
-    </div>
-  );
-
-  const renderQueue = () => (
-    <div className="flex flex-col items-center gap-6">
-      {/* Queue Row */}
-      <div className="flex items-center gap-6">
-        {structure.map((item, index) => (
-          <div key={index} className="relative flex flex-col items-center">
-            {/* FRONT POINTER */}
-            {index === frontIndex && (
-              <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-green-400 text-xs">
-                <span>Front</span>
-                <span>↓</span>
-              </div>
-            )}
-
-            {/* NODE */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className={`w-14 h-12 flex items-center justify-center rounded-lg text-white font-semibold shadow
-              ${
-                index === frontIndex
-                  ? "bg-green-500"
-                  : index === rearIndex
-                    ? "bg-yellow-500"
-                    : "bg-indigo-500"
-              }`}
-            >
-              {item}
-            </motion.div>
-
-            {/* REAR POINTER */}
-            {index === rearIndex && (
-              <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-yellow-400 text-xs">
-                <span>↑</span>
-                <span>Rear</span>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* EMPTY STATE */}
-      {structure.length === 0 && (
-        <div className="text-gray-400">
-          Queue is Empty (Front = 0, Rear = -1)
-        </div>
-      )}
-    </div>
-  );
-
-  const renderArray = () => (
-    <div className="flex flex-col items-center gap-2">
-      {/* Array Boxes */}
-      <div className="flex gap-6 items-end">
-        {structure.map((item, index) => (
-          <div key={index} className="flex flex-col items-center">
-            {/* Pointer */}
-            {highlightIndex === index && (
-              <div className="text-yellow-400 text-sm mb-1">↓</div>
-            )}
-
-            {/* LOW POINTER */}
-            {low === index && <div className="text-green-400 text-xs">L</div>}
-            {/* MID POINTER */}
-            {mid === index && <div className="text-yellow-400 text-xs">M</div>}
-            {/* HIGH POINTER */}
-            {high === index && <div className="text-red-400 text-xs">H</div>}
-
-            <motion.div
-              initial={{ scale: 0, y: -40 }}
-              animate={{ scale: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className={`w-14 h-12 flex items-center justify-center rounded-lg text-white font-semibold shadow-lg
-              ${
-                mid === index
-                  ? "bg-yellow-500" // MID (main focus)
-                  : highlightIndex === index
-                    ? "bg-yellow-500"
-                    : "bg-purple-500"
-              }`}
-            >
-              {item}
-            </motion.div>
-            {/* Index BELOW */}
-            <span className="text-xs mt-2 text-gray-400">{index}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderLinkedList = () => (
-    <div className="flex items-center justify-center gap-6">
       {structure.map((item, index) => (
-        <div key={index} className="relative flex items-center">
-          {/* HEAD POINTER */}
-          {index === 0 && (
-            <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center text-purple-400 text-xs font-semibold">
-              <span>Head</span>
-              <span>↓</span>
-            </div>
-          )}
-          {/* Tail pointer */}
-          {index === structure.length - 1 && (
-            <div className="absolute -bottom-10 text-xs text-pink-200">
-              Tail ↑
-            </div>
-          )}
+        <div key={index} className="flex items-center justify-center w-full relative h-14 shrink-0">
+          
+          {/* 1. LEFT SIDE: TOP POINTER */}
+          <div className="absolute left-0 w-16 flex justify-end items-center">
+            {index === topIndex && (
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2"
+              >
+                <span className="text-[9px] font-black text-yellow-500 uppercase tracking-tighter bg-yellow-500/10 px-8 py-1 rounded border border-yellow-500/20 animate-pulse">
+                  Top
+                </span>
+                <div className="w-3 h-[2px] bg-yellow-500/40"></div>
+              </motion.div>
+            )}
+          </div>
 
-          {/* TEMP POINTER (MOVING 🔥) */}
-          {tempIndex === index && (
-            <div className="absolute -top-8 right-1/2 -translate-x-1/2 flex flex-col items-center text-yellow-400 text-xs font-semibold">
-              <span>temp</span>
-              <span>↓</span>
-            </div>
-          )}
-
-          {/* NODE */}
+          {/* 2. CENTER: THE DATA BLOCK */}
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className={`w-14 h-12 flex items-center justify-center rounded-lg text-white font-semibold shadow
-            ${
-              llHighlightIndex === index
-                ? "bg-yellow-500 scale-110"
-                : "bg-pink-500"
-            }`}
+            initial={{ scale: 0.8, opacity: 0, y: -20 }}
+            animate={{ 
+              scale: index === topIndex ? 1.05 : 1, 
+              opacity: 1, 
+              y: 0 
+            }}
+            transition={{ duration: 0.4, type: "spring", stiffness: 200 }}
+            className={`
+              w-28 h-12 flex items-center justify-center rounded-xl text-lg font-black transition-all duration-300 border-2 z-10
+              ${index === topIndex
+                ? "bg-yellow-500 border-yellow-300 text-black shadow-[0_0_20px_rgba(234,179,8,0.3)]"
+                : "bg-gray-800 border-white/5 text-gray-400"}
+            `}
           >
             {item}
           </motion.div>
 
-          {/* ARROW */}
-          <span className="mx-3 text-xl text-gray-400">→</span>
+          {/* 3. RIGHT SIDE: INDEX LABEL */}
+          <div className="absolute right-0 w-16 flex justify-start items-center">
+            <div className="w-3 h-[1px] bg-gray-700 mr-2"></div>
+            <span className="text-[10px] font-mono font-bold text-gray-500 italic p-6">
+              idx {index}
+            </span>
+          </div>
         </div>
       ))}
 
-      {/* NULL */}
-      {structure.length > 0 && (
-        <span className="text-gray-400 font-semibold">NULL</span>
+      {/* Empty Stack State */}
+      {structure.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center py-16 opacity-20"
+        >
+          <div className="text-4xl mb-2 text-gray-500 font-black italic tracking-tighter">
+            EMPTY
+          </div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600">
+            Stack Pointer = -1
+          </p>
+        </motion.div>
       )}
     </div>
-  );
 
-  useEffect(() => {
-  const visited =
-    JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
+    {/* Stack Base Plate */}
+    <div className="w-56 h-3 bg-white/5 rounded-full mt-4 border-t border-white/10 shadow-lg"></div>
+  </div>
+);
 
-  if (!visited[type]) visited[type] = [];
+const renderQueue = () => (
+  <div className="flex flex-col items-center justify-center min-h-[400px] py-12 relative w-full">
+    
+    {/* 1. Main Queue Stage - Increased vertical padding (py-20) to prevent pointer clipping */}
+    <div className="relative flex items-center gap-6 bg-white/5 border-y-2 border-white/5 px-16 py-24 rounded-[3rem] backdrop-blur-sm min-w-full lg:min-w-[600px] overflow-x-auto scrollbar-hide shadow-inner">
+      
+      {/* Dynamic Background Labels */}
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-emerald-500/20 rotate-90 tracking-[0.5em] uppercase pointer-events-none">INLET</div>
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-yellow-500/20 -rotate-90 tracking-[0.5em] uppercase pointer-events-none">OUTLET</div>
 
-  visited[type][2] = true; // Visualization
+      {structure.map((item, index) => {
+        const isFront = index === frontIndex;
+        const isRear = index === rearIndex;
 
-  localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
-}, [type]);
+        return (
+          <div key={index} className="relative flex flex-col items-center shrink-0 group">
+            
+            {/* FRONT POINTER (Top Track) */}
+            <div className="absolute -top-16 h-16 flex flex-col items-center justify-end pb-2">
+              {isFront && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center"
+                >
+                  <span className="bg-emerald-500 text-white text-[9px] font-black px-2.5 py-1 rounded shadow-[0_0_15px_rgba(16,185,129,0.4)] animate-pulse mb-1">
+                    FRONT
+                  </span>
+                  <div className="w-[2px] h-3 bg-emerald-500/40"></div>
+                </motion.div>
+              )}
+            </div>
 
-  return (
-    <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-6 py-10">
-      {/* Heading */}
-      <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 mt-20">
-        {type.toUpperCase()} Visualizer
-      </h2>
-
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* LEFT PANEL */}
-        <div className="w-full md:w-1/3 bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg">
-          <h3 className="text-xl mb-4 font-semibold">Operations</h3>
-
-          <div className="relative mb-4">
-            <button
-              onClick={() => setOpen(!open)}
-              className="w-full p-2 bg-gray-800 text-white rounded flex justify-between"
+            {/* THE DATA NODE */}
+            <motion.div
+              initial={{ scale: 0, x: 40 }}
+              animate={{ 
+                scale: isFront || isRear ? 1.1 : 1, 
+                x: 0 
+              }}
+              transition={{ duration: 0.4, type: "spring", stiffness: 150 }}
+              className={`
+                w-16 h-16 flex items-center justify-center rounded-2xl text-xl font-black transition-all duration-500 border-2 z-10
+                ${isFront 
+                  ? "bg-emerald-500 border-emerald-300 text-black shadow-[0_0_25px_rgba(16,185,129,0.4)]" 
+                  : isRear 
+                  ? "bg-yellow-500 border-yellow-300 text-black shadow-[0_0_25px_rgba(234,179,8,0.4)]" 
+                  : "bg-gray-800 border-white/5 text-gray-500"}
+              `}
             >
-              {selectedOp || "Select Operation"}
-              <span>
-                <img width={40} height={40} src="/dropdown.png" alt="" />
-              </span>
-            </button>
+              {item}
+            </motion.div>
 
-            {open && (
-              <div className="absolute w-full bg-gray-800 mt-2 rounded shadow-lg z-10">
-                {operations.map((op, i) => (
-                  <div
-                    key={i}
-                    onClick={() => {
-                      setSelectedOp(op);
-                      setOpen(false);
-                    }}
-                    className="p-2 hover:bg-purple-500 cursor-pointer"
-                  >
-                    {op}
-                  </div>
-                ))}
-              </div>
+            {/* REAR POINTER (Bottom Track) */}
+            <div className="absolute -bottom-16 h-16 flex flex-col items-center justify-start pt-2">
+              {isRear && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center"
+                >
+                  <div className="w-[2px] h-3 bg-yellow-500/40 mb-1"></div>
+                  <span className="bg-yellow-500 text-black text-[9px] font-black px-2.5 py-1 rounded shadow-[0_0_15px_rgba(234,179,8,0.4)]">
+                    REAR
+                  </span>
+                </motion.div>
+              )}
+            </div>
+
+            {/* INDEX LABEL */}
+            <div className="absolute -bottom-6 opacity-30 group-hover:opacity-100 transition-opacity">
+               <span className="text-[9px] font-mono font-bold text-gray-400">[{index}]</span>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* 2. Empty State Styling */}
+      {structure.length === 0 && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="w-full flex flex-col items-center py-10 opacity-20"
+        >
+          <div className="text-4xl font-black italic tracking-tighter text-gray-500">QUEUE EMPTY</div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Waiting for first element...</p>
+        </motion.div>
+      )}
+    </div>
+
+    {/* Footer Detail */}
+    <div className="w-1/2 h-1 bg-white/5 blur-sm mt-8 rounded-full"></div>
+  </div>
+);
+
+const renderArray = () => (
+  /* Removed extra wrapper to prevent scroll issues */
+  <div className="flex gap-4 items-end px-10"> {/* Added horizontal padding for scroll end-room */}
+    {structure.map((item, index) => {
+      const isMid = mid === index;
+      const isHighlit = highlightIndex === index;
+      const isLow = low === index;
+      const isHigh = high === index;
+
+      return (
+        <div
+          key={index}
+          className="relative flex flex-col items-center shrink-0 group" /* shrink-0 is vital */
+        >
+          {/* 1. TOP POINTERS - Stacking logic for multiple pointers on one index */}
+          <div className="absolute -top-16 flex flex-col items-center justify-end gap-1 min-h-[60px] w-20">
+            {isLow && (
+              <span className="bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded shadow-lg shadow-emerald-500/20 animate-bounce">
+                LOW
+              </span>
+            )}
+            {isMid && (
+              <span className="bg-yellow-500 text-black text-[9px] font-black px-2 py-0.5 rounded shadow-lg shadow-yellow-500/20 animate-bounce">
+                MID
+              </span>
+            )}
+            {isHigh && (
+              <span className="bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded shadow-lg shadow-red-500/20 animate-bounce">
+                HIGH
+              </span>
+            )}
+            {isHighlit && !isMid && (
+              <div className="text-purple-400 text-xl animate-pulse leading-none">↓</div>
             )}
           </div>
 
-          {/* Input */}
-          {selectedOp !== "Pop" &&
-            selectedOp !== "Dequeue" &&
-            selectedOp !== "Delete" &&
-            selectedOp !== "Delete Head" &&
-            selectedOp !== "Delete Tail" &&
-            selectedOp !== "Traverse" &&
-            selectedOp !== "Top" && (
-              <input
-                type="number"
-                placeholder="Enter value"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                className="w-full p-2 mb-4 text-white bg-gray-800 rounded"
-              />
-            )}
-
-          {/* Buttons */}
-          <button
-            onClick={handleSimulate}
-            className="w-full bg-linear-to-r from-purple-500 to-indigo-500 p-2 rounded mb-3"
+          {/* 2. THE ARRAY BOX */}
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ 
+              scale: isMid || isHighlit ? 1.1 : 1, 
+              opacity: 1, 
+              y: 0 
+            }}
+            transition={{ duration: 0.4 }}
+            className={`
+              w-16 h-16 flex items-center justify-center rounded-2xl text-xl font-black transition-all duration-300 border-2
+              ${
+                isMid || isHighlit
+                  ? "bg-yellow-500 border-yellow-300 text-black shadow-[0_0_25px_rgba(234,179,8,0.4)] z-10"
+                  : "bg-gray-900/40 border-white/10 text-gray-300 backdrop-blur-md"
+              }
+            `}
           >
-            Simulate ▶
-          </button>
+            {item}
+          </motion.div>
 
-          <button
-            disabled={!selectedOp}
-            onClick={() => setMode(mode === "visual" ? "code" : "visual")}
-            className="w-full bg-gray-700 p-2 rounded disabled:opacity-50"
+          {/* 3. INDEX LABEL */}
+          <div className="mt-4 flex flex-col items-center opacity-40 group-hover:opacity-100 transition-opacity">
+            <div className="h-2 w-px bg-gray-600 mb-1"></div>
+            <span className="text-[9px] font-mono font-bold text-gray-400 tracking-tighter">
+              IDX {index}
+            </span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+);
+
+const renderLinkedList = () => (
+  <div className="flex items-center gap-2 py-24 min-h-[400px] w-full overflow-x-auto scrollbar-hide px-20">
+    {structure.map((item, index) => {
+      const isHead = index === 0;
+      const isTail = index === structure.length - 1;
+      const isTemp = tempIndex === index;
+      const isHighlight = llHighlightIndex === index;
+
+      return (
+        <div key={index} className="relative flex items-center shrink-0">
+          
+          {/* 1. POINTER TRACKS (Head, Temp, Tail) */}
+          <div className="absolute inset-0 flex flex-col items-center pointer-events-none">
+            
+            {/* TOP TRACK (Head & Temp) */}
+            <div className="absolute -top-20 h-20 flex flex-col items-center justify-end pb-2">
+              {isHead && (
+                <span className="bg-purple-600 text-white text-[9px] font-black px-2 py-0.5 rounded shadow-[0_0_15px_rgba(147,51,234,0.3)] mb-1 uppercase tracking-tighter">
+                  HEAD
+                </span>
+              )}
+              {isTemp && (
+                <motion.span 
+                  animate={{ y: [0, -4, 0], scale: [1, 1.05, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="bg-yellow-500 text-black text-[9px] font-black px-2 py-0.5 rounded shadow-[0_0_15px_rgba(234,179,8,0.4)] uppercase tracking-tighter"
+                >
+                  TEMP
+                </motion.span>
+              )}
+              {(isHead || isTemp) && <div className="w-[2px] h-4 bg-gray-700 mt-1"></div>}
+            </div>
+
+            {/* BOTTOM TRACK (Tail & Index) */}
+            <div className="absolute -bottom-16 h-16 flex flex-col items-center justify-start pt-2">
+              {isTail && (
+                <>
+                  <div className="w-[2px] h-4 bg-gray-700 mb-1"></div>
+                  <span className="bg-pink-500/10 text-pink-400 border border-pink-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-tighter">
+                    TAIL
+                  </span>
+                </>
+              )}
+              <span className="mt-2 text-[8px] font-mono text-gray-700 font-bold">[{index}]</span>
+            </div>
+          </div>
+
+          {/* 2. THE NODE MODULE */}
+          <motion.div
+            initial={{ scale: 0, x: -30 }}
+            animate={{ 
+              scale: isHighlight ? 1.1 : 1, 
+              x: 0,
+              boxShadow: isHighlight ? "0 0 30px rgba(234,179,8,0.3)" : "0 0 0px rgba(0,0,0,0)"
+            }}
+            transition={{ duration: 0.4, type: "spring" }}
+            className={`
+              relative w-20 h-16 flex items-center justify-center rounded-2xl text-xl font-black transition-all duration-500 border-2 z-10
+              ${isHighlight 
+                ? "bg-yellow-500 border-yellow-300 text-black shadow-2xl" 
+                : "bg-gray-900/60 border-white/10 text-white backdrop-blur-md hover:border-pink-500/40"}
+            `}
           >
-            {mode === "visual" ? "View Code 💻" : "Back to Simulation 🔙"}
-          </button>
+            {/* Visual Partition */}
+            <div className="absolute left-0 w-1.5 h-8 bg-pink-500/20 rounded-r-full"></div>
+            {item}
+            {/* Pointer field indicator */}
+            <div className="absolute right-0 w-4 h-full border-l border-white/5 bg-white/5 rounded-r-2xl"></div>
+          </motion.div>
+
+          {/* 3. THE CONNECTOR (Next Pointer) */}
+          {!isTail ? (
+            <div className="flex items-center px-1">
+              <div className="w-10 h-[2px] bg-gradient-to-r from-pink-500/40 via-pink-500/20 to-gray-800 rounded-full"></div>
+              <div className="w-2 h-2 rounded-full bg-gray-800 border border-pink-500/40 -ml-1"></div>
+            </div>
+          ) : (
+            <div className="flex items-center px-1">
+              <div className="w-8 h-[2px] bg-gradient-to-r from-pink-500/40 to-transparent opacity-50"></div>
+            </div>
+          )}
+        </div>
+      );
+    })}
+
+    {/* 4. TERMINATOR (NULL) */}
+    {structure.length > 0 && (
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex flex-col items-center ml-2 shrink-0"
+      >
+        <div className="w-12 h-12 rounded-full border-2 border-dashed border-gray-800 flex items-center justify-center bg-gray-900/20 shadow-inner">
+          <span className="text-[9px] font-black text-gray-700 tracking-widest uppercase">Null</span>
+        </div>
+      </motion.div>
+    )}
+
+    {/* Empty State */}
+    {structure.length === 0 && (
+      <div className="w-full text-center text-gray-700 font-black italic tracking-[0.3em] uppercase opacity-40">
+        Empty Chain
+      </div>
+    )}
+  </div>
+);
+
+
+  useEffect(() => {
+    const visited =
+      JSON.parse(localStorage.getItem(`visitedSteps_${userId}`)) || {};
+
+    if (!visited[type]) visited[type] = [];
+
+    visited[type][2] = true; // Visualization
+
+    localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
+  }, [type]);
+
+  return (
+    <div className="min-h-screen bg-gray-950 text-white px-6 py-12 font-sans relative overflow-hidden">
+      <Navbar user={user} />
+      {/* Background Decorative Glows */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+      {/* Header */}
+      <div className="relative z-10 max-w-7xl mx-auto text-center mb-12 mt-16">
+        <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-400 to-gray-600">
+          {type} <span className="text-purple-500">Visualizer</span>
+        </h2>
+        <div className="h-1 w-24 bg-purple-600 mx-auto mt-4 rounded-full shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+        {/* LEFT PANEL: OPERATIONS CONSOLE */}
+        <div className="w-full lg:w-80 shrink-0">
+          <div className="bg-gray-900/50 border border-white/10 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl sticky top-24">
+            <div className="flex items-center gap-2 mb-8">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+                Control Terminal
+              </h3>
+            </div>
+
+            {/* Dropdown Selector */}
+            <div className="relative mb-6">
+              <label className="text-[10px] font-bold text-purple-400 uppercase tracking-widest ml-2 mb-2 block">
+                Method
+              </label>
+              <button
+                onClick={() => setOpen(!open)}
+                className="w-full p-4 bg-black/40 border border-white/10 text-gray-200 rounded-2xl flex justify-between items-center hover:border-purple-500/50 transition-all font-bold text-sm shadow-inner"
+              >
+                {selectedOp || "Select Operation"}
+                <img
+                  width={20}
+                  src="/dropdown.png"
+                  alt=""
+                  className={`transition-transform duration-300 ${open ? "rotate-180" : ""} opacity-50`}
+                />
+              </button>
+
+              {open && (
+                <div className="absolute w-full bg-gray-900 border border-white/10 mt-3 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-2xl">
+                  {operations.map((op, i) => (
+                    <div
+                      key={i}
+                      onClick={() => {
+                        setSelectedOp(op);
+                        setOpen(false);
+                      }}
+                      className="p-4 text-sm font-medium hover:bg-purple-600 hover:text-white cursor-pointer transition-colors border-b border-white/5 last:border-0"
+                    >
+                      {op}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Value Input Logic - EXACT SAME CONDITIONALS */}
+            {selectedOp !== "Pop" &&
+              selectedOp !== "Dequeue" &&
+              selectedOp !== "Delete" &&
+              selectedOp !== "Delete Head" &&
+              selectedOp !== "Delete Tail" &&
+              selectedOp !== "Traverse" &&
+              selectedOp !== "Top" && (
+                <div className="mb-6 animate-fadeIn">
+                  <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-2 mb-2 block">
+                    Data Input
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Value..."
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    className="w-full p-4 text-white bg-black/40 border border-white/10 rounded-2xl outline-none focus:border-blue-500/50 transition-all font-mono"
+                  />
+                </div>
+              )}
+
+            {/* Buttons */}
+            <div className="space-y-4">
+              <button
+                onClick={handleSimulate}
+                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 p-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-purple-900/20 active:scale-95 transition-all"
+              >
+                Execute Simulation ▶
+              </button>
+
+              <button
+                disabled={!selectedOp}
+                onClick={() => setMode(mode === "visual" ? "code" : "visual")}
+                className="w-full bg-white/5 border border-white/10 hover:bg-white/10 p-4 rounded-2xl font-black text-xs uppercase tracking-widest disabled:opacity-30 transition-all flex items-center justify-center gap-2"
+              >
+                {mode === "visual"
+                  ? "View Implementation 💻"
+                  : "Back to Lab 🔙"}
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* RIGHT PANEL */}
-        <div className="flex-1 overflow-x-scroll bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center">
-          <pre className="text-sm text-green-400 m-auto">
+        {/* RIGHT PANEL: DISPLAY AREA */}
+        <div className="flex-1 min-h-[500px] bg-gray-900/40 border border-white/5 backdrop-blur-sm rounded-[2.5rem] p-8 flex flex-col relative shadow-inner overflow-hidden">
+          {/* Dynamic Status Bar */}
+          <div className="absolute top-0 left-0 w-full p-6 flex justify-between items-center pointer-events-none z-20">
+            <div className="flex gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/40"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/40"></div>
+            </div>
+            <span className="text-[10px] font-black text-gray-600 tracking-[0.3em] uppercase">
+              Output Stream
+            </span>
+          </div>
+
+          <div className="flex-1 flex flex-col mt-12 overflow-hidden">
             {mode === "visual" ? (
-              <div className="text-center">
-                <div className="flex gap-6 flex-wrap justify-center items-end">
-                  {/* TOP OPERATION DISPLAY */}
+              <div className="w-full h-full flex flex-col">
+                {/* ALERT & INFO MESSAGES */}
+                <div className="h-16 flex items-center justify-center mb-8 shrink-0">
                   {type === "stack" && selectedOp === "Top" && (
-                    <div className="mb-4 text-center text-lg text-yellow-400 font-semibold">
+                    <div className="px-6 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-yellow-400 font-bold animate-bounce">
                       {structure.length > 0
-                        ? `Top Element: ${structure[topIndex]}`
-                        : "Stack is Empty"}
+                        ? `Top: ${structure[topIndex]}`
+                        : "Empty Stack"}
                     </div>
                   )}
 
-                  {selectedOp === "Linear Search" && searchResult !== null && (
-                    <div className="mb-4 text-lg font-semibold text-center">
-                      {searchResult === -1 ? (
-                        <span className="text-red-400">Value Not Found ❌</span>
-                      ) : (
-                        <span className="text-green-400">
-                          Found at index: {searchResult} ✅
-                        </span>
-                      )}
+                  {searchResult !== null && (
+                    <div
+                      className={`px-6 py-2 rounded-full font-bold border animate-pulse ${
+                        searchResult === -1
+                          ? "bg-red-500/10 border-red-500/30 text-red-400"
+                          : "bg-green-500/10 border-green-500/30 text-green-400"
+                      }`}
+                    >
+                      {searchResult === -1
+                        ? "Search: Not Found ❌"
+                        : `Found at Index: ${searchResult} ✅`}
                     </div>
                   )}
 
                   {infoMessage && (
-                    <div className="mb-4 text-yellow-400 text-center font-semibold">
+                    <div className="px-6 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 font-bold tracking-tight">
                       {infoMessage}
                     </div>
                   )}
-                  {selectedOp === "Binary Search" && searchResult !== null && (
-                    <div className="mb-4 text-lg text-center">
-                      {searchResult === -1 ? (
-                        <span className="text-red-400">Not Found ❌</span>
-                      ) : (
-                        <span className="text-green-400">
-                          Found at index: {searchResult}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                </div>
 
-                  {type === "array" && renderArray()}
-                  {type === "stack" && renderStack()}
-                  {type === "queue" && renderQueue()}
-                  {type === "linkedlist" && renderLinkedList()}
+                {/* FIXED SCROLL AREA: Changed items-end to items-center and justify-center to justify-start */}
+                <div className="flex-1 overflow-x-auto pb-10 flex items-center scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent px-4">
+                  <div className="flex gap-6 items-end min-h-[250px] mx-auto min-w-max">
+                    {type === "array" && renderArray()}
+                    {type === "stack" && renderStack()}
+                    {type === "queue" && renderQueue()}
+                    {type === "linkedlist" && renderLinkedList()}
+                  </div>
                 </div>
               </div>
             ) : (
-              <div className="w-full">
-                {/* Language Toggle */}
-                <div className="flex gap-3 mb-4 justify-center">
+              <div className="w-full h-full flex flex-col overflow-hidden">
+                {/* Language Selector */}
+                <div className="flex gap-2 mb-6 self-center bg-black/40 p-1.5 rounded-2xl border border-white/5 shrink-0">
                   {["js", "cpp", "Java", "Python"].map((lang) => (
                     <button
                       key={lang}
                       onClick={() => setLanguage(lang)}
-                      className={`px-3 py-1 rounded capitalize ${
-                        language === lang ? "bg-black/10" : "bg-gray-700"
+                      className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                        language === lang
+                          ? "bg-purple-600 text-white shadow-lg"
+                          : "text-gray-500 hover:text-gray-300"
                       }`}
                     >
                       {lang}
@@ -605,12 +816,14 @@ const userId = user?.uid;
                 </div>
 
                 {/* Code Block */}
-                <pre className="bg-black/10 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
-                  {code}
-                </pre>
+                <div className="relative group flex-1 overflow-hidden">
+                  <pre className="h-full bg-black/60 text-green-400 p-8 rounded-2xl overflow-auto text-sm font-mono border border-white/10 leading-relaxed">
+                    {code}
+                  </pre>
+                </div>
               </div>
             )}
-          </pre>
+          </div>
         </div>
       </div>
     </div>

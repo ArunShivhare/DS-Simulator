@@ -31,7 +31,7 @@ const AppRoutes = ({ user }) => {
         path="/dashboard"
         element={
           <ProtectedRoute user={user}>
-            <Dashboard />
+            <Dashboard user={user} />
           </ProtectedRoute>
         }
       />
