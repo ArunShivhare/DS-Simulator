@@ -58,21 +58,23 @@ const Navbar = ({ user }) => {
                 )}
               </div>
               <div className="flex flex-col items-start leading-none">
-                {user.email === "simplesabanda07@gmail.com" && (
-                  <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest animate-pulse">
-                    Architect
-                  </span>
-                )}
                 <span className="text-xs font-bold text-gray-200 truncate max-w-[100px]">
                   {user.displayName || "User"}
                 </span>
               </div>
             </div>
 
+            {user.email === "simplesabanda07@gmail.com" && (
+              <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest px-3 py-3 animate-pulse bg-white/5 border border-white/10 rounded-2xl cursor-pointer">
+                <button onClick={() => navigate("/admin")}
+                  className="cursor-pointer" >Architect</button>
+              </span>
+            )}
+
             {/* Logout Button: Refined Ghost Style */}
             <button
               onClick={handleLogout}
-              className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-red-400 border border-red-500/20 rounded-xl hover:bg-red-500/10 transition-all active:scale-95 shadow-lg shadow-red-950/20"
+              className="px-1 py-3 text-[7px] md:px-4 md:py-2 md:text-[10px] font-black uppercase tracking-widest text-red-400 border border-red-500/20 rounded-xl hover:bg-red-500/10 transition-all active:scale-95 shadow-lg shadow-red-950/20"
             >
               Logout
             </button>
