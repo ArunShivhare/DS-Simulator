@@ -7,9 +7,11 @@ import { useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { useCallback } from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Quiz = () => {
   const { type } = useParams();
+  const navigate = useNavigate();
 
   const location = useLocation();
   const isAdminQuiz = location.pathname.includes("admin");
@@ -67,53 +69,53 @@ const Quiz = () => {
     }
   };
 
- const saveScore = async (finalScore) => {
-  const user = auth.currentUser;
-  if (!user) return;
+  const saveScore = async (finalScore) => {
+    const user = auth.currentUser;
+    if (!user) return;
 
-  try {
-    const baseUserData = {
-      name: user.displayName || "Anonymous",
-      email: user.email,
-    };
+    try {
+      const baseUserData = {
+        name: user.displayName || "Anonymous",
+        email: user.email,
+      };
 
-    if (isAdminQuiz) {
-      await setDoc(
-        doc(db, "users", user.uid),
-        {
-          ...baseUserData, // ✅ ADD THIS
-          attempts: {
-            [type]: {
-              [quizId]: {
+      if (isAdminQuiz) {
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            ...baseUserData, // ✅ ADD THIS
+            attempts: {
+              [type]: {
+                [quizId]: {
+                  score: finalScore,
+                  total: questions.length,
+                  timestamp: Date.now(),
+                },
+              },
+            },
+          },
+          { merge: true },
+        );
+      } else {
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            ...baseUserData, // ✅ ADD THIS
+            quizzes: {
+              [type]: {
                 score: finalScore,
                 total: questions.length,
                 timestamp: Date.now(),
               },
             },
           },
-        },
-        { merge: true }
-      );
-    } else {
-      await setDoc(
-        doc(db, "users", user.uid),
-        {
-          ...baseUserData, // ✅ ADD THIS
-          quizzes: {
-            [type]: {
-              score: finalScore,
-              total: questions.length,
-              timestamp: Date.now(),
-            },
-          },
-        },
-        { merge: true }
-      );
+          { merge: true },
+        );
+      }
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
   const fetchQuiz = useCallback(async () => {
     const snapshot = await getDocs(collection(db, "quizzes", type, "items"));
@@ -182,10 +184,58 @@ const Quiz = () => {
 
   if (isAdminQuiz && alreadyAttempted) {
     return (
-      <div className="text-center text-white p-10 min-h-screen flex items-center justify-center">
-        <h2 className="text-2xl text-red-400">
-          You already attempted this test ❌
-        </h2>
+      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-6 font-sans relative overflow-hidden">
+        {/* Background Decorative Glows */}
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-red-600/10 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-orange-600/5 blur-[120px] rounded-full"></div>
+
+        <div className="relative z-10 w-full max-w-md">
+          <div className="bg-gray-900/60 border border-red-500/20 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-2xl text-center relative overflow-hidden group">
+            {/* Warning Icon Section */}
+            <div className="mb-8 flex flex-col items-center">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-red-500/10 border-2 border-red-500/30 rounded-full flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(239,68,68,0.2)] animate-pulse">
+                  🚫
+                </div>
+              </div>
+
+              <h2 className="text-3xl font-black tracking-tighter uppercase italic text-red-400">
+                Access <span className="text-white">Denied</span>
+              </h2>
+              <div className="h-1 w-12 bg-red-600 mt-3 rounded-full opacity-50"></div>
+            </div>
+
+            {/* Message Body */}
+            <div className="space-y-4 mb-10">
+              <p className="text-gray-300 text-lg font-bold leading-tight">
+                Attempt Limit Reached ❌
+              </p>
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-[0.2em] leading-relaxed">
+                Our records show you have already <br />
+                completed this evaluation module.
+              </p>
+            </div>
+
+            {/* Action Button */}
+            <button
+              onClick={() => navigate("/progress")}
+              className="w-full py-4 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all active:scale-95 flex items-center justify-center gap-3 group"
+            >
+              <span className="group-hover:-translate-x-1 transition-transform">
+                ←
+              </span>
+              Return to Progress Page
+            </button>
+
+            {/* Terminal Detail */}
+            <div className="mt-8 flex items-center justify-center gap-2 opacity-20">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+              <p className="text-[8px] font-black uppercase tracking-widest text-gray-400">
+                Validation Error: 0xRE_ATTEMPT_LOCKED
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
