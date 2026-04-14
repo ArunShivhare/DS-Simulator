@@ -26,6 +26,7 @@ const Quiz = () => {
   const userId = user?.uid;
   const [quizId, setQuizId] = useState(null);
   const [alreadyAttempted, setAlreadyAttempted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(null);
 
   const checkAttempt = async () => {
     const user = auth.currentUser;
@@ -133,6 +134,7 @@ const Quiz = () => {
     if (isAdminQuiz) {
       setQuestions(adminQuestions); // 🔥 only admin quiz
       setQuizId(latestQuiz?.id);
+      setTimeLeft(latestQuiz?.timeLimit || 60); // default to 60 sec if not set
     } else {
       setQuestions(baseQuestions); // 🔥 only predefined
     }
@@ -153,31 +155,115 @@ const Quiz = () => {
     localStorage.setItem(`visitedSteps_${userId}`, JSON.stringify(visited));
   }, [type]);
 
+  useEffect(() => {
+    if (!timeLeft || showResult) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+
+          // 🔥 AUTO SUBMIT
+          saveScore(score);
+          setShowResult(true);
+
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, showResult]);
+
   if (questions.length === 0) {
     return <div className="text-white p-10">No questions found</div>;
   }
 
   if (showResult) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
-        <h1 className="text-3xl mb-4">Quiz Completed 🎉</h1>
+      <div className="h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-6 font-sans overflow-hidden">
+        {/* Consistent Background Glows */}
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
+        </div>
 
-        <p className="text-xl mb-6">
-          Your Score: {score} / {questions.length}
-        </p>
+        <div className="relative z-10 w-full max-w-lg text-center">
+          {/* Decorative Icon */}
+          <div className="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 border border-white/10 shadow-2xl">
+            <span className="text-4xl">
+              {score === questions.length
+                ? "👑"
+                : score >= questions.length / 2
+                  ? "⭐"
+                  : "🎯"}
+            </span>
+          </div>
 
-        {/* FEEDBACK */}
-        {score === questions.length && (
-          <p className="text-green-400">Perfect Score 🔥</p>
-        )}
+          {/* Title Section */}
+          <h1 className="text-4xl font-black uppercase italic tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500 mb-2">
+            Mission Briefing
+          </h1>
+          <p className="text-gray-500 font-mono text-[10px] uppercase tracking-[0.4em] mb-8">
+            Challenge Results Compiled
+          </p>
 
-        {score >= questions.length / 2 && score < questions.length && (
-          <p className="text-yellow-400">Good Job 👍</p>
-        )}
+          {/* Results Card */}
+          <div className="relative group mb-8">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/30 to-blue-600/30 rounded-[2rem] blur-md"></div>
 
-        {score < questions.length / 2 && (
-          <p className="text-red-400">Keep Practicing 💪</p>
-        )}
+            <div className="relative bg-black/60 border border-white/10 rounded-[2rem] p-8 backdrop-blur-2xl">
+              <div className="flex flex-col items-center">
+                <span className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1">
+                  Final Score
+                </span>
+                <div className="text-7xl font-black tracking-tighter text-white flex items-baseline">
+                  {score}
+                  <span className="text-2xl text-gray-600 ml-2">
+                    / {questions.length}
+                  </span>
+                </div>
+
+                {/* Feedback Tag */}
+                <div className="mt-6">
+                  {score === questions.length && (
+                    <span className="px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/50 text-green-400 text-xs font-bold uppercase tracking-widest">
+                      Perfect Accuracy 🔥
+                    </span>
+                  )}
+                  {score >= questions.length / 2 &&
+                    score < questions.length && (
+                      <span className="px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/50 text-yellow-400 text-xs font-bold uppercase tracking-widest">
+                        Elite Performance 👍
+                      </span>
+                    )}
+                  {score < questions.length / 2 && (
+                    <span className="px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/50 text-red-400 text-xs font-bold uppercase tracking-widest">
+                      System Reboot Required 💪
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-8 py-3 bg-white text-black rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-transform active:scale-95"
+            >
+              Retry Mission
+            </button>
+            <button
+              onClick={() => (window.location.href = "/")}
+              className="px-8 py-3 bg-white/5 border border-white/10 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-transform active:scale-95"
+            >
+              Exit
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -241,78 +327,79 @@ const Quiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white flex flex-col items-center justify-center p-6 py-24 font-sans">
-      {/* Decorative Background Glows */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
-        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
+    <div className="h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-4 font-sans overflow-hidden">
+      {/* Static Background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
       </div>
 
-      <div className="relative z-10 w-full max-w-2xl">
-        {/* Header Section */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400 mb-2">
+      {/* Compact Top Bar */}
+      <div className="w-full max-w-xl flex justify-between items-center mb-4 z-20">
+        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
+          Question {current + 1} / {questions.length}
+        </span>
+        <div
+          className={`px-3 py-1 rounded-lg border text-xs font-mono ${timeLeft < 10 ? "bg-red-500/10 border-red-500/50 text-red-400 animate-pulse" : "bg-white/5 border-white/10 text-gray-400"}`}
+        >
+          {timeLeft}s
+        </div>
+      </div>
+
+      <div className="relative z-10 w-full max-w-xl">
+        {/* Minimal Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-black uppercase italic tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">
             {type} Challenge
           </h1>
-          <div className="flex items-center justify-center gap-4">
-            <div className="h-px w-12 bg-gray-700"></div>
-            <span className="text-gray-500 font-mono text-sm uppercase tracking-widest">
-              Question {current + 1} of {questions.length}
-            </span>
-            <div className="h-px w-12 bg-gray-700"></div>
-          </div>
         </div>
 
-        {/* Quiz Card */}
-        <div className="bg-gray-900/60 border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl backdrop-blur-md">
-          {/* Question Text */}
-          <h2 className="text-2xl md:text-3xl font-bold leading-tight mb-10 text-gray-100">
-            <span className="text-purple-500 font-black mr-2 opacity-50">
-              #
-            </span>
-            {questions[current].question}
-          </h2>
+        {/* Scaled Down Quiz Card */}
+        <div className="relative group">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-[2rem] blur-sm"></div>
 
-          {/* Options Grid */}
-          <div className="grid gap-4">
-            {questions[current].options.map((opt, i) => (
-              <button
-                key={i}
-                onClick={() => handleAnswer(opt)}
-                className="group relative flex items-center w-full p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-500/50 hover:bg-purple-500/5 transition-all duration-300 text-left active:scale-[0.98]"
-              >
-                {/* Index Badge */}
-                <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-800 text-gray-400 text-xs font-bold mr-4 group-hover:bg-purple-500 group-hover:text-white transition-colors">
-                  {String.fromCharCode(65 + i)}
-                </span>
+          <div className="relative bg-black/60 border border-white/10 rounded-[2rem] p-6 md:p-8 backdrop-blur-xl shadow-2xl">
+            {/* Question - Clamped text to prevent overflow */}
+            <h2 className="text-xl md:text-2xl font-bold leading-tight text-white mb-6 line-clamp-3">
+              <span className="text-purple-500 mr-2 opacity-50">Q.</span>
+              {questions[current].question}
+            </h2>
 
-                {/* Option Text */}
-                <span className="text-lg font-medium text-gray-300 group-hover:text-white transition-colors">
-                  {opt}
-                </span>
+            {/* Options Grid - Denser layout */}
+            <div className="grid gap-2.5">
+              {questions[current].options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleAnswer(opt)}
+                  className="group/opt relative flex items-center w-full p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-purple-500/40 hover:bg-white/[0.06] transition-all duration-200 text-left active:scale-[0.98]"
+                >
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 text-gray-500 font-mono text-xs font-bold mr-3 group-hover/opt:bg-purple-600 group-hover/opt:text-white transition-all">
+                    {String.fromCharCode(65 + i)}
+                  </div>
+                  <span className="text-base font-medium text-gray-300 group-hover/opt:text-white transition-colors">
+                    {opt}
+                  </span>
+                </button>
+              ))}
+            </div>
 
-                {/* Hover Glow Effect */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 bg-gradient-to-r from-purple-500/10 to-transparent pointer-events-none transition-opacity"></div>
-              </button>
-            ))}
-          </div>
-
-          {/* Progress Footer */}
-          <div className="mt-12 pt-8 border-t border-white/5">
-            <div className="w-full bg-black/40 h-2 rounded-full overflow-hidden p-0.5">
-              <div
-                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(168,85,247,0.4)]"
-                style={{
-                  width: `${((current + 1) / questions.length) * 100}%`,
-                }}
-              ></div>
+            {/* Minimal Progress Bar */}
+            <div className="mt-8">
+              <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500 shadow-[0_0_8px_rgba(168,85,247,0.4)]"
+                  style={{
+                    width: `${((current + 1) / questions.length) * 100}%`,
+                  }}
+                ></div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Exit Hint */}
-        <p className="text-center mt-8 text-gray-600 text-sm font-medium uppercase tracking-widest italic opacity-50">
-          Select an answer to proceed automatically
+        {/* Compact Footer Hint */}
+        <p className="text-center mt-6 text-gray-600 text-[9px] font-black uppercase tracking-[0.5em] opacity-40">
+          Click to Advance
         </p>
       </div>
     </div>

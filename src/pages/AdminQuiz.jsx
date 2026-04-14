@@ -13,6 +13,7 @@ const AdminQuiz = () => {
   const [options, setOptions] = useState(["", "", "", ""]);
   const [answer, setAnswer] = useState("");
   const [questionsList, setQuestionsList] = useState([]);
+  const [timeLimit, setTimeLimit] = useState(60); // default 60 sec
 
   if (!user || user.email !== ADMIN_EMAIL) {
     return <div className="text-white p-10 text-center">Access Denied ❌</div>;
@@ -48,6 +49,7 @@ const AdminQuiz = () => {
       await addDoc(collection(db, "quizzes", type, "items"), {
         questions: questionsList,
         createdAt: Date.now(),
+        timeLimit,
       });
 
       alert("Quiz Published 🚀");
@@ -109,6 +111,18 @@ const AdminQuiz = () => {
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   className="w-full p-4 rounded-2xl bg-black/40 border border-white/10 focus:border-emerald-500/50 transition-all outline-none placeholder:text-gray-700"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase font-black tracking-widest text-emerald-500 ml-2 mb-2 block">
+                  Time Limit (seconds)
+                </label>
+                <input
+                  type="number"
+                  value={timeLimit}
+                  onChange={(e) => setTimeLimit(Number(e.target.value))}
+                  className="w-full p-4 rounded-2xl bg-black/40 border border-white/10 outline-none"
                 />
               </div>
 
