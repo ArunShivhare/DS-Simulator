@@ -141,6 +141,28 @@ const Quiz = () => {
   }, [type]);
 
   useEffect(() => {
+    const handleSecurityBreach = () => {
+      if (
+        document.visibilityState === "hidden" &&
+        !showResult &&
+        questions.length > 0
+      ) {
+        saveScore(score);
+        setShowResult(true);
+        alert(
+          "Security Violation: Tab switching is not allowed. Quiz submitted.",
+        );
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleSecurityBreach);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleSecurityBreach);
+    };
+  }, [score, showResult, questions.length]);
+
+  useEffect(() => {
     fetchQuiz();
   }, [fetchQuiz]);
 
