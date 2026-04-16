@@ -28,6 +28,20 @@ const Quiz = () => {
   const [alreadyAttempted, setAlreadyAttempted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
 
+  {
+    /* 1. Calculate the time units */
+  }
+  const hours = Math.floor(timeLeft / 3600);
+  const minutes = Math.floor((timeLeft % 3600) / 60);
+  const seconds = timeLeft % 60;
+
+  {
+    /* 2. Format as 00:00:00 */
+  }
+  const formattedTime = [hours, minutes, seconds]
+    .map((v) => v.toString().padStart(2, "0"))
+    .join(":");
+
   const checkAttempt = async () => {
     const user = auth.currentUser;
     if (!user || !quizId) return;
@@ -364,7 +378,7 @@ const Quiz = () => {
         <div
           className={`px-3 py-1 rounded-lg border text-xs font-mono ${timeLeft < 10 ? "bg-red-500/10 border-red-500/50 text-red-400 animate-pulse" : "bg-white/5 border-white/10 text-gray-400"}`}
         >
-          {timeLeft}s
+           {formattedTime}
         </div>
       </div>
 
