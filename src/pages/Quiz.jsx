@@ -28,6 +28,10 @@ const Quiz = () => {
   const [alreadyAttempted, setAlreadyAttempted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
 
+  const [answers, setAnswers] = useState({});
+  const [marked, setMarked] = useState({});
+  const [visited, setVisited] = useState({});
+
   {
     /* 1. Calculate the time units */
   }
@@ -65,23 +69,29 @@ const Quiz = () => {
   }, [quizId]);
 
   const handleAnswer = (selected) => {
-    const isCorrect = selected === questions[current].answer;
+    setAnswers((prev) => ({
+      ...prev,
+      [current]: selected,
+    }));
 
-    let newScore = score;
+    setVisited((prev) => ({
+      ...prev,
+      [current]: true,
+    }));
+  };
 
-    if (isCorrect) {
-      newScore = score + 1;
-      setScore(newScore);
-    }
+  const calculateScore = () => {
+    let newScore = 0;
 
-    const next = current + 1;
+    questions.forEach((q, index) => {
+      if (answers[index] === q.answer) {
+        newScore++;
+      }
+    });
 
-    if (next < questions.length) {
-      setCurrent(next);
-    } else {
-      saveScore(newScore); // ✅ PASS CORRECT VALUE
-      setShowResult(true);
-    }
+    setScore(newScore);
+    saveScore(newScore);
+    setShowResult(true);
   };
 
   const saveScore = async (finalScore) => {
@@ -154,27 +164,46 @@ const Quiz = () => {
     }
   }, [type]);
 
-  useEffect(() => {
-    const handleSecurityBreach = () => {
-      if (
-        document.visibilityState === "hidden" &&
-        !showResult &&
-        questions.length > 0
-      ) {
-        saveScore(score);
-        setShowResult(true);
-        alert(
-          "Security Violation: Tab switching is not allowed. Quiz submitted.",
-        );
-      }
-    };
+ useEffect(() => {
+  const handleSecurityBreach = (reason) => {
+    if (!showResult && questions.length > 0) {
+      saveScore(score);
+      setShowResult(true);
+      alert(`Security Violation: ${reason}. Quiz submitted.`);
+    }
+  };
 
-    document.addEventListener("visibilitychange", handleSecurityBreach);
+  // 1. Detect Tab Switching (Visibility)
+  const handleVisibility = () => {
+    if (document.visibilityState === "hidden") {
+      handleSecurityBreach("Tab switching or minimizing");
+    }
+  };
 
-    return () => {
-      document.removeEventListener("visibilitychange", handleSecurityBreach);
-    };
-  }, [score, showResult, questions.length]);
+  // 2. Detect Focus Loss (Clicking outside, opening Copilot/Sidebars)
+  const handleBlur = () => {
+    handleSecurityBreach("Window focus lost (possible split-screen or external tool)");
+  };
+
+  // 3. Detect Resize (Snapping windows or opening side-panels)
+  const handleResize = () => {
+    // Optional: Only trigger if the width becomes too small (e.g., < 600px)
+    if (window.innerWidth > 600) {
+      handleSecurityBreach("Screen resized or split-screen activated");
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibility);
+  window.addEventListener("blur", handleBlur);
+  window.addEventListener("resize", handleResize);
+
+  return () => {
+    document.removeEventListener("visibilitychange", handleVisibility);
+    window.removeEventListener("blur", handleBlur);
+    window.removeEventListener("resize", handleResize);
+  };
+}, [score, showResult, questions.length]);
+
 
   useEffect(() => {
     fetchQuiz();
@@ -363,67 +392,187 @@ const Quiz = () => {
   }
 
   return (
-    <div className="h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-4 font-sans overflow-hidden">
+    <div className="min-h-screen bg-[#050505] text-white flex flex-col items-center p-4 md:p-8 font-sans">
       {/* Static Background */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
       </div>
 
-      {/* Compact Top Bar */}
-      <div className="w-full max-w-xl flex justify-between items-center mb-4 z-20 mt-20">
-        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
-          Question {current + 1} / {questions.length}
-        </span>
-        <div
-          className={`px-3 py-1 rounded-lg border text-xs font-mono ${timeLeft < 10 ? "bg-red-500/10 border-red-500/50 text-red-400 animate-pulse" : "bg-white/5 border-white/10 text-gray-400"}`}
-        >
-           {formattedTime}
-        </div>
-      </div>
+      <div className="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 gap-12 mt-24">
+        {/* Left Column: Stats & Grid */}
+        <div className="lg:col-span-4 order-2 lg:order-1 mt-18">
+          <div className="relative group">
+            {/* Subtle outer glow to match the right side */}
+            <div className="absolute -inset-0.5 bg-gradient-to-b from-white/10 to-transparent rounded-[2rem] blur-sm"></div>
 
-      <div className="relative z-10 w-full max-w-xl">
-        {/* Minimal Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-black uppercase italic tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">
-            {type} Challenge
-          </h1>
-        </div>
+            <div className="relative bg-black/40 border border-white/10 rounded-[2rem] p-6 backdrop-blur-2xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
+                  Neural Map
+                </h3>
+                <div className="flex gap-1">
+                  <div className="w-1 h-1 rounded-full bg-purple-500 animate-pulse"></div>
+                  <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse delay-75"></div>
+                </div>
+              </div>
 
-        {/* Scaled Down Quiz Card */}
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-[2rem] blur-sm"></div>
+              {/* Grid with glass tiles */}
+              <div className="grid grid-cols-5 gap-3">
+                {questions.map((_, index) => {
+                  const isActive = current === index;
+                  const isMarked = marked[index];
+                  const isAnswered = answers[index];
 
-          <div className="relative bg-black/60 border border-white/10 rounded-[2rem] p-6 md:p-8 backdrop-blur-xl shadow-2xl">
-            {/* Question - Clamped text to prevent overflow */}
-            <h2 className="text-xl md:text-2xl font-bold leading-tight text-white mb-6 line-clamp-3">
-              <span className="text-purple-500 mr-2 opacity-50">Q.</span>
-              {questions[current].question}
-            </h2>
+                  let stateStyles =
+                    "border-white/5 bg-white/[0.03] text-gray-500";
+                  if (isMarked)
+                    stateStyles =
+                      "border-yellow-500/50 bg-yellow-500/10 text-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.1)]";
+                  else if (isAnswered)
+                    stateStyles =
+                      "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.1)]";
 
-            {/* Options Grid - Denser layout */}
-            <div className="grid gap-2.5">
-              {questions[current].options.map((opt, i) => (
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setCurrent(index)}
+                      className={`relative w-full aspect-square rounded-xl flex items-center justify-center text-[11px] font-mono transition-all duration-300 border ${stateStyles} ${
+                        isActive
+                          ? "ring-1 ring-purple-500 border-purple-500/50 scale-110 z-10 bg-white/10 text-white"
+                          : "hover:bg-white/10 hover:border-white/20"
+                      }`}
+                    >
+                      {index + 1}
+                      {isActive && (
+                        <div className="absolute -bottom-1 w-1 h-1 bg-purple-500 rounded-full shadow-[0_0_5px_#a855f7]"></div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Sleeker Submit Button */}
+              <div className="mt-8 pt-6 border-t border-white/5">
                 <button
-                  key={i}
-                  onClick={() => handleAnswer(opt)}
-                  className="group/opt relative flex items-center w-full p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-purple-500/40 hover:bg-white/[0.06] transition-all duration-200 text-left active:scale-[0.98]"
+                  onClick={calculateScore}
+                  className="group/btn relative w-full overflow-hidden rounded-xl p-[1px] transition-all active:scale-[0.98]"
                 >
-                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 text-gray-500 font-mono text-xs font-bold mr-3 group-hover/opt:bg-purple-600 group-hover/opt:text-white transition-all">
-                    {String.fromCharCode(65 + i)}
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 transition-all group-hover/btn:opacity-90"></div>
+                  <div className="relative bg-black/20 backdrop-blur-md py-3 rounded-[11px] flex items-center justify-center gap-2 transition-all group-hover/btn:bg-transparent">
+                    <span className="text-xs font-black uppercase tracking-widest text-emerald-50">
+                      Terminate Session
+                    </span>
+                    <svg
+                      className="w-4 h-4 text-emerald-400 group-hover/btn:translate-x-1 transition-transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
+                    </svg>
                   </div>
-                  <span className="text-base font-medium text-gray-300 group-hover/opt:text-white transition-colors">
-                    {opt}
-                  </span>
                 </button>
-              ))}
+              </div>
             </div>
+          </div>
+        </div>
 
-            {/* Minimal Progress Bar */}
-            <div className="mt-8">
-              <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+        {/* Right Column: Quiz Card */}
+        <div className="lg:col-span-8 order-1 lg:order-2">
+          {/* Header Info */}
+          <div className="flex justify-between items-end mb-4 px-2">
+            <div>
+              <h1 className="text-2xl font-black uppercase italic tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">
+                {type} Challenge
+              </h1>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
+                Progress: {current + 1} / {questions.length}
+              </span>
+            </div>
+            <div
+              className={`px-4 py-2 rounded-xl border text-sm font-mono transition-all ${
+                timeLeft < 10
+                  ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse"
+                  : "bg-white/5 border-white/10 text-gray-400"
+              }`}
+            >
+              {formattedTime}
+            </div>
+          </div>
+
+          <div className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-[2rem] blur-sm"></div>
+            <div className="relative bg-black/60 border border-white/10 rounded-[2rem] p-6 md:p-10 backdrop-blur-xl shadow-2xl">
+              <h2 className="text-xl md:text-2xl font-bold leading-tight text-white mb-8 min-h-[2rem]">
+                <span className="text-purple-500 mr-2 opacity-50">Q.</span>
+                {questions[current].question}
+              </h2>
+
+              <div className="grid gap-3">
+                {questions[current].options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleAnswer(opt)}
+                    className={`group/opt relative flex items-center w-full p-4 rounded-xl transition-all duration-200 text-left active:scale-[0.99] border ${
+                      answers[current] === opt
+                        ? "bg-purple-600/20 border-purple-500"
+                        : "bg-white/[0.03] border-white/5 hover:border-white/20 hover:bg-white/[0.06]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 text-gray-500 font-mono text-xs font-bold mr-4 group-hover/opt:bg-purple-600 group-hover/opt:text-white">
+                      {String.fromCharCode(65 + i)}
+                    </div>
+                    <span className="text-base font-medium text-gray-300 group-hover/opt:text-white">
+                      {opt}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-3 justify-between mt-10">
+                <div className="flex gap-2">
+                  <button
+                    disabled={current === 0}
+                    onClick={() => setCurrent(current - 1)}
+                    className="px-6 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 rounded-lg text-sm font-bold transition-all"
+                  >
+                    ← Prev
+                  </button>
+                  <button
+                    disabled={current === questions.length - 1}
+                    onClick={() => setCurrent(current + 1)}
+                    className="px-6 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 rounded-lg text-sm font-bold transition-all"
+                  >
+                    Next →
+                  </button>
+                </div>
+
+                <button
+                  onClick={() =>
+                    setMarked((prev) => ({
+                      ...prev,
+                      [current]: !prev[current],
+                    }))
+                  }
+                  className={`px-4 py-2 rounded-lg text-sm font-bold border transition-all ${
+                    marked[current]
+                      ? "bg-yellow-500 text-black border-yellow-500"
+                      : "bg-yellow-500/10 border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/20"
+                  }`}
+                >
+                  {marked[current] ? "★ Marked" : "☆ Mark for Review"}
+                </button>
+              </div>
+
+              <div className="mt-8 w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500 shadow-[0_0_8px_rgba(168,85,247,0.4)]"
+                  className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500"
                   style={{
                     width: `${((current + 1) / questions.length) * 100}%`,
                   }}
@@ -432,11 +581,6 @@ const Quiz = () => {
             </div>
           </div>
         </div>
-
-        {/* Compact Footer Hint */}
-        <p className="text-center mt-6 text-gray-600 text-[9px] font-black uppercase tracking-[0.5em] opacity-40">
-          Click to Advance
-        </p>
       </div>
     </div>
   );

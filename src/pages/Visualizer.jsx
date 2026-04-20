@@ -41,6 +41,7 @@ const Visualizer = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [mode, setMode] = useState("visual"); // visual | code
   const [open, setOpen] = useState(false);
+  const [speedOpen, setSpeedOpen] = useState(false);
   const [language, setLanguage] = useState("js");
   const [highlightIndex, setHighlightIndex] = useState(null);
   const [topIndex, setTopIndex] = useState(-1);
@@ -50,6 +51,7 @@ const Visualizer = () => {
   const [tempIndex, setTempIndex] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
   const [infoMessage, setInfoMessage] = useState("");
+  const [speed, setSpeed] = useState(null); // null = default
 
   const code =
     codeSnippets[type]?.[selectedOp]?.[language] ||
@@ -219,21 +221,22 @@ const Visualizer = () => {
 
   useEffect(() => {
     if (currentStep < steps.length) {
-      let delay = 300; // default fast
+      let delay;
 
-      // Linked List Traverse
-      if (type === "linkedlist" && selectedOp === "Traverse") {
-        delay = 800;
-      }
+      // ✅ If user selected speed → use that
+      if (speed) {
+        delay = speed;
+      } else {
+        // 🔥 Your existing logic (UNCHANGED)
+        delay = 300;
 
-      // Array Linear Search
-      else if (type === "array" && selectedOp === "Linear Search") {
-        delay = 800;
-      }
-
-      // Array Binary Search
-      else if (type === "array" && selectedOp === "Binary Search") {
-        delay = 1200;
+        if (type === "linkedlist" && selectedOp === "Traverse") {
+          delay = 800;
+        } else if (type === "array" && selectedOp === "Linear Search") {
+          delay = 800;
+        } else if (type === "array" && selectedOp === "Binary Search") {
+          delay = 1200;
+        }
       }
 
       const timer = setTimeout(() => {
@@ -280,42 +283,42 @@ const Visualizer = () => {
       }
     }
 
-let generatedSteps = [];
+    let generatedSteps = [];
 
-// 🟣 Operations that DON'T need input
-if (
-  selectedOp === "Pop" ||
-  selectedOp === "Dequeue" ||
-  selectedOp === "Delete" ||
-  selectedOp === "Delete Head" ||
-  selectedOp === "Delete Tail" ||
-  selectedOp === "Traverse" ||
-  selectedOp === "Top"
-) {
-  generatedSteps =
-    visualizationSteps[type]?.[selectedOp]?.(structure) || [];
-} else {
-  const parsedValues = parseInput(value);
+    // 🟣 Operations that DON'T need input
+    if (
+      selectedOp === "Pop" ||
+      selectedOp === "Dequeue" ||
+      selectedOp === "Delete" ||
+      selectedOp === "Delete Head" ||
+      selectedOp === "Delete Tail" ||
+      selectedOp === "Traverse" ||
+      selectedOp === "Top"
+    ) {
+      generatedSteps =
+        visualizationSteps[type]?.[selectedOp]?.(structure) || [];
+    } else {
+      const parsedValues = parseInput(value);
 
-  let tempStructure = [...structure];
+      let tempStructure = [...structure];
 
-  if (parsedValues.length > 1) {
-    parsedValues.forEach((val) => {
-      const step =
-        visualizationSteps[type]?.[selectedOp]?.(tempStructure, val) || [];
+      if (parsedValues.length > 1) {
+        parsedValues.forEach((val) => {
+          const step =
+            visualizationSteps[type]?.[selectedOp]?.(tempStructure, val) || [];
 
-      generatedSteps = [...generatedSteps, ...step];
+          generatedSteps = [...generatedSteps, ...step];
 
-      tempStructure.push(val);
-    });
-  } else {
-    generatedSteps =
-      visualizationSteps[type]?.[selectedOp]?.(
-        structure,
-        parsedValues[0]
-      ) || [];
-  }
-}
+          tempStructure.push(val);
+        });
+      } else {
+        generatedSteps =
+          visualizationSteps[type]?.[selectedOp]?.(
+            structure,
+            parsedValues[0],
+          ) || [];
+      }
+    }
 
     setSteps(generatedSteps);
     setCurrentStep(0);
@@ -825,6 +828,53 @@ if (
                   />
                 </div>
               )}
+
+            <div className="relative mb-6">
+              <label className="text-[10px] font-bold text-purple-400 uppercase tracking-widest ml-2 mb-2 block">
+                Visualization Speed
+              </label>
+              <button
+                onClick={() => setSpeedOpen(!speedOpen)}
+                className="w-full p-4 bg-black/40 border border-white/10 text-gray-200 rounded-2xl flex justify-between items-center hover:border-purple-500/50 transition-all font-bold text-sm shadow-inner"
+              >
+                {/* Display label based on numeric speed value */}
+                {speed === 200
+                  ? "Fast"
+                  : speed === 500
+                    ? "Medium"
+                    : speed === 1000
+                      ? "Slow"
+                      : "Default (Auto)"}
+                <img
+                  width={20}
+                  src="/dropdown.png"
+                  alt=""
+                  className={`transition-transform duration-300 ${speedOpen ? "rotate-180" : ""} opacity-50`}
+                />
+              </button>
+
+              {speedOpen && (
+                <div className="absolute w-full bg-gray-900/90 border border-white/10 mt-3 rounded-2xl shadow-2xl z-50 max-h-48 overflow-y-auto backdrop-blur-2xl">
+                  {[
+                    { label: "Default (Auto)", value: null },
+                    { label: "Fast", value: 200 },
+                    { label: "Medium", value: 500 },
+                    { label: "Slow", value: 1000 },
+                  ].map((opt, i) => (
+                    <div
+                      key={i}
+                      onClick={() => {
+                        setSpeed(opt.value);
+                        setSpeedOpen(false);
+                      }}
+                      className="p-4 text-sm font-medium text-gray-300 hover:bg-purple-600 hover:text-white cursor-pointer transition-colors border-b border-white/5 last:border-0"
+                    >
+                      {opt.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Buttons */}
             <div className="space-y-4">
