@@ -371,7 +371,7 @@ const Quiz = () => {
       </div>
 
       {/* Compact Top Bar */}
-      <div className="w-full max-w-xl flex justify-between items-center mb-4 z-20">
+      <div className="w-full max-w-xl flex justify-between items-center mb-4 z-20 mt-20">
         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
           Question {current + 1} / {questions.length}
         </span>
