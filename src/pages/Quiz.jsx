@@ -62,6 +62,23 @@ const Quiz = () => {
     }
   };
 
+  const shuffleArray = (array) => {
+    return [...array].sort(() => Math.random() - 0.5);
+  };
+
+  const shuffleQuestions = (questions) => {
+    return shuffleArray(
+      questions.map((q) => {
+        const shuffledOptions = shuffleArray(q.options);
+
+        return {
+          ...q,
+          options: shuffledOptions,
+        };
+      }),
+    );
+  };
+
   useEffect(() => {
     if (quizId) {
       checkAttempt();
@@ -156,54 +173,55 @@ const Quiz = () => {
 
     // 🔥 MERGE BOTH
     if (isAdminQuiz) {
-      setQuestions(adminQuestions); // 🔥 only admin quiz
+      setQuestions(shuffleQuestions(adminQuestions)); // 🔥 only admin quiz
       setQuizId(latestQuiz?.id);
       setTimeLeft(latestQuiz?.timeLimit || 60); // default to 60 sec if not set
     } else {
-      setQuestions(baseQuestions); // 🔥 only predefined
+      setQuestions(shuffleQuestions(baseQuestions)); // 🔥 only predefined
     }
   }, [type]);
 
- useEffect(() => {
-  const handleSecurityBreach = (reason) => {
-    if (!showResult && questions.length > 0) {
-      saveScore(score);
-      setShowResult(true);
-      alert(`Security Violation: ${reason}. Quiz submitted.`);
-    }
-  };
+  useEffect(() => {
+    const handleSecurityBreach = (reason) => {
+      if (!showResult && questions.length > 0) {
+        saveScore(score);
+        setShowResult(true);
+        alert(`Security Violation: ${reason}. Quiz submitted.`);
+      }
+    };
 
-  // 1. Detect Tab Switching (Visibility)
-  const handleVisibility = () => {
-    if (document.visibilityState === "hidden") {
-      handleSecurityBreach("Tab switching or minimizing");
-    }
-  };
+    // 1. Detect Tab Switching (Visibility)
+    const handleVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        handleSecurityBreach("Tab switching or minimizing");
+      }
+    };
 
-  // 2. Detect Focus Loss (Clicking outside, opening Copilot/Sidebars)
-  const handleBlur = () => {
-    handleSecurityBreach("Window focus lost (possible split-screen or external tool)");
-  };
+    // 2. Detect Focus Loss (Clicking outside, opening Copilot/Sidebars)
+    const handleBlur = () => {
+      handleSecurityBreach(
+        "Window focus lost (possible split-screen or external tool)",
+      );
+    };
 
-  // 3. Detect Resize (Snapping windows or opening side-panels)
-  const handleResize = () => {
-    // Optional: Only trigger if the width becomes too small (e.g., < 600px)
-    if (window.innerWidth > 600) {
-      handleSecurityBreach("Screen resized or split-screen activated");
-    }
-  };
+    // 3. Detect Resize (Snapping windows or opening side-panels)
+    const handleResize = () => {
+      // Optional: Only trigger if the width becomes too small (e.g., < 600px)
+      if (window.innerWidth > 600) {
+        handleSecurityBreach("Screen resized or split-screen activated");
+      }
+    };
 
-  document.addEventListener("visibilitychange", handleVisibility);
-  window.addEventListener("blur", handleBlur);
-  window.addEventListener("resize", handleResize);
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("resize", handleResize);
 
-  return () => {
-    document.removeEventListener("visibilitychange", handleVisibility);
-    window.removeEventListener("blur", handleBlur);
-    window.removeEventListener("resize", handleResize);
-  };
-}, [score, showResult, questions.length]);
-
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [score, showResult, questions.length]);
 
   useEffect(() => {
     fetchQuiz();
