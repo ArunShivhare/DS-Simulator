@@ -63,6 +63,53 @@ export const visualizationSteps = {
       steps.push({ type: "bs-not-found" });
       return steps;
     },
+
+    "Bubble Sort": (structure) => {
+      const arr = [...structure];
+      const steps = [];
+      const n = arr.length;
+
+      for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+          // 🔍 Step 1: Compare two elements
+          steps.push({
+            type: "compare",
+            indices: [j, j + 1],
+          });
+
+          // 🔁 Step 2: Swap if needed
+          if (arr[j] > arr[j + 1]) {
+            steps.push({
+              type: "swap",
+              indices: [j, j + 1],
+            });
+
+            // actual swap in temp array
+            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+          }
+        }
+
+        // ✅ Step 3: Mark last element as sorted
+        steps.push({
+          type: "mark-sorted",
+          index: n - i - 1,
+        });
+
+        // 🎯 Step 4: Pass complete
+        steps.push({
+          type: "pass-complete",
+          pass: i + 1,
+        });
+      }
+
+      // 🟢 First element also sorted at end
+      steps.push({
+        type: "mark-sorted",
+        index: 0,
+      });
+
+      return steps;
+    },
   },
 
   stack: {

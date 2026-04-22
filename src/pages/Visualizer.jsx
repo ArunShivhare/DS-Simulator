@@ -7,7 +7,7 @@ import { auth } from "../firebase";
 import Navbar from "../components/Navbar";
 
 const operationsMap = {
-  array: ["Insert", "Delete", "Linear Search", "Binary Search"],
+  array: ["Insert", "Delete", "Linear Search", "Binary Search", "Bubble Sort"],
   stack: ["Push", "Pop", "Top"],
   queue: ["Enqueue", "Dequeue"],
   linkedlist: [
@@ -52,6 +52,7 @@ const Visualizer = () => {
   const [searchResult, setSearchResult] = useState(null);
   const [infoMessage, setInfoMessage] = useState("");
   const [speed, setSpeed] = useState(null); // null = default
+  const [sortedIndices, setSortedIndices] = useState([]);
 
   const code =
     codeSnippets[type]?.[selectedOp]?.[language] ||
@@ -173,6 +174,34 @@ const Visualizer = () => {
         setSearchResult(-1);
         break;
 
+      case "compare":
+        setHighlightIndex(step.indices);
+        setInfoMessage(
+          `Comparing ${structure[step.indices[0]]} and ${structure[step.indices[1]]}`,
+        );
+        break;
+
+      case "swap":
+        setInfoMessage(`Swapping elements`);
+        setStructure((prev) => {
+          const newArr = [...prev];
+          const [i, j] = step.indices;
+
+          [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+          return newArr;
+        });
+        break;
+
+      case "mark-sorted":
+        // you need a new state
+        setSortedIndices((prev) => [...prev, step.index]);
+        break;
+
+      case "pass-complete":
+        setInfoMessage(`Pass ${step.pass} completed`);
+        setTimeout(() => setInfoMessage(""), 500);
+        break;
+
       // INSERT HEAD
       case "ll-insert-head":
         setStructure((prev) => {
@@ -236,7 +265,10 @@ const Visualizer = () => {
           delay = 800;
         } else if (type === "array" && selectedOp === "Binary Search") {
           delay = 1200;
+        } else if (type === "array" && selectedOp === "Bubble Sort") {
+          delay = 1200;
         }
+
       }
 
       const timer = setTimeout(() => {
@@ -258,6 +290,7 @@ const Visualizer = () => {
     setMid(null);
     setHigh(null);
     setInfoMessage("");
+    setSortedIndices([]);
 
     // 🟣 Handle Binary Search separately
     if (type === "array" && selectedOp === "Binary Search") {
@@ -542,9 +575,14 @@ const Visualizer = () => {
       {/* Added horizontal padding for scroll end-room */}
       {structure.map((item, index) => {
         const isMid = mid === index;
-        const isHighlit = highlightIndex === index;
+        const isHighlit =
+          highlightIndex === index ||
+          (Array.isArray(highlightIndex) && highlightIndex.includes(index));
         const isLow = low === index;
         const isHigh = high === index;
+        const isSorted = sortedIndices.includes(index);
+        const isComparing =
+          Array.isArray(highlightIndex) && highlightIndex.includes(index);
 
         return (
           <div
@@ -586,11 +624,13 @@ const Visualizer = () => {
               transition={{ duration: 0.4 }}
               className={`
               w-16 h-16 flex items-center justify-center rounded-2xl text-xl font-black transition-all duration-300 border-2
-              ${
-                isMid || isHighlit
-                  ? "bg-yellow-500 border-yellow-300 text-black shadow-[0_0_25px_rgba(234,179,8,0.4)] z-10"
-                  : "bg-gray-900/40 border-white/10 text-gray-300 backdrop-blur-md"
-              }
+                      ${
+                        isSorted
+                          ? "bg-green-500 border-green-300 text-black"
+                          : isComparing || isMid || isHighlit
+                            ? "bg-yellow-500 border-yellow-300 text-black"
+                            : "bg-gray-900/40 border-white/10 text-gray-300"
+                      }
             `}
             >
               {item}
@@ -814,7 +854,8 @@ const Visualizer = () => {
               selectedOp !== "Delete Head" &&
               selectedOp !== "Delete Tail" &&
               selectedOp !== "Traverse" &&
-              selectedOp !== "Top" && (
+              selectedOp !== "Top" &&
+              selectedOp !== "Bubble Sort" && (
                 <div className="mb-6 animate-fadeIn">
                   <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-2 mb-2 block">
                     Data Input
@@ -842,7 +883,7 @@ const Visualizer = () => {
                   ? "Fast"
                   : speed === 500
                     ? "Medium"
-                    : speed === 1000
+                    : speed === 1500
                       ? "Slow"
                       : "Default (Auto)"}
                 <img
