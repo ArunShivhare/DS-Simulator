@@ -7,7 +7,14 @@ import { auth } from "../firebase";
 import Navbar from "../components/Navbar";
 
 const operationsMap = {
-  array: ["Insert", "Delete", "Linear Search", "Binary Search", "Bubble Sort"],
+  array: [
+    "Insert",
+    "Delete",
+    "Linear Search",
+    "Binary Search",
+    "Bubble Sort",
+    "Quick Sort",
+  ],
   stack: ["Push", "Pop", "Top"],
   queue: ["Enqueue", "Dequeue"],
   linkedlist: [
@@ -53,6 +60,11 @@ const Visualizer = () => {
   const [infoMessage, setInfoMessage] = useState("");
   const [speed, setSpeed] = useState(null); // null = default
   const [sortedIndices, setSortedIndices] = useState([]);
+  const [activeRange, setActiveRange] = useState(null);
+  const [pivotIndex, setPivotIndex] = useState(null);
+  const [recursionDepth, setRecursionDepth] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [history, setHistory] = useState([]);
 
   const code =
     codeSnippets[type]?.[selectedOp]?.[language] ||
@@ -202,6 +214,50 @@ const Visualizer = () => {
         setTimeout(() => setInfoMessage(""), 500);
         break;
 
+      case "qs-compare":
+        setHighlightIndex([step.current, step.pivot]);
+        setInfoMessage(`Comparing with pivot`);
+        break;
+
+      case "qs-swap":
+        setInfoMessage(`Swapping elements`);
+
+        setStructure((prev) => {
+          const newArr = [...prev];
+          const [i, j] = step.indices;
+
+          [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+
+          return newArr;
+        });
+        break;
+
+      case "qs-partition-done":
+        setInfoMessage(`Pivot placed correctly`);
+        break;
+
+      case "qs-range":
+        setActiveRange({
+          low: step.low,
+          high: step.high,
+        });
+
+        setRecursionDepth(step.depth);
+
+        setInfoMessage(
+          `Level ${step.depth}: Dividing (${step.low} → ${step.high})`,
+        );
+        break;
+
+      case "qs-pivot":
+        setPivotIndex(step.index);
+        setInfoMessage(`Pivot selected`);
+        break;
+
+      case "qs-split":
+        setInfoMessage(`Split into left and right partitions`);
+        break;
+
       // INSERT HEAD
       case "ll-insert-head":
         setStructure((prev) => {
@@ -249,7 +305,7 @@ const Visualizer = () => {
   };
 
   useEffect(() => {
-    if (currentStep < steps.length) {
+    if (!isPaused && currentStep < steps.length) {
       let delay;
 
       // ✅ If user selected speed → use that
@@ -267,18 +323,158 @@ const Visualizer = () => {
           delay = 1200;
         } else if (type === "array" && selectedOp === "Bubble Sort") {
           delay = 1200;
+        } else if (type === "array" && selectedOp === "Quick Sort") {
+          delay = 1500;
         }
-
       }
 
       const timer = setTimeout(() => {
         executeStep(steps[currentStep]);
-        setCurrentStep((prev) => prev + 1);
+        setCurrentStep((prev) => {
+          if (prev >= steps.length) return prev;
+          return prev + 1;
+        });
+        setHistory((prev) => [
+          ...prev,
+          {
+            structure: [...structure],
+            currentStep,
+
+            highlightIndex,
+            topIndex,
+            frontIndex,
+            rearIndex,
+
+            low,
+            high,
+            mid,
+
+            searchResult,
+
+            sortedIndices: [...sortedIndices],
+
+            pivotIndex,
+            activeRange,
+            recursionDepth,
+
+            llHighlightIndex,
+            tempIndex,
+            infoMessage,
+          },
+        ]);
       }, delay);
 
       return () => clearTimeout(timer);
     }
-  }, [currentStep, steps, type, selectedOp]);
+  }, [
+    currentStep,
+    steps,
+    type,
+    selectedOp,
+    isPaused,
+
+    structure,
+    highlightIndex,
+    topIndex,
+    frontIndex,
+    rearIndex,
+
+    low,
+    high,
+    mid,
+
+    searchResult,
+
+    sortedIndices,
+
+    pivotIndex,
+    activeRange,
+    recursionDepth,
+
+    llHighlightIndex,
+    tempIndex,
+    infoMessage,
+  ]);
+
+  useEffect(() => {
+    if (selectedOp === "Bubble Sort" || selectedOp === "Quick Sort") {
+      setValue("");
+    }
+  }, [selectedOp]);
+
+  const handlePrevious = () => {
+    if (history.length === 0) return;
+
+    setIsPaused(true);
+
+    const last = history[history.length - 1];
+
+    setStructure(last.structure);
+    setCurrentStep(last.currentStep);
+
+    setHighlightIndex(last.highlightIndex);
+    setTopIndex(last.topIndex);
+    setFrontIndex(last.frontIndex);
+    setRearIndex(last.rearIndex);
+
+    setLow(last.low);
+    setHigh(last.high);
+    setMid(last.mid);
+
+    setSearchResult(last.searchResult);
+
+    setSortedIndices(last.sortedIndices || []);
+
+    setPivotIndex(last.pivotIndex);
+    setActiveRange(last.activeRange);
+    setRecursionDepth(last.recursionDepth);
+
+    setLlHighlightIndex(last.llHighlightIndex);
+    setTempIndex(last.tempIndex);
+
+    setInfoMessage(last.infoMessage || "");
+
+    setHistory((prev) => prev.slice(0, -1));
+  };
+
+  const handleNext = () => {
+    if (currentStep >= steps.length) return;
+
+    setIsPaused(true);
+
+    setHistory((prev) => [
+      ...prev,
+      {
+        structure: [...structure],
+        currentStep,
+
+        highlightIndex,
+        topIndex,
+        frontIndex,
+        rearIndex,
+
+        low,
+        high,
+        mid,
+
+        searchResult,
+
+        sortedIndices: [...sortedIndices],
+
+        pivotIndex,
+        activeRange,
+        recursionDepth,
+
+        llHighlightIndex,
+        tempIndex,
+        infoMessage,
+      },
+    ]);
+
+    executeStep(steps[currentStep]);
+
+    setCurrentStep((prev) => prev + 1);
+  };
 
   const handleSimulate = () => {
     setSteps([]);
@@ -309,6 +505,8 @@ const Visualizer = () => {
 
           setSteps(steps);
           setCurrentStep(0);
+          setHistory([]);
+          setIsPaused(false);
           setInfoMessage("");
         }, 1000);
 
@@ -584,6 +782,11 @@ const Visualizer = () => {
         const isComparing =
           Array.isArray(highlightIndex) && highlightIndex.includes(index);
 
+        const inActiveRange =
+          activeRange && index >= activeRange.low && index <= activeRange.high;
+
+        const isPivot = pivotIndex === index;
+
         return (
           <div
             key={index}
@@ -629,7 +832,11 @@ const Visualizer = () => {
                           ? "bg-green-500 border-green-300 text-black"
                           : isComparing || isMid || isHighlit
                             ? "bg-yellow-500 border-yellow-300 text-black"
-                            : "bg-gray-900/40 border-white/10 text-gray-300"
+                            : isPivot
+                              ? "bg-red-500 border-red-300 text-white"
+                              : inActiveRange
+                                ? "bg-blue-500/20 border-blue-400 text-white"
+                                : "bg-gray-900/40 border-white/10 text-gray-300"
                       }
             `}
             >
@@ -855,7 +1062,8 @@ const Visualizer = () => {
               selectedOp !== "Delete Tail" &&
               selectedOp !== "Traverse" &&
               selectedOp !== "Top" &&
-              selectedOp !== "Bubble Sort" && (
+              selectedOp !== "Bubble Sort" &&
+              selectedOp !== "Quick Sort" && (
                 <div className="mb-6 animate-fadeIn">
                   <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-2 mb-2 block">
                     Data Input
@@ -900,7 +1108,7 @@ const Visualizer = () => {
                     { label: "Default (Auto)", value: null },
                     { label: "Fast", value: 200 },
                     { label: "Medium", value: 500 },
-                    { label: "Slow", value: 1000 },
+                    { label: "Slow", value: 1500 },
                   ].map((opt, i) => (
                     <div
                       key={i}
@@ -925,6 +1133,67 @@ const Visualizer = () => {
               >
                 Execute Simulation ▶
               </button>
+              <div className="grid grid-cols-3 gap-2.5 w-full mt-4">
+                {/* Prev Button */}
+                <button
+                  onClick={handlePrevious}
+                  className="flex items-center justify-center gap-1.5 py-2 px-3 bg-[#0d111c]/60 hover:bg-[#161b26]/80 border border-[#222a3a] hover:border-[#38455e] rounded-md text-[11px] font-semibold font-sans uppercase tracking-wider text-[#94a3b8] hover:text-[#38bdf8] transition-all duration-200 cursor-pointer group"
+                >
+                  <svg
+                    className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z" />
+                  </svg>
+                  <span>Prev</span>
+                </button>
+
+                {/* Pause / Resume Button */}
+                <button
+                  onClick={() => setIsPaused(!isPaused)}
+                  className="flex items-center justify-center gap-1.5 py-2 px-3 bg-[#0d111c]/60 hover:bg-[#161b26]/80 border border-[#222a3a] hover:border-[#38455e] rounded-md text-[11px] font-semibold font-sans uppercase tracking-wider text-[#94a3b8] hover:text-[#38bdf8] transition-all duration-200 cursor-pointer group"
+                >
+                  {isPaused ? (
+                    <>
+                      <svg
+                        className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                      <span>Resume</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                      </svg>
+                      <span>Pause</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Next Button */}
+                <button
+                  onClick={handleNext}
+                  className="flex items-center justify-center gap-1.5 py-2 px-3 bg-[#0d111c]/60 hover:bg-[#161b26]/80 border border-[#222a3a] hover:border-[#38455e] rounded-md text-[11px] font-semibold font-sans uppercase tracking-wider text-[#94a3b8] hover:text-[#38bdf8] transition-all duration-200 cursor-pointer group"
+                >
+                  <span>Next</span>
+                  <svg
+                    className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M5 18l8.5-6L5 6v12zM16 6v12h2V6h-2z" />
+                  </svg>
+                </button>
+              </div>
 
               <button
                 disabled={!selectedOp}
@@ -990,6 +1259,17 @@ const Visualizer = () => {
                 {/* FIXED SCROLL AREA: Changed items-end to items-center and justify-center to justify-start */}
                 <div className="flex-1 overflow-x-auto pb-10 flex items-center scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent px-4">
                   <div className="flex gap-6 items-end min-h-[250px] mx-auto min-w-max">
+                    {selectedOp === "Quick Sort" && (
+                      <div className="mb-4 text-center">
+                        <div className="text-purple-400 font-bold">
+                          Recursion Level: {recursionDepth}
+                        </div>
+
+                        <div className="text-red-400 font-bold">
+                          Pivot Index: {pivotIndex ?? "-"}
+                        </div>
+                      </div>
+                    )}
                     {type === "array" && renderArray()}
                     {type === "stack" && renderStack()}
                     {type === "queue" && renderQueue()}
