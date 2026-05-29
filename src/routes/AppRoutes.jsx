@@ -13,6 +13,7 @@ import Progress from "../pages/Progress";
 import Quiz from "../pages/Quiz";
 import Leaderboard from "../pages/Leaderboard";
 import AdminQuiz from "../pages/AdminQuiz";
+import Fundamentals from "../pages/Fundamentals";
 
 const AppRoutes = ({ user }) => {
   return (
@@ -25,6 +26,7 @@ const AppRoutes = ({ user }) => {
       <Route path="/learn/linkedlist" element={<LinkedListPage />} />
       <Route path="/explore" element={<Explore user={user} />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
+      <Route path="/fundamentals" element={<Fundamentals />} />
 
       {/* Protected Routes */}
       <Route

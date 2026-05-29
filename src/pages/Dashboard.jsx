@@ -4,6 +4,7 @@ import { GiStack } from "react-icons/gi";
 import { MdQueue } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 import Navbar from "../components/Navbar";
+import Fundamentals from "../pages/Fundamentals";
 
 const structures = [
   {
@@ -11,32 +12,32 @@ const structures = [
     path: "array",
     icon: <FaLayerGroup size={44} />,
     desc: "Fast access, contiguous memory, powerful searching.",
-    tag: "O(1) Access"
+    tag: "O(1) Access",
   },
   {
     name: "Stack",
     path: "stack",
     icon: <GiStack size={44} />,
     desc: "LIFO structure used in recursion & undo operations.",
-    tag: "LIFO Logic"
+    tag: "LIFO Logic",
   },
   {
     name: "Queue",
     path: "queue",
     icon: <MdQueue size={44} />,
     desc: "FIFO structure used in scheduling & buffering.",
-    tag: "FIFO Logic"
+    tag: "FIFO Logic",
   },
   {
     name: "Linked List",
     path: "linkedlist",
     icon: <TbListDetails size={44} />,
     desc: "Dynamic memory, efficient insert/delete operations.",
-    tag: "Dynamic"
+    tag: "Dynamic",
   },
 ];
 
-const Dashboard = ({user}) => {
+const Dashboard = ({ user }) => {
   const navigate = useNavigate();
 
   return (
@@ -52,24 +53,54 @@ const Dashboard = ({user}) => {
           <h2 className="text-5xl md:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400">
             Master Data
           </h2>
-          <img width={100} src="/logo.png" alt="Logo" className="drop-shadow-[0_0_15px_rgba(129,140,248,0.4)]" />
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white">Structures</h2>
+          <img
+            width={100}
+            src="/logo.png"
+            alt="Logo"
+            className="drop-shadow-[0_0_15px_rgba(129,140,248,0.4)]"
+          />
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white">
+            Structures
+          </h2>
         </div>
         <p className="text-gray-500 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
-          The ultimate environment to <span className="text-purple-400">visualize</span>, 
-          <span className="text-blue-400 ml-1 text-white font-medium">simulate</span>, and master core concepts.
+          The ultimate environment to{" "}
+          <span className="text-purple-400">visualize</span>,
+          <span className="text-blue-400 ml-1 text-white font-medium">
+            simulate
+          </span>
+          , and master core concepts.
         </p>
       </div>
 
       {/* 🔥 TOP FEATURES (3-column layout) */}
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 mb-24 relative z-10">
         {[
-          { title: "Visual Learning", desc: "Interactive simulations for every step.", color: "text-purple-400" },
-          { title: "Code + Theory", desc: "Real-world implementations & deep dives.", color: "text-blue-400" },
-          { title: "Practice Ready", desc: "Solve problems and track your score.", color: "text-emerald-400" },
+          {
+            title: "Visual Learning",
+            desc: "Interactive simulations for every step.",
+            color: "text-purple-400",
+          },
+          {
+            title: "Code + Theory",
+            desc: "Real-world implementations & deep dives.",
+            color: "text-blue-400",
+          },
+          {
+            title: "Practice Ready",
+            desc: "Solve problems and track your score.",
+            color: "text-emerald-400",
+          },
         ].map((item, i) => (
-          <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-[2rem] backdrop-blur-sm">
-            <h3 className={`font-black uppercase tracking-widest text-[10px] mb-2 ${item.color}`}>{item.title}</h3>
+          <div
+            key={i}
+            className="bg-white/5 border border-white/10 p-6 rounded-[2rem] backdrop-blur-sm"
+          >
+            <h3
+              className={`font-black uppercase tracking-widest text-[10px] mb-2 ${item.color}`}
+            >
+              {item.title}
+            </h3>
             <p className="text-gray-400 text-sm font-medium">{item.desc}</p>
           </div>
         ))}
@@ -77,9 +108,127 @@ const Dashboard = ({user}) => {
 
       {/* 🔥 MODULE SELECTOR TITLE */}
       <div className="max-w-6xl mx-auto mb-12 flex items-center gap-4 relative z-10">
-        <h3 className="text-3xl font-black uppercase tracking-tighter">Choose Module</h3>
+        <h3 className="text-3xl font-black uppercase tracking-tighter">
+          Choose Module
+        </h3>
         <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent"></div>
       </div>
+
+      <div
+  onClick={() => navigate("/fundamentals")}
+  className="
+    group
+    cursor-pointer
+    w-full
+    max-w-7xl
+    mx-auto
+    mt-8
+    mb-12
+
+    bg-gradient-to-r
+    from-[#0f172a]
+    via-[#111827]
+    to-[#0f172a]
+
+    border border-white/10
+    rounded-[2rem]
+
+    px-8 md:px-12
+    py-6
+
+    flex items-center justify-between
+
+    hover:border-purple-500/40
+    hover:shadow-[0_0_40px_rgba(168,85,247,0.12)]
+
+    transition-all
+    duration-300
+  "
+>
+  {/* Left Section */}
+  <div className="flex items-center gap-6">
+    {/* Icon */}
+    <div
+      className="
+        w-16 h-16
+        rounded-2xl
+        bg-purple-500/10
+        border border-purple-500/20
+
+        flex items-center justify-center
+
+        text-3xl
+      "
+    >
+      📚
+    </div>
+
+    {/* Text */}
+    <div>
+      <p
+        className="
+          text-purple-400
+          font-black
+          uppercase
+          tracking-[0.18em]
+          text-sm
+        "
+      >
+        Build Fundamentals
+      </p>
+
+      <h3
+        className="
+          text-white
+          text-2xl
+          md:text-3xl
+          font-black
+          mt-1
+        "
+      >
+        Learn DSA From Scratch
+      </h3>
+
+      <p
+        className="
+          text-gray-400
+          mt-2
+          text-sm
+          md:text-base
+        "
+      >
+        Master Arrays, Linked Lists, Stacks, Queues, Trees, Graphs,
+        Recursion and Problem Solving with structured lessons.
+      </p>
+    </div>
+  </div>
+
+  {/* Right Section */}
+  <div
+    className="
+      hidden md:flex
+      items-center gap-3
+
+      px-6 py-3
+
+      rounded-xl
+
+      bg-purple-600
+      text-white
+
+      font-bold
+
+      group-hover:bg-purple-500
+
+      transition-all
+    "
+  >
+    Start Learning
+    <span className="group-hover:translate-x-1 transition-transform">
+      →
+    </span>
+  </div>
+</div>
 
       {/* 🔥 STRUCTURE CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto relative z-10">
@@ -113,7 +262,10 @@ const Dashboard = ({user}) => {
 
             {/* Action Indicator */}
             <div className="mt-8 text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 group-hover:text-white transition-colors">
-              Launch Visualizer <span className="ml-1 group-hover:translate-x-1 transition-transform inline-block">→</span>
+              Launch Visualizer{" "}
+              <span className="ml-1 group-hover:translate-x-1 transition-transform inline-block">
+                →
+              </span>
             </div>
           </div>
         ))}
