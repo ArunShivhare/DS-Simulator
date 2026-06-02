@@ -227,6 +227,25 @@ export const visualizationSteps = {
 
     "Insert Tail": (structure, value) => [{ type: "ll-insert-tail", value }],
 
+    "Insert Middle": (structure, value, position) => {
+      const steps = [];
+
+      for (let i = 0; i < position; i++) {
+        steps.push({
+          type: "ll-traverse",
+          index: i,
+        });
+      }
+
+      steps.push({
+        type: "ll-insert-middle",
+        value,
+        position,
+      });
+
+      return steps;
+    },
+
     "Delete Head": (structure) => [{ type: "ll-delete-head" }],
 
     "Delete Tail": (structure) => [{ type: "ll-delete-tail" }],

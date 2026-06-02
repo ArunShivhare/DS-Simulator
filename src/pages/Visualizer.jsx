@@ -20,6 +20,7 @@ const operationsMap = {
   linkedlist: [
     "Insert Head",
     "Insert Tail",
+    "Insert Middle",
     "Delete Head",
     "Delete Tail",
     "Traverse",
@@ -42,6 +43,7 @@ const Visualizer = () => {
   const [high, setHigh] = useState(null);
   const [mid, setMid] = useState(null);
   const [value, setValue] = useState("");
+  const [position, setPosition] = useState("");
   const [selectedOp, setSelectedOp] = useState("");
   const [structure, setStructure] = useState([]);
   const [steps, setSteps] = useState([]);
@@ -284,6 +286,18 @@ const Visualizer = () => {
         });
         break;
 
+      case "ll-insert-middle":
+        setStructure((prev) => {
+          const newArr = [...prev];
+
+          newArr.splice(step.position, 0, step.value);
+
+          setLlHighlightIndex(step.position);
+
+          return newArr;
+        });
+        break;
+
       // DELETE HEAD
       case "ll-delete-head":
         setStructure((prev) => prev.slice(1));
@@ -516,6 +530,7 @@ const Visualizer = () => {
 
     let generatedSteps = [];
 
+
     // 🟣 Operations that DON'T need input
     if (
       selectedOp === "Pop" ||
@@ -529,28 +544,45 @@ const Visualizer = () => {
       generatedSteps =
         visualizationSteps[type]?.[selectedOp]?.(structure) || [];
     } else {
-      const parsedValues = parseInput(value);
+  const parsedValues = parseInput(value);
 
-      let tempStructure = [...structure];
+  // 🔥 INSERT AT POSITION
+  if (
+    type === "linkedlist" &&
+    selectedOp === "Insert Middle"
+  ) {
+    generatedSteps =
+      visualizationSteps[type]?.[selectedOp]?.(
+        structure,
+        parsedValues[0],      // value
+        Number(position)      // position
+      ) || [];
+  }
 
-      if (parsedValues.length > 1) {
-        parsedValues.forEach((val) => {
-          const step =
-            visualizationSteps[type]?.[selectedOp]?.(tempStructure, val) || [];
+  else if (parsedValues.length > 1) {
+    let tempStructure = [...structure];
 
-          generatedSteps = [...generatedSteps, ...step];
+    parsedValues.forEach((val) => {
+      const step =
+        visualizationSteps[type]?.[selectedOp]?.(
+          tempStructure,
+          val
+        ) || [];
 
-          tempStructure.push(val);
-        });
-      } else {
-        generatedSteps =
-          visualizationSteps[type]?.[selectedOp]?.(
-            structure,
-            parsedValues[0],
-          ) || [];
-      }
-    }
+      generatedSteps = [...generatedSteps, ...step];
 
+      tempStructure.push(val);
+    });
+  }
+
+  else {
+    generatedSteps =
+      visualizationSteps[type]?.[selectedOp]?.(
+        structure,
+        parsedValues[0]
+      ) || [];
+  }
+}
     setSteps(generatedSteps);
     setCurrentStep(0);
   };
@@ -1077,6 +1109,22 @@ const Visualizer = () => {
                   />
                 </div>
               )}
+
+            {selectedOp === "Insert Middle" && (
+              <div className="mb-6 animate-fadeIn">
+                <label className="text-[10px] font-bold text-pink-400 uppercase tracking-widest ml-2 mb-2 block">
+                  Insert Position
+                </label>
+
+                <input
+                  type="number"
+                  placeholder="Position..."
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                  className="w-full p-4 text-white bg-black/40 border border-white/10 rounded-2xl outline-none focus:border-pink-500/50 transition-all font-mono"
+                />
+              </div>
+            )}
 
             <div className="relative mb-6">
               <label className="text-[10px] font-bold text-purple-400 uppercase tracking-widest ml-2 mb-2 block">
