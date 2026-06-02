@@ -23,6 +23,7 @@ const operationsMap = {
     "Insert Middle",
     "Delete Head",
     "Delete Tail",
+    "Delete Position",
     "Traverse",
   ],
 };
@@ -308,6 +309,17 @@ const Visualizer = () => {
         setStructure((prev) => prev.slice(0, -1));
         break;
 
+      case "ll-delete-position":
+        setStructure((prev) => {
+          const newArr = [...prev];
+
+          newArr.splice(step.position, 1);
+
+          return newArr;
+        });
+
+        break;
+
       case "ll-traverse":
         setLlHighlightIndex(step.index);
         setTempIndex(step.index);
@@ -530,7 +542,6 @@ const Visualizer = () => {
 
     let generatedSteps = [];
 
-
     // 🟣 Operations that DON'T need input
     if (
       selectedOp === "Pop" ||
@@ -544,45 +555,41 @@ const Visualizer = () => {
       generatedSteps =
         visualizationSteps[type]?.[selectedOp]?.(structure) || [];
     } else {
-  const parsedValues = parseInput(value);
+      const parsedValues = parseInput(value);
 
-  // 🔥 INSERT AT POSITION
-  if (
-    type === "linkedlist" &&
-    selectedOp === "Insert Middle"
-  ) {
-    generatedSteps =
-      visualizationSteps[type]?.[selectedOp]?.(
-        structure,
-        parsedValues[0],      // value
-        Number(position)      // position
-      ) || [];
-  }
+      // 🔥 INSERT AT POSITION
+      if (type === "linkedlist" && selectedOp === "Insert Middle") {
+        generatedSteps =
+          visualizationSteps[type]?.[selectedOp]?.(
+            structure,
+            parsedValues[0],
+            Number(position),
+          ) || [];
+      } else if (type === "linkedlist" && selectedOp === "Delete Position") {
+        generatedSteps =
+          visualizationSteps[type]?.[selectedOp]?.(
+            structure,
+            Number(position),
+          ) || [];
+      } else if (parsedValues.length > 1) {
+        let tempStructure = [...structure];
 
-  else if (parsedValues.length > 1) {
-    let tempStructure = [...structure];
+        parsedValues.forEach((val) => {
+          const step =
+            visualizationSteps[type]?.[selectedOp]?.(tempStructure, val) || [];
 
-    parsedValues.forEach((val) => {
-      const step =
-        visualizationSteps[type]?.[selectedOp]?.(
-          tempStructure,
-          val
-        ) || [];
+          generatedSteps = [...generatedSteps, ...step];
 
-      generatedSteps = [...generatedSteps, ...step];
-
-      tempStructure.push(val);
-    });
-  }
-
-  else {
-    generatedSteps =
-      visualizationSteps[type]?.[selectedOp]?.(
-        structure,
-        parsedValues[0]
-      ) || [];
-  }
-}
+          tempStructure.push(val);
+        });
+      } else {
+        generatedSteps =
+          visualizationSteps[type]?.[selectedOp]?.(
+            structure,
+            parsedValues[0],
+          ) || [];
+      }
+    }
     setSteps(generatedSteps);
     setCurrentStep(0);
   };
@@ -1092,6 +1099,7 @@ const Visualizer = () => {
               selectedOp !== "Delete" &&
               selectedOp !== "Delete Head" &&
               selectedOp !== "Delete Tail" &&
+              selectedOp !== "Delete Position" &&
               selectedOp !== "Traverse" &&
               selectedOp !== "Top" &&
               selectedOp !== "Bubble Sort" &&
@@ -1110,15 +1118,16 @@ const Visualizer = () => {
                 </div>
               )}
 
-            {selectedOp === "Insert Middle" && (
+            {(selectedOp === "Insert Middle" ||
+              selectedOp === "Delete Position") && (
               <div className="mb-6 animate-fadeIn">
                 <label className="text-[10px] font-bold text-pink-400 uppercase tracking-widest ml-2 mb-2 block">
-                  Insert Position
+                  Node Position
                 </label>
 
                 <input
                   type="number"
-                  placeholder="Position..."
+                  placeholder="Node Position..."
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                   className="w-full p-4 text-white bg-black/40 border border-white/10 rounded-2xl outline-none focus:border-pink-500/50 transition-all font-mono"

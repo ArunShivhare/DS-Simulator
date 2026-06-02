@@ -250,6 +250,28 @@ export const visualizationSteps = {
 
     "Delete Tail": (structure) => [{ type: "ll-delete-tail" }],
 
+    "Delete Position": (structure, position) => {
+      if (position < 0 || position >= structure.length) {
+        return [];
+      }
+
+      const steps = [];
+
+      for (let i = 0; i < position; i++) {
+        steps.push({
+          type: "ll-traverse",
+          index: i,
+        });
+      }
+
+      steps.push({
+        type: "ll-delete-position",
+        position,
+      });
+
+      return steps;
+    },
+
     Traverse: (structure) =>
       structure.map((_, index) => ({
         type: "ll-traverse",
