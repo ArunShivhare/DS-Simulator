@@ -20,10 +20,10 @@ const operationsMap = {
   linkedlist: [
     "Insert Head",
     "Insert Tail",
-    "Insert Middle",
+    "Insert at Position",
     "Delete Head",
     "Delete Tail",
-    "Delete Position",
+    "Delete at Position",
     "Traverse",
   ],
 };
@@ -558,14 +558,14 @@ const Visualizer = () => {
       const parsedValues = parseInput(value);
 
       // 🔥 INSERT AT POSITION
-      if (type === "linkedlist" && selectedOp === "Insert Middle") {
+      if (type === "linkedlist" && selectedOp === "Insert at Position") {
         generatedSteps =
           visualizationSteps[type]?.[selectedOp]?.(
             structure,
             parsedValues[0],
             Number(position),
           ) || [];
-      } else if (type === "linkedlist" && selectedOp === "Delete Position") {
+      } else if (type === "linkedlist" && selectedOp === "Delete at Position") {
         generatedSteps =
           visualizationSteps[type]?.[selectedOp]?.(
             structure,
@@ -1099,7 +1099,7 @@ const Visualizer = () => {
               selectedOp !== "Delete" &&
               selectedOp !== "Delete Head" &&
               selectedOp !== "Delete Tail" &&
-              selectedOp !== "Delete Position" &&
+              selectedOp !== "Delete at Position" &&
               selectedOp !== "Traverse" &&
               selectedOp !== "Top" &&
               selectedOp !== "Bubble Sort" &&
@@ -1118,8 +1118,8 @@ const Visualizer = () => {
                 </div>
               )}
 
-            {(selectedOp === "Insert Middle" ||
-              selectedOp === "Delete Position") && (
+            {(selectedOp === "Insert at Position" ||
+              selectedOp === "Delete at Position") && (
               <div className="mb-6 animate-fadeIn">
                 <label className="text-[10px] font-bold text-pink-400 uppercase tracking-widest ml-2 mb-2 block">
                   Node Position

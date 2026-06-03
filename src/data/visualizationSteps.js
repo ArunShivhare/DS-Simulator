@@ -227,7 +227,7 @@ export const visualizationSteps = {
 
     "Insert Tail": (structure, value) => [{ type: "ll-insert-tail", value }],
 
-    "Insert Middle": (structure, value, position) => {
+    "Insert at Position": (structure, value, position) => {
       const steps = [];
 
       for (let i = 0; i < position; i++) {
@@ -250,7 +250,7 @@ export const visualizationSteps = {
 
     "Delete Tail": (structure) => [{ type: "ll-delete-tail" }],
 
-    "Delete Position": (structure, position) => {
+    "Delete at Position": (structure, position) => {
       if (position < 0 || position >= structure.length) {
         return [];
       }
