@@ -29,10 +29,10 @@ const Navbar = ({ user }) => {
         </div>
         <div className="hidden sm:block">
           <span className="text-xl font-black tracking-tighter text-white uppercase">
-            DS
+            DSA
           </span>
-          <span className="text-xl font-black tracking-tighter text-purple-500 uppercase ml-1">
-            Visualizer
+          <span className="text-xl font-black tracking-tighter text-purple-500">
+            Verse
           </span>
         </div>
       </div>
