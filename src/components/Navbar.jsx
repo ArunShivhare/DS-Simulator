@@ -12,81 +12,152 @@ const Navbar = ({ user }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full z-[100] bg-black/40 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex justify-between items-center transition-all">
-      {/* 1. Logo Section */}
-      <div
-        onClick={() => navigate("/")}
-        className="flex items-center gap-3 cursor-pointer group"
-      >
-        <div className="relative">
-          <img
-            width={45}
-            src="/logo.png"
-            alt="Logo"
-            className="group-hover:rotate-12 transition-transform duration-300"
-          />
-          <div className="absolute inset-0 bg-purple-500/20 blur-lg rounded-full -z-10"></div>
-        </div>
-        <div className="hidden sm:block">
-          <span className="text-xl font-black tracking-tighter text-white uppercase">
-            DSA
-          </span>
-          <span className="text-xl font-black tracking-tighter text-purple-500">
-            Verse
-          </span>
-        </div>
-      </div>
+    <div className="fixed top-0 left-0 w-full z-[100] bg-white/95 backdrop-blur-md border-b border-slate-200">
+      <div className="px-5 sm:px-8 lg:px-10 py-3.5 flex justify-between items-center">
 
-      {/* 2. Right Side: Auth & Profile */}
-      <div className="flex items-center gap-4">
-        {user ? (
-          <div className="flex items-center gap-3">
-            {/* Glass Profile Badge */}
-            <div
-              onClick={() => navigate("/progress")}
-              className="flex items-center gap-3 px-3 py-1.5 bg-white/5 border border-white/10 rounded-2xl cursor-pointer hover:bg-white/10 hover:border-purple-500/30 transition-all group"
-            >
-              <div className="text-2xl text-purple-400 group-hover:scale-110 transition-transform">
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt="pfp"
-                    className="w-7 h-7 rounded-full border border-purple-500/50"
-                  />
-                ) : (
-                  <FaUserCircle />
-                )}
-              </div>
-              <div className="flex flex-col items-start leading-none">
-                <span className="text-xs font-bold text-gray-200 truncate max-w-[100px]">
-                  {user.displayName || "User"}
-                </span>
-              </div>
-            </div>
-
-            {user.email === "simplesabanda07@gmail.com" && (
-              <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest px-3 py-3 animate-pulse bg-white/5 border border-white/10 rounded-2xl cursor-pointer">
-                <button onClick={() => navigate("/admin")}
-                  className="cursor-pointer" >Architect</button>
-              </span>
-            )}
-
-            {/* Logout Button: Refined Ghost Style */}
-            <button
-              onClick={handleLogout}
-              className="px-1 py-3 text-[7px] md:px-4 md:py-2 md:text-[10px] font-black uppercase tracking-widest text-red-400 border border-red-500/20 rounded-xl hover:bg-red-500/10 transition-all active:scale-95 shadow-lg shadow-red-950/20"
-            >
-              Logout
-            </button>
+        {/* Logo Section */}
+        <div
+          onClick={() => navigate("/")}
+          className="flex items-center gap-3 cursor-pointer group"
+        >
+          <div className="relative flex items-center justify-center">
+            <img
+              width={42}
+              src="/logo.png"
+              alt="Logo"
+              className="relative z-10 transition-transform duration-300 ease-out group-hover:scale-105"
+            />
           </div>
-        ) : (
-          <button
-            onClick={() => navigate("/login")}
-            className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-purple-900/20 active:scale-95"
-          >
-            Access Terminal
-          </button>
-        )}
+
+          <div className="hidden sm:block leading-none">
+            <span className="text-xl font-bold tracking-tight text-slate-900">
+              DSA
+            </span>
+            <span className="text-xl font-bold tracking-tight text-indigo-600">
+              Verse
+            </span>
+          </div>
+        </div>
+
+        {/* Right Side */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {user ? (
+            <div className="flex items-center gap-2 sm:gap-3">
+
+              {/* Profile */}
+              <div
+                onClick={() => navigate("/progress")}
+                className="
+                  flex items-center gap-2.5
+                  px-2.5 py-1.5
+                  rounded-xl
+                  cursor-pointer
+                  border border-transparent
+                  hover:border-slate-200
+                  hover:bg-slate-50
+                  transition-all duration-200
+                  group
+                "
+              >
+                <div className="flex items-center justify-center">
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt="pfp"
+                      className="
+                        w-8 h-8
+                        rounded-full
+                        object-cover
+                        ring-2 ring-white
+                        shadow-sm
+                        transition-transform duration-200
+                        group-hover:scale-105
+                      "
+                    />
+                  ) : (
+                    <FaUserCircle className="w-8 h-8 text-slate-400" />
+                  )}
+                </div>
+
+                <div className="hidden sm:flex flex-col items-start leading-tight">
+                  <span className="text-[11px] font-medium text-slate-400">
+                    Welcome back
+                  </span>
+
+                  <span className="text-sm font-semibold text-slate-800 truncate max-w-[120px]">
+                    {user.displayName || "User"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Architect */}
+              {user.email === "simplesabanda07@gmail.com" && (
+                <span
+                  className="
+                    px-3 py-2
+                    text-[10px]
+                    font-semibold
+                    text-indigo-600
+                    border border-indigo-100
+                    bg-indigo-50
+                    rounded-lg
+                    cursor-pointer
+                    transition-all duration-200
+                    hover:bg-indigo-100
+                    hover:border-indigo-200
+                  "
+                >
+                  <button
+                    onClick={() => navigate("/admin")}
+                    className="cursor-pointer"
+                  >
+                    Architect
+                  </button>
+                </span>
+              )}
+
+              {/* Logout */}
+              <button
+                onClick={handleLogout}
+                className="
+                  px-2.5 py-2
+                  sm:px-3.5
+                  text-[10px] sm:text-[11px]
+                  font-semibold
+                  text-slate-500
+                  border border-slate-200
+                  rounded-lg
+                  hover:text-red-500
+                  hover:border-red-200
+                  hover:bg-red-50
+                  transition-all duration-200
+                  active:scale-95
+                "
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate("/login")}
+              className="
+                px-5 py-2.5
+                bg-indigo-600
+                hover:bg-indigo-700
+                text-white
+                rounded-lg
+                text-xs
+                font-semibold
+                transition-all duration-200
+                active:scale-[0.98]
+                shadow-sm
+                hover:shadow-md
+              "
+            >
+              Access Terminal
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
