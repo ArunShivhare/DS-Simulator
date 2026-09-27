@@ -41,235 +41,346 @@ const Dashboard = ({ user }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white px-6 py-24 font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
       <Navbar user={user} />
-      {/* Background Glows */}
-      <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-purple-600/5 blur-[120px] rounded-full pointer-events-none"></div>
-      <div className="absolute bottom-0 right-0 w-[40%] h-[40%] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none"></div>
 
-      {/* 🔥 HERO SECTION */}
-      <div className="text-center mb-24 relative z-10">
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-4">
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400">
-            Master Data
-          </h2>
-          <img
-            width={100}
-            src="/logo.png"
-            alt="Logo"
-            className="drop-shadow-[0_0_15px_rgba(129,140,248,0.4)]"
-          />
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white">
-            Structures
-          </h2>
-        </div>
-        <p className="text-gray-500 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
-          The ultimate environment to{" "}
-          <span className="text-purple-400">visualize</span>,
-          <span className="text-blue-400 ml-1 text-white font-medium">
-            simulate
-          </span>
-          , and master core concepts.
-        </p>
-      </div>
+      <main className="pt-[72px]">
+        {/* HERO */}
+        <section className="relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pt-16 md:pt-20 pb-14">
 
-      {/* 🔥 TOP FEATURES (3-column layout) */}
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 mb-24 relative z-10">
-        {[
-          {
-            title: "Visual Learning",
-            desc: "Interactive simulations for every step.",
-            color: "text-purple-400",
-          },
-          {
-            title: "Code + Theory",
-            desc: "Real-world implementations & deep dives.",
-            color: "text-blue-400",
-          },
-          {
-            title: "Practice Ready",
-            desc: "Solve problems and track your score.",
-            color: "text-emerald-400",
-          },
-        ].map((item, i) => (
-          <div
-            key={i}
-            className="bg-white/5 border border-white/10 p-6 rounded-[2rem] backdrop-blur-sm"
-          >
-            <h3
-              className={`font-black uppercase tracking-widest text-[10px] mb-2 ${item.color}`}
-            >
-              {item.title}
-            </h3>
-            <p className="text-gray-400 text-sm font-medium">{item.desc}</p>
+            <div className="max-w-4xl mx-auto text-center">
+
+              <div className="inline-flex items-center gap-2 px-3.5 py-2 mb-6 bg-white border border-slate-200 rounded-full shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-indigo-600" />
+
+                <span className="text-[10px] uppercase tracking-[0.16em] font-semibold text-slate-500">
+                  Learning Dashboard
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-5">
+
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-[-0.045em] text-slate-950">
+                  Master Data
+                </h2>
+
+                <img
+                  width={70}
+                  src="/logo.png"
+                  alt="Logo"
+                  className="w-14 sm:w-16 md:w-[70px] object-contain transition-transform duration-300 hover:scale-105"
+                />
+
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-[-0.045em] text-slate-950">
+                  Structures
+                </h2>
+
+              </div>
+
+              <p className="mt-6 text-base md:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
+                The ultimate environment to{" "}
+                <span className="text-indigo-600 font-semibold">
+                  visualize
+                </span>
+                ,
+                <span className="text-slate-800 font-semibold ml-1">
+                  simulate
+                </span>
+                , and master core concepts.
+              </p>
+
+            </div>
           </div>
-        ))}
-      </div>
+        </section>
 
-      {/* 🔥 MODULE SELECTOR TITLE */}
-      <div className="max-w-6xl mx-auto mb-12 flex items-center gap-4 relative z-10">
-        <h3 className="text-3xl font-black uppercase tracking-tighter">
-          Choose Module
-        </h3>
-        <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent"></div>
-      </div>
+        {/* MODULE TITLE */}
+        <section className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
 
-      <div
-  onClick={() => navigate("/fundamentals")}
-  className="
-    group
-    cursor-pointer
-    w-full
-    max-w-7xl
-    mx-auto
-    mt-8
-    mb-12
+          <div className="flex items-center gap-5 mb-7">
 
-    bg-gradient-to-r
-    from-[#0f172a]
-    via-[#111827]
-    to-[#0f172a]
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.16em] font-semibold text-indigo-600 mb-1">
+                Start here
+              </p>
 
-    border border-white/10
-    rounded-[2rem]
-
-    px-8 md:px-12
-    py-6
-
-    flex items-center justify-between
-
-    hover:border-purple-500/40
-    hover:shadow-[0_0_40px_rgba(168,85,247,0.12)]
-
-    transition-all
-    duration-300
-  "
->
-  {/* Left Section */}
-  <div className="flex items-center gap-6">
-    {/* Icon */}
-    <div
-      className="
-        w-16 h-16
-        rounded-2xl
-        bg-purple-500/10
-        border border-purple-500/20
-
-        flex items-center justify-center
-
-        text-3xl
-      "
-    >
-      📚
-    </div>
-
-    {/* Text */}
-    <div>
-      <p
-        className="
-          text-purple-400
-          font-black
-          uppercase
-          tracking-[0.18em]
-          text-sm
-        "
-      >
-        Build Fundamentals
-      </p>
-
-      <h3
-        className="
-          text-white
-          text-2xl
-          md:text-3xl
-          font-black
-          mt-1
-        "
-      >
-        Learn DSA From Scratch
-      </h3>
-
-      <p
-        className="
-          text-gray-400
-          mt-2
-          text-sm
-          md:text-base
-        "
-      >
-        Master Arrays, Linked Lists, Stacks, Queues, Trees, Graphs,
-        Recursion and Problem Solving with structured lessons.
-      </p>
-    </div>
-  </div>
-
-  {/* Right Section */}
-  <div
-    className="
-      hidden md:flex
-      items-center gap-3
-
-      px-6 py-3
-
-      rounded-xl
-
-      bg-purple-600
-      text-white
-
-      font-bold
-
-      group-hover:bg-purple-500
-
-      transition-all
-    "
-  >
-    Start Learning
-    <span className="group-hover:translate-x-1 transition-transform">
-      →
-    </span>
-  </div>
-</div>
-
-      {/* 🔥 STRUCTURE CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto relative z-10">
-        {structures.map((item) => (
-          <div
-            key={item.name}
-            onClick={() => navigate(`/visualizer/${item.path}`)}
-            className="group relative p-8 bg-gray-900 border border-white/5 rounded-[2.5rem] cursor-pointer text-center 
-                       transition-all duration-500 hover:border-purple-500/50 hover:-translate-y-2 overflow-hidden"
-          >
-            {/* Hover Background Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-            {/* ICON with Glow Effect */}
-            <div className="mb-6 flex justify-center text-gray-500 group-hover:text-purple-400 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_10px_rgba(168,85,247,0)] group-hover:drop-shadow-[0_0_15px_rgba(168,85,247,0.4)]">
-              {item.icon}
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
+                Choose Module
+              </h3>
             </div>
 
-            {/* TITLE & TAG */}
-            <p className="text-[10px] font-black text-purple-500/60 uppercase tracking-[0.2em] mb-2 group-hover:text-purple-400 transition-colors">
-              {item.tag}
-            </p>
-            <h3 className="text-2xl font-black mb-4 tracking-tighter group-hover:text-white transition-colors">
-              {item.name}
-            </h3>
+            <div className="h-px flex-1 bg-slate-200 mt-5" />
 
-            {/* DESCRIPTION */}
-            <p className="text-xs text-gray-500 leading-relaxed group-hover:text-gray-300 transition-colors">
-              {item.desc}
-            </p>
+          </div>
 
-            {/* Action Indicator */}
-            <div className="mt-8 text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 group-hover:text-white transition-colors">
-              Launch Visualizer{" "}
-              <span className="ml-1 group-hover:translate-x-1 transition-transform inline-block">
+        </section>
+
+        {/* FUNDAMENTALS */}
+        <section className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 mb-16">
+
+          <div
+            onClick={() => navigate("/fundamentals")}
+            className="
+              group
+              cursor-pointer
+              bg-white
+              border border-slate-200
+              rounded-2xl
+              p-6 md:p-8
+              flex flex-col md:flex-row
+              items-start md:items-center
+              justify-between
+              gap-6
+              shadow-sm
+
+              transition-all
+              duration-300
+
+              hover:border-indigo-200
+              hover:shadow-[0_12px_35px_-15px_rgba(79,70,229,0.25)]
+              hover:-translate-y-0.5
+            "
+          >
+
+            {/* Left */}
+            <div className="flex items-start gap-5">
+
+              <div
+                className="
+                  shrink-0
+                  w-14 h-14
+                  rounded-xl
+                  bg-indigo-50
+                  border border-indigo-100
+                  flex items-center justify-center
+                  text-2xl
+                  transition-transform duration-300
+                  group-hover:scale-105
+                "
+              >
+                📚
+              </div>
+
+              <div>
+
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-600 mb-1.5">
+                  Build Fundamentals
+                </p>
+
+                <h3 className="text-xl md:text-2xl font-bold text-slate-900">
+                  Learn DSA From Scratch
+                </h3>
+
+                <p className="text-sm md:text-base text-slate-500 mt-2 max-w-3xl leading-relaxed">
+                  Master Arrays, Linked Lists, Stacks, Queues, Trees, Graphs,
+                  Recursion and Problem Solving with structured lessons.
+                </p>
+
+              </div>
+
+            </div>
+
+            {/* Right */}
+            <div
+              className="
+                shrink-0
+                flex items-center gap-2
+                px-5 py-3
+                bg-indigo-600
+                text-white
+                rounded-lg
+                text-sm
+                font-semibold
+
+                transition-all duration-200
+                group-hover:bg-indigo-700
+                group-hover:shadow-md
+              "
+            >
+              Start Learning
+
+              <span className="transition-transform duration-200 group-hover:translate-x-1">
                 →
               </span>
             </div>
+
           </div>
-        ))}
-      </div>
+
+        </section>
+
+        {/* FEATURE STRIP */}
+        <section className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-10 pb-16">
+
+          <div className="grid md:grid-cols-3 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+
+            {[
+              {
+                title: "Visual Learning",
+                desc: "Interactive simulations for every step.",
+                color: "bg-indigo-600",
+              },
+              {
+                title: "Code + Theory",
+                desc: "Real-world implementations & deep dives.",
+                color: "bg-sky-600",
+              },
+              {
+                title: "Practice Ready",
+                desc: "Solve problems and track your score.",
+                color: "bg-emerald-600",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className={`
+                  relative p-6 sm:p-7
+                  ${i !== 2 ? "border-b md:border-b-0 md:border-r border-slate-200" : ""}
+                  transition-colors duration-200
+                  hover:bg-slate-50
+                `}
+              >
+                <div className={`w-2 h-2 rounded-full ${item.color} mb-4`} />
+
+                <h3 className="font-bold text-sm text-slate-800 mb-1.5">
+                  {item.title}
+                </h3>
+
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+
+          </div>
+        </section>
+
+        {/* STRUCTURES */}
+        <section className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pb-24">
+
+          <div className="flex items-end justify-between mb-7">
+
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.16em] font-semibold text-indigo-600 mb-1">
+                Interactive learning
+              </p>
+
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
+                Data Structures
+              </h3>
+            </div>
+
+            <span className="hidden sm:block text-xs text-slate-400">
+              Choose a structure to explore
+            </span>
+
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+            {structures.map((item) => (
+              <div
+                key={item.name}
+                onClick={() => navigate(`/visualizer/${item.path}`)}
+                className="
+                  group
+                  relative
+                  bg-white
+                  border border-slate-200
+                  rounded-2xl
+                  p-6
+                  cursor-pointer
+                  overflow-hidden
+
+                  transition-all
+                  duration-300
+
+                  hover:-translate-y-1
+                  hover:border-indigo-200
+                  hover:shadow-[0_15px_35px_-18px_rgba(79,70,229,0.28)]
+                "
+              >
+
+                {/* Small accent */}
+                <div
+                  className="
+                    absolute
+                    top-0 left-0
+                    w-full h-1
+                    bg-indigo-600
+                    scale-x-0
+                    origin-left
+                    group-hover:scale-x-100
+                    transition-transform duration-300
+                  "
+                />
+
+                {/* Icon */}
+                <div
+                  className="
+                    w-14 h-14
+                    rounded-xl
+                    bg-slate-50
+                    border border-slate-100
+                    flex items-center justify-center
+                    text-slate-500
+
+                    transition-all
+                    duration-300
+
+                    group-hover:bg-indigo-50
+                    group-hover:border-indigo-100
+                    group-hover:text-indigo-600
+                    group-hover:-translate-y-0.5
+                  "
+                >
+                  {item.icon}
+                </div>
+
+                {/* Tag */}
+                <p className="mt-6 text-[10px] font-bold text-indigo-600 uppercase tracking-[0.15em]">
+                  {item.tag}
+                </p>
+
+                {/* Title */}
+                <h3 className="text-xl font-bold text-slate-900 mt-1.5">
+                  {item.name}
+                </h3>
+
+                {/* Description */}
+                <p className="text-sm text-slate-500 leading-relaxed mt-3 min-h-[63px]">
+                  {item.desc}
+                </p>
+
+                {/* Action */}
+                <div
+                  className="
+                    mt-6
+                    pt-4
+                    border-t border-slate-100
+                    text-xs
+                    font-semibold
+                    text-slate-400
+
+                    transition-colors
+                    duration-200
+
+                    group-hover:text-indigo-600
+                  "
+                >
+                  Launch Visualizer
+
+                  <span className="inline-block ml-1 transition-transform duration-200 group-hover:translate-x-1">
+                    →
+                  </span>
+                </div>
+
+              </div>
+            ))}
+
+          </div>
+
+        </section>
+      </main>
     </div>
   );
 };
