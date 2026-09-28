@@ -3,6 +3,19 @@ import { useState, useEffect } from "react";
 import { codeSnippets } from "../data/codeSnippets";
 import { visualizationSteps } from "../data/visualizationSteps";
 import { motion } from "framer-motion";
+import {
+  ChevronDown,
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Code2,
+  Gauge,
+  Layers3,
+  Activity,
+  RotateCcw,
+  Terminal,
+} from "lucide-react";
 import { auth } from "../firebase";
 import Navbar from "../components/Navbar";
 
@@ -1032,51 +1045,98 @@ const Visualizer = () => {
   }, [type]);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white px-6 py-12 font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 text-slate-900 px-4 sm:px-6 py-8 font-sans relative overflow-hidden">
+      {" "}
       <Navbar user={user} />
-      {/* Background Decorative Glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full pointer-events-none"></div>
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+      {/* HEADER */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-10 max-w-7xl mx-auto mb-8 mt-20"
+      >
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-7 w-7 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                <Layers3 size={14} className="text-indigo-600" />
+              </div>
 
-      {/* Header */}
-      <div className="relative z-10 max-w-7xl mx-auto text-center mb-12 mt-16">
-        <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-400 to-gray-600">
-          {type} <span className="text-purple-500">Visualizer</span>
-        </h2>
-        <div className="h-1 w-24 bg-purple-600 mx-auto mt-4 rounded-full shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-        {/* LEFT PANEL: OPERATIONS CONSOLE */}
-        <div className="w-full lg:w-80 shrink-0">
-          <div className="bg-gray-900/50 border border-white/10 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl sticky top-24">
-            <div className="flex items-center gap-2 mb-8">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
-                Control Terminal
-              </h3>
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-500">
+                Interactive Laboratory
+              </span>
             </div>
 
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-950">
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+              <span className="text-indigo-600"> Visualizer</span>
+            </h2>
+
+            <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500">
+              Explore how each operation changes the structure, one step at a
+              time.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            Simulation Ready
+          </div>
+        </div>
+      </motion.div>
+      <div className="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row gap-5 lg:gap-6">
+        {" "}
+        {/* LEFT PANEL: OPERATIONS CONSOLE */}
+        <div className="w-full lg:w-80 shrink-0">
+          <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-sm sticky top-24">
+            {" "}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                  <Activity size={15} className="text-indigo-600" />
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-bold text-slate-800">
+                    Simulation Controls
+                  </h3>
+
+                  <p className="text-[10px] text-slate-400 mt-0.5">
+                    Configure your operation
+                  </p>
+                </div>
+              </div>
+
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
             {/* Dropdown Selector */}
             <div className="relative mb-6">
-              <label className="text-[10px] font-bold text-purple-400 uppercase tracking-widest ml-2 mb-2 block">
-                Method
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.14em] ml-1 mb-2 block">
+                Operation
               </label>
               <button
                 onClick={() => setOpen(!open)}
-                className="w-full p-4 bg-black/40 border border-white/10 text-gray-200 rounded-2xl flex justify-between items-center hover:border-purple-500/50 transition-all font-bold text-sm shadow-inner"
+                className="
+  w-full px-4 py-3.5
+  bg-slate-50 border border-slate-200
+  text-slate-700 rounded-xl
+  flex justify-between items-center
+  hover:border-indigo-300 hover:bg-indigo-50/30
+  transition-all font-semibold text-sm
+"
               >
                 {selectedOp || "Select Operation"}
-                <img
-                  width={20}
-                  src="/dropdown.png"
-                  alt=""
-                  className={`transition-transform duration-300 ${open ? "rotate-180" : ""} opacity-50`}
+                <ChevronDown
+                  size={17}
+                  className={`text-slate-400 transition-transform duration-300 ${
+                    open ? "rotate-180 text-indigo-500" : ""
+                  }`}
                 />
               </button>
 
               {open && (
-                <div className="absolute w-full bg-gray-900 border border-white/10 mt-3 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-2xl">
+                <div className="absolute w-full bg-white border border-slate-200 mt-2 rounded-xl shadow-xl z-50 overflow-hidden">
+                  {" "}
                   {operations.map((op, i) => (
                     <div
                       key={i}
@@ -1084,7 +1144,13 @@ const Visualizer = () => {
                         setSelectedOp(op);
                         setOpen(false);
                       }}
-                      className="p-4 text-sm font-medium hover:bg-purple-600 hover:text-white cursor-pointer transition-colors border-b border-white/5 last:border-0"
+                      className="
+  px-4 py-3
+  text-sm font-medium text-slate-600
+  hover:bg-indigo-50 hover:text-indigo-600
+  cursor-pointer transition-colors
+  border-b border-slate-100 last:border-0
+"
                     >
                       {op}
                     </div>
@@ -1092,7 +1158,6 @@ const Visualizer = () => {
                 </div>
               )}
             </div>
-
             {/* Value Input Logic - EXACT SAME CONDITIONALS */}
             {selectedOp !== "Pop" &&
               selectedOp !== "Dequeue" &&
@@ -1105,7 +1170,7 @@ const Visualizer = () => {
               selectedOp !== "Bubble Sort" &&
               selectedOp !== "Quick Sort" && (
                 <div className="mb-6 animate-fadeIn">
-                  <label className="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-2 mb-2 block">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2 mb-2 block">
                     Data Input
                   </label>
                   <input
@@ -1113,15 +1178,21 @@ const Visualizer = () => {
                     placeholder="Value..."
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    className="w-full p-4 text-white bg-black/40 border border-white/10 rounded-2xl outline-none focus:border-blue-500/50 transition-all font-mono"
+                    className="
+  w-full px-4 py-3.5
+  text-slate-700 bg-slate-50
+  border border-slate-200 rounded-xl
+  outline-none
+  focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50
+  transition-all font-mono text-sm
+"
                   />
                 </div>
               )}
-
             {(selectedOp === "Insert at Position" ||
               selectedOp === "Delete at Position") && (
               <div className="mb-6 animate-fadeIn">
-                <label className="text-[10px] font-bold text-pink-400 uppercase tracking-widest ml-2 mb-2 block">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2 mb-2 block">
                   Node Position
                 </label>
 
@@ -1134,14 +1205,20 @@ const Visualizer = () => {
                 />
               </div>
             )}
-
             <div className="relative mb-6">
               <label className="text-[10px] font-bold text-purple-400 uppercase tracking-widest ml-2 mb-2 block">
                 Visualization Speed
               </label>
               <button
                 onClick={() => setSpeedOpen(!speedOpen)}
-                className="w-full p-4 bg-black/40 border border-white/10 text-gray-200 rounded-2xl flex justify-between items-center hover:border-purple-500/50 transition-all font-bold text-sm shadow-inner"
+                className="
+  w-full px-4 py-3.5
+  bg-slate-50 border border-slate-200
+  text-slate-700 rounded-xl
+  flex justify-between items-center
+  hover:border-indigo-300
+  transition-all font-semibold text-sm
+"
               >
                 {/* Display label based on numeric speed value */}
                 {speed === 200
@@ -1173,7 +1250,13 @@ const Visualizer = () => {
                         setSpeed(opt.value);
                         setSpeedOpen(false);
                       }}
-                      className="p-4 text-sm font-medium text-gray-300 hover:bg-purple-600 hover:text-white cursor-pointer transition-colors border-b border-white/5 last:border-0"
+                      className="
+  px-4 py-3
+  text-sm font-medium text-slate-600
+  hover:bg-indigo-50 hover:text-indigo-600
+  cursor-pointer transition-colors
+  border-b border-slate-100 last:border-0
+"
                     >
                       {opt.label}
                     </div>
@@ -1181,21 +1264,46 @@ const Visualizer = () => {
                 </div>
               )}
             </div>
-
             {/* Buttons */}
             <div className="space-y-4">
               <button
                 onClick={handleSimulate}
-                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 p-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-purple-900/20 active:scale-95 transition-all"
-              >
-                Execute Simulation ▶
-              </button>
+className="
+  group w-full
+  bg-indigo-600 hover:bg-indigo-700
+  p-4 rounded-xl
+  font-bold text-sm text-white
+  shadow-sm shadow-indigo-200
+  active:scale-[0.98]
+  transition-all
+  flex items-center justify-center gap-2
+"              >
+<Play
+  size={16}
+  fill="currentColor"
+  className="transition-transform group-hover:translate-x-0.5"
+/>
+<span>Execute Simulation</span>              </button>
               <div className="grid grid-cols-3 gap-2.5 w-full mt-4">
                 {/* Prev Button */}
                 <button
                   onClick={handlePrevious}
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 bg-[#0d111c]/60 hover:bg-[#161b26]/80 border border-[#222a3a] hover:border-[#38455e] rounded-md text-[11px] font-semibold font-sans uppercase tracking-wider text-[#94a3b8] hover:text-[#38bdf8] transition-all duration-200 cursor-pointer group"
-                >
+className="
+  flex items-center justify-center gap-1.5
+  py-2.5 px-2
+  bg-white
+  hover:bg-slate-50
+  border border-slate-200
+  hover:border-indigo-200
+  rounded-lg
+  text-[10px] font-bold
+  uppercase tracking-wider
+  text-slate-500
+  hover:text-indigo-600
+  transition-all duration-200
+  cursor-pointer
+  group
+"                >
                   <svg
                     className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform"
                     fill="currentColor"
@@ -1209,8 +1317,22 @@ const Visualizer = () => {
                 {/* Pause / Resume Button */}
                 <button
                   onClick={() => setIsPaused(!isPaused)}
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 bg-[#0d111c]/60 hover:bg-[#161b26]/80 border border-[#222a3a] hover:border-[#38455e] rounded-md text-[11px] font-semibold font-sans uppercase tracking-wider text-[#94a3b8] hover:text-[#38bdf8] transition-all duration-200 cursor-pointer group"
-                >
+className="
+  flex items-center justify-center gap-1.5
+  py-2.5 px-2
+  bg-white
+  hover:bg-slate-50
+  border border-slate-200
+  hover:border-indigo-200
+  rounded-lg
+  text-[10px] font-bold
+  uppercase tracking-wider
+  text-slate-500
+  hover:text-indigo-600
+  transition-all duration-200
+  cursor-pointer
+  group
+"                >
                   {isPaused ? (
                     <>
                       <svg
@@ -1239,8 +1361,22 @@ const Visualizer = () => {
                 {/* Next Button */}
                 <button
                   onClick={handleNext}
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 bg-[#0d111c]/60 hover:bg-[#161b26]/80 border border-[#222a3a] hover:border-[#38455e] rounded-md text-[11px] font-semibold font-sans uppercase tracking-wider text-[#94a3b8] hover:text-[#38bdf8] transition-all duration-200 cursor-pointer group"
-                >
+className="
+  flex items-center justify-center gap-1.5
+  py-2.5 px-2
+  bg-white
+  hover:bg-slate-50
+  border border-slate-200
+  hover:border-indigo-200
+  rounded-lg
+  text-[10px] font-bold
+  uppercase tracking-wider
+  text-slate-500
+  hover:text-indigo-600
+  transition-all duration-200
+  cursor-pointer
+  group
+"                >
                   <span>Next</span>
                   <svg
                     className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform"
@@ -1255,29 +1391,63 @@ const Visualizer = () => {
               <button
                 disabled={!selectedOp}
                 onClick={() => setMode(mode === "visual" ? "code" : "visual")}
-                className="w-full bg-white/5 border border-white/10 hover:bg-white/10 p-4 rounded-2xl font-black text-xs uppercase tracking-widest disabled:opacity-30 transition-all flex items-center justify-center gap-2"
-              >
-                {mode === "visual"
-                  ? "View Implementation 💻"
-                  : "Back to Lab 🔙"}
+className="
+  w-full
+  bg-slate-50
+  border border-slate-200
+  hover:bg-indigo-50
+  hover:border-indigo-200
+  p-3.5 rounded-xl
+  font-bold text-xs
+  text-slate-600
+  hover:text-indigo-600
+  disabled:opacity-30
+  transition-all
+  flex items-center justify-center gap-2
+"              >
+                <>
+  <Code2 size={15} />
+
+  {mode === "visual"
+    ? "View Implementation"
+    : "Back to Lab"}
+</>
               </button>
             </div>
           </div>
         </div>
-
         {/* RIGHT PANEL: DISPLAY AREA */}
-        <div className="flex-1 min-h-[500px] bg-gray-900/40 border border-white/5 backdrop-blur-sm rounded-[2.5rem] p-8 flex flex-col relative shadow-inner overflow-hidden">
-          {/* Dynamic Status Bar */}
-          <div className="absolute top-0 left-0 w-full p-6 flex justify-between items-center pointer-events-none z-20">
-            <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/40"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/40"></div>
-            </div>
-            <span className="text-[10px] font-black text-gray-600 tracking-[0.3em] uppercase">
-              Output Stream
-            </span>
-          </div>
+<div className="
+  flex-1 min-h-[560px]
+  bg-white
+  border border-slate-200
+  rounded-2xl
+  p-5 sm:p-7
+  flex flex-col
+  relative
+  shadow-sm
+  overflow-hidden
+">          {/* Dynamic Status Bar */}
+          <div className="
+  absolute top-0 left-0 w-full
+  px-5 sm:px-7 py-5
+  flex justify-between items-center
+  pointer-events-none z-20
+  border-b border-slate-100
+">
+  <div className="flex items-center gap-2">
+    <div className="h-2 w-2 rounded-full bg-indigo-500" />
+
+    <span className="text-xs font-bold text-slate-700">
+      Visualization
+    </span>
+  </div>
+
+  <div className="flex items-center gap-2 text-[10px] font-semibold text-slate-400">
+    <Activity size={12} />
+    Live Simulation
+  </div>
+</div>
 
           <div className="flex-1 flex flex-col mt-12 overflow-hidden">
             {mode === "visual" ? (
@@ -1285,7 +1455,7 @@ const Visualizer = () => {
                 {/* ALERT & INFO MESSAGES */}
                 <div className="h-16 flex items-center justify-center mb-8 shrink-0">
                   {type === "stack" && selectedOp === "Top" && (
-                    <div className="px-6 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-yellow-400 font-bold animate-bounce">
+                    <div className="px-6 py-2 bg-amber-50 border border-amber-200 rounded-full text-amber-700 font-bold animate-bounce">
                       {structure.length > 0
                         ? `Top: ${structure[topIndex]}`
                         : "Empty Stack"}
@@ -1296,8 +1466,8 @@ const Visualizer = () => {
                     <div
                       className={`px-6 py-2 rounded-full font-bold border animate-pulse ${
                         searchResult === -1
-                          ? "bg-red-500/10 border-red-500/30 text-red-400"
-                          : "bg-green-500/10 border-green-500/30 text-green-400"
+                          ? "bg-red-50 border border-red-200 text-red-600"
+                          : "bg-emerald-50 border border-emerald-200 text-emerald-700"
                       }`}
                     >
                       {searchResult === -1
@@ -1307,7 +1477,7 @@ const Visualizer = () => {
                   )}
 
                   {infoMessage && (
-                    <div className="px-6 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 font-bold tracking-tight">
+                    <div className="px-6 py-2 bg-sky-50 border border-sky-200 text-sky-700 rounded-full text-blue-400 font-bold tracking-tight">
                       {infoMessage}
                     </div>
                   )}
@@ -1337,15 +1507,20 @@ const Visualizer = () => {
             ) : (
               <div className="w-full h-full flex flex-col overflow-hidden">
                 {/* Language Selector */}
-                <div className="flex gap-2 mb-6 self-center bg-black/40 p-1.5 rounded-2xl border border-white/5 shrink-0">
-                  {["js", "cpp", "Java", "Python"].map((lang) => (
+<div className="
+  flex gap-1 mb-6 self-center
+  bg-slate-100
+  p-1 rounded-xl
+  border border-slate-200
+  shrink-0
+">                  {["js", "cpp", "Java", "Python"].map((lang) => (
                     <button
                       key={lang}
                       onClick={() => setLanguage(lang)}
                       className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
                         language === lang
-                          ? "bg-purple-600 text-white shadow-lg"
-                          : "text-gray-500 hover:text-gray-300"
+                          ? "bg-white text-indigo-600 shadow-sm"
+                          : "text-slate-400 hover:text-slate-700"
                       }`}
                     >
                       {lang}
@@ -1355,8 +1530,17 @@ const Visualizer = () => {
 
                 {/* Code Block */}
                 <div className="relative group flex-1 overflow-hidden">
-                  <pre className="h-full bg-black/60 text-green-400 p-8 rounded-2xl overflow-auto text-sm font-mono border border-white/10 leading-relaxed">
-                    {code}
+<pre className="
+  h-full
+  bg-slate-950
+  text-slate-200
+  p-6 sm:p-8
+  rounded-xl
+  overflow-auto
+  text-sm font-mono
+  border border-slate-800
+  leading-relaxed
+">                    {code}
                   </pre>
                 </div>
               </div>
