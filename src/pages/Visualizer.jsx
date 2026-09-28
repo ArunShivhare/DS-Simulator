@@ -570,7 +570,7 @@ const Visualizer = () => {
     } else {
       const parsedValues = parseInput(value);
 
-      // 🔥 INSERT AT POSITION
+      // INSERT AT POSITION
       if (type === "linkedlist" && selectedOp === "Insert at Position") {
         generatedSteps =
           visualizationSteps[type]?.[selectedOp]?.(
@@ -622,7 +622,7 @@ const Visualizer = () => {
         setMid(null);
         setHigh(null);
 
-        // ✅ ADD THIS (IMPORTANT)
+        // ADD THIS (IMPORTANT)
         setSearchResult(null);
       }, 2000);
 
@@ -631,285 +631,783 @@ const Visualizer = () => {
   }, [currentStep, steps]);
 
   const renderStack = () => (
-    <div className="flex flex-col items-center justify-end min-h-[450px] py-10 w-full">
-      {/* Stack Container - 'The Well' */}
-      <div className="relative flex flex-col-reverse items-center gap-3 border-x-4 border-b-4 border-white/10 bg-white/5 p-10 rounded-b-[3rem] min-w-[280px] max-h-[400px] overflow-y-auto scrollbar-hide shadow-2xl backdrop-blur-sm">
-        {/* Visual Top Rim Glow */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"></div>
+  <div className="w-full min-h-[450px] flex flex-col items-center justify-end py-12 px-4">
 
-        {structure.map((item, index) => (
+    {/* STACK CONTAINER */}
+    <div
+      className="
+        relative
+        flex flex-col-reverse
+        items-center
+        gap-3
+
+        w-[420px]
+        max-w-full
+        max-h-[400px]
+
+        overflow-y-auto
+        overflow-x-hidden
+        scrollbar-hide
+
+        px-6
+        pt-8
+        pb-10
+
+        rounded-b-3xl
+
+        bg-slate-50
+        border-x-2
+        border-b-2
+        border-slate-200
+
+        shadow-sm
+      "
+    >
+
+      {structure.map((item, index) => (
+        <div
+          key={index}
+          className="
+            relative
+            grid
+            grid-cols-[80px_112px_80px]
+            items-center
+            gap-3
+            h-14
+            shrink-0
+          "
+        >
+
+          {/* LEFT — TOP POINTER */}
+          <div className="flex justify-end items-center">
+            {index === topIndex && (
+              <motion.div
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2"
+              >
+                <span
+                  className="
+                    bg-amber-50
+                    border border-amber-200
+                    text-amber-600
+
+                    text-[9px]
+                    font-bold
+                    uppercase
+                    tracking-wider
+
+                    px-2.5
+                    py-1
+
+                    rounded-md
+                    shadow-sm
+                  "
+                >
+                  TOP
+                </span>
+
+                <div className="w-3 h-px bg-amber-300" />
+              </motion.div>
+            )}
+          </div>
+
+
+          {/* CENTER — DATA BLOCK */}
+          <motion.div
+            initial={{
+              scale: 0.8,
+              opacity: 0,
+              y: -15,
+            }}
+            animate={{
+              scale: index === topIndex ? 1.05 : 1,
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.35,
+              type: "spring",
+              stiffness: 200,
+            }}
+            className={`
+              w-28
+              h-12
+
+              flex
+              items-center
+              justify-center
+
+              rounded-xl
+
+              text-lg
+              font-bold
+
+              border
+
+              transition-all
+              duration-300
+
+              z-10
+
+              ${
+                index === topIndex
+                  ? `
+                    bg-amber-50
+                    border-amber-300
+                    text-amber-700
+                    shadow-md
+                    shadow-amber-100
+                  `
+                  : `
+                    bg-white
+                    border-slate-200
+                    text-slate-700
+                    shadow-sm
+                  `
+              }
+            `}
+          >
+            {item}
+          </motion.div>
+
+
+          {/* RIGHT — INDEX */}
+          <div className="flex items-center justify-start">
+            <div className="w-3 h-px bg-slate-200 mr-2" />
+
+            <span
+              className="
+                text-[9px]
+                font-mono
+                font-semibold
+                text-slate-400
+                whitespace-nowrap
+              "
+            >
+              IDX {index}
+            </span>
+          </div>
+
+        </div>
+      ))}
+
+
+      {/* EMPTY STACK */}
+      {structure.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="
+            flex
+            flex-col
+            items-center
+            py-16
+          "
+        >
+          <div
+            className="
+              text-3xl
+              font-black
+              tracking-tight
+              text-slate-300
+            "
+          >
+            EMPTY
+          </div>
+
+          <p
+            className="
+              mt-2
+              text-[10px]
+              font-bold
+              uppercase
+              tracking-widest
+              text-slate-400
+            "
+          >
+            Stack Pointer = -1
+          </p>
+        </motion.div>
+      )}
+
+    </div>
+
+
+    {/* STACK BASE */}
+    <div
+      className="
+        w-56
+        h-2
+        bg-slate-200
+        rounded-full
+        mt-4
+      "
+    />
+
+  </div>
+);
+
+  const renderQueue = () => (
+  <div
+    className="
+      w-full
+      min-h-[400px]
+      flex
+      flex-col
+      items-center
+      justify-center
+      py-16
+      px-4
+    "
+  >
+
+    {/* QUEUE STAGE */}
+    <div
+      className="
+        relative
+        flex
+        items-center
+        gap-5
+        w-full
+        max-w-4xl
+        min-h-[220px]
+        px-16
+        sm:px-24
+        py-20
+        overflow-x-auto
+        overflow-y-visible
+        scrollbar-hide
+        rounded-3xl
+        bg-slate-50
+        border-y
+        border-slate-200
+        shadow-sm
+      "
+    >
+
+      {/* INLET */}
+      <div
+        className="
+          absolute
+          left-4
+          sm:left-8
+          top-1/2
+          -translate-y-1/2
+          text-[9px]
+          font-bold
+          text-emerald-400
+          tracking-[0.3em]
+          uppercase
+          rotate-90
+          pointer-events-none
+        "
+      >
+        INLET
+      </div>
+
+      {/* OUTLET */}
+      <div
+        className="
+          absolute
+          right-4
+          sm:right-8
+          top-1/2
+          -translate-y-1/2
+          text-[9px]
+          font-bold
+          text-amber-400
+          tracking-[0.3em]
+          uppercase
+          -rotate-90
+          pointer-events-none
+        "
+      >
+        OUTLET
+      </div>
+
+      {structure.map((item, index) => {
+        const isFront = index === frontIndex;
+        const isRear = index === rearIndex;
+
+        return (
           <div
             key={index}
-            className="flex items-center justify-center w-full relative h-14 shrink-0"
+            className="
+              relative
+              flex
+              flex-col
+              items-center
+              shrink-0
+              group
+            "
           >
-            {/* 1. LEFT SIDE: TOP POINTER */}
-            <div className="absolute left-0 w-16 flex justify-end items-center">
-              {index === topIndex && (
+
+            {/* FRONT POINTER */}
+            <div
+              className="
+                absolute
+                bottom-full
+                left-1/2
+                -translate-x-1/2
+                mb-2
+                h-14
+                flex
+                flex-col
+                items-center
+                justify-end
+                z-20
+              "
+            >
+              {isFront && (
                 <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-2"
+                  initial={{ opacity: 0, y: 5, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className="flex flex-col items-center"
                 >
-                  <span className="text-[9px] font-black text-yellow-500 uppercase tracking-tighter bg-yellow-500/10 px-8 py-1 rounded border border-yellow-500/20 animate-pulse">
-                    Top
+                  <span
+                    className="
+                      bg-emerald-50
+                      border border-emerald-200
+                      text-emerald-600
+                      text-[9px]
+                      font-bold
+                      tracking-wider
+                      px-2.5
+                      py-1
+                      rounded-md
+                      shadow-sm
+                    "
+                  >
+                    FRONT
                   </span>
-                  <div className="w-3 h-[2px] bg-yellow-500/40"></div>
+
+                  <div className="w-px h-3 bg-emerald-300 mt-1" />
                 </motion.div>
               )}
             </div>
 
-            {/* 2. CENTER: THE DATA BLOCK */}
+            {/* DATA NODE */}
             <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: -20 }}
+              initial={{ scale: 0, x: 30 }}
               animate={{
-                scale: index === topIndex ? 1.05 : 1,
-                opacity: 1,
-                y: 0,
+                scale: isFront || isRear ? 1.06 : 1,
+                x: 0,
               }}
-              transition={{ duration: 0.4, type: "spring", stiffness: 200 }}
+              transition={{
+                duration: 0.35,
+                type: "spring",
+                stiffness: 150,
+              }}
               className={`
-              w-28 h-12 flex items-center justify-center rounded-xl text-lg font-black transition-all duration-300 border-2 z-10
-              ${
-                index === topIndex
-                  ? "bg-yellow-500 border-yellow-300 text-black shadow-[0_0_20px_rgba(234,179,8,0.3)]"
-                  : "bg-gray-800 border-white/5 text-gray-400"
-              }
-            `}
+                w-16
+                h-16
+                flex
+                items-center
+                justify-center
+                rounded-xl
+                text-lg
+                font-bold
+                border
+                transition-all
+                duration-300
+                z-10
+
+                ${
+                  isFront
+                    ? `
+                      bg-emerald-50
+                      border-emerald-300
+                      text-emerald-700
+                      shadow-md
+                      shadow-emerald-100
+                    `
+                    : isRear
+                      ? `
+                        bg-amber-50
+                        border-amber-300
+                        text-amber-700
+                        shadow-md
+                        shadow-amber-100
+                      `
+                      : `
+                        bg-white
+                        border-slate-200
+                        text-slate-700
+                        shadow-sm
+                        group-hover:border-indigo-200
+                      `
+                }
+              `}
             >
               {item}
             </motion.div>
 
-            {/* 3. RIGHT SIDE: INDEX LABEL */}
-            <div className="absolute right-0 w-16 flex justify-start items-center">
-              <div className="w-3 h-[1px] bg-gray-700 mr-2"></div>
-              <span className="text-[10px] font-mono font-bold text-gray-500 italic p-6">
-                idx {index}
+            {/* REAR POINTER */}
+            <div
+              className="
+                absolute
+                top-full
+                left-1/2
+                -translate-x-1/2
+                mt-2
+                h-14
+                flex
+                flex-col
+                items-center
+                justify-start
+                z-20
+              "
+            >
+              {isRear && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className="flex flex-col items-center"
+                >
+                  <div className="w-px h-3 bg-amber-300" />
+
+                  <span
+                    className="
+                      bg-amber-50
+                      border border-amber-200
+                      text-amber-600
+                      text-[9px]
+                      font-bold
+                      tracking-wider
+                      px-2.5
+                      py-1
+                      rounded-md
+                      shadow-sm
+                      mt-1
+                    "
+                  >
+                    REAR
+                  </span>
+                </motion.div>
+              )}
+            </div>
+
+            {/* INDEX */}
+            <div
+              className="
+                absolute
+                top-full
+                mt-16
+                opacity-60
+                group-hover:opacity-100
+                transition-opacity
+              "
+            >
+              <span
+                className="
+                  text-[9px]
+                  font-mono
+                  font-semibold
+                  text-slate-400
+                "
+              >
+                [{index}]
               </span>
             </div>
+
           </div>
-        ))}
+        );
+      })}
 
-        {/* Empty Stack State */}
-        {structure.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center py-16 opacity-20"
+      {/* EMPTY QUEUE */}
+      {structure.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="
+            w-full
+            flex
+            flex-col
+            items-center
+            py-10
+          "
+        >
+          <div
+            className="
+              text-3xl
+              font-black
+              tracking-tight
+              text-slate-300
+            "
           >
-            <div className="text-4xl mb-2 text-gray-500 font-black italic tracking-tighter">
-              EMPTY
-            </div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600">
-              Stack Pointer = -1
-            </p>
-          </motion.div>
-        )}
-      </div>
+            QUEUE EMPTY
+          </div>
 
-      {/* Stack Base Plate */}
-      <div className="w-56 h-3 bg-white/5 rounded-full mt-4 border-t border-white/10 shadow-lg"></div>
-    </div>
-  );
-
-  const renderQueue = () => (
-    <div className="flex flex-col items-center justify-center min-h-[400px] py-12 relative w-full">
-      {/* 1. Main Queue Stage - Increased vertical padding (py-20) to prevent pointer clipping */}
-      <div className="relative flex items-center gap-6 bg-white/5 border-y-2 border-white/5 px-16 py-24 rounded-[3rem] backdrop-blur-sm min-w-full lg:min-w-[600px] overflow-x-auto scrollbar-hide shadow-inner">
-        {/* Dynamic Background Labels */}
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-emerald-500/20 rotate-90 tracking-[0.5em] uppercase pointer-events-none">
-          INLET
-        </div>
-        <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-yellow-500/20 -rotate-90 tracking-[0.5em] uppercase pointer-events-none">
-          OUTLET
-        </div>
-
-        {structure.map((item, index) => {
-          const isFront = index === frontIndex;
-          const isRear = index === rearIndex;
-
-          return (
-            <div
-              key={index}
-              className="relative flex flex-col items-center shrink-0 group"
-            >
-              {/* FRONT POINTER (Top Track) */}
-              <div className="absolute -top-16 h-16 flex flex-col items-center justify-end pb-2">
-                {isFront && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex flex-col items-center"
-                  >
-                    <span className="bg-emerald-500 text-white text-[9px] font-black px-2.5 py-1 rounded shadow-[0_0_15px_rgba(16,185,129,0.4)] animate-pulse mb-1">
-                      FRONT
-                    </span>
-                    <div className="w-[2px] h-3 bg-emerald-500/40"></div>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* THE DATA NODE */}
-              <motion.div
-                initial={{ scale: 0, x: 40 }}
-                animate={{
-                  scale: isFront || isRear ? 1.1 : 1,
-                  x: 0,
-                }}
-                transition={{ duration: 0.4, type: "spring", stiffness: 150 }}
-                className={`
-                w-16 h-16 flex items-center justify-center rounded-2xl text-xl font-black transition-all duration-500 border-2 z-10
-                ${
-                  isFront
-                    ? "bg-emerald-500 border-emerald-300 text-black shadow-[0_0_25px_rgba(16,185,129,0.4)]"
-                    : isRear
-                      ? "bg-yellow-500 border-yellow-300 text-black shadow-[0_0_25px_rgba(234,179,8,0.4)]"
-                      : "bg-gray-800 border-white/5 text-gray-500"
-                }
-              `}
-              >
-                {item}
-              </motion.div>
-
-              {/* REAR POINTER (Bottom Track) */}
-              <div className="absolute -bottom-16 h-16 flex flex-col items-center justify-start pt-2">
-                {isRear && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex flex-col items-center"
-                  >
-                    <div className="w-[2px] h-3 bg-yellow-500/40 mb-1"></div>
-                    <span className="bg-yellow-500 text-black text-[9px] font-black px-2.5 py-1 rounded shadow-[0_0_15px_rgba(234,179,8,0.4)]">
-                      REAR
-                    </span>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* INDEX LABEL */}
-              <div className="absolute -bottom-6 opacity-30 group-hover:opacity-100 transition-opacity">
-                <span className="text-[9px] font-mono font-bold text-gray-400">
-                  [{index}]
-                </span>
-              </div>
-            </div>
-          );
-        })}
-
-        {/* 2. Empty State Styling */}
-        {structure.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="w-full flex flex-col items-center py-10 opacity-20"
+          <p
+            className="
+              text-[10px]
+              font-bold
+              uppercase
+              tracking-[0.25em]
+              mt-2
+              text-slate-400
+            "
           >
-            <div className="text-4xl font-black italic tracking-tighter text-gray-500">
-              QUEUE EMPTY
-            </div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] mt-2">
-              Waiting for first element...
-            </p>
-          </motion.div>
-        )}
-      </div>
+            Waiting for first element...
+          </p>
+        </motion.div>
+      )}
 
-      {/* Footer Detail */}
-      <div className="w-1/2 h-1 bg-white/5 blur-sm mt-8 rounded-full"></div>
     </div>
-  );
+
+    {/* FOOTER LINE */}
+    <div
+      className="
+        w-1/2
+        max-w-md
+        h-px
+        bg-slate-200
+        mt-10
+      "
+    />
+
+  </div>
+);
 
   const renderArray = () => (
-    /* Removed extra wrapper to prevent scroll issues */
-    <div className="flex gap-4 items-end px-10">
-      {" "}
-      {/* Added horizontal padding for scroll end-room */}
+  <div className="w-full overflow-x-auto overflow-y-visible px-4 sm:px-8 py-6">
+    <div className="flex gap-5 sm:gap-6 items-end px-6 sm:px-10 pt-20 pb-6 min-w-max">
+
       {structure.map((item, index) => {
         const isMid = mid === index;
+
         const isHighlit =
           highlightIndex === index ||
-          (Array.isArray(highlightIndex) && highlightIndex.includes(index));
+          (Array.isArray(highlightIndex) &&
+            highlightIndex.includes(index));
+
         const isLow = low === index;
         const isHigh = high === index;
+
         const isSorted = sortedIndices.includes(index);
+
         const isComparing =
-          Array.isArray(highlightIndex) && highlightIndex.includes(index);
+          Array.isArray(highlightIndex) &&
+          highlightIndex.includes(index);
 
         const inActiveRange =
-          activeRange && index >= activeRange.low && index <= activeRange.high;
+          activeRange &&
+          index >= activeRange.low &&
+          index <= activeRange.high;
 
         const isPivot = pivotIndex === index;
 
         return (
           <div
             key={index}
-            className="relative flex flex-col items-center shrink-0 group" /* shrink-0 is vital */
+            className="relative flex flex-col items-center shrink-0 group"
           >
-            {/* 1. TOP POINTERS - Stacking logic for multiple pointers on one index */}
-            <div className="absolute -top-16 flex flex-col items-center justify-end gap-1 min-h-[60px] w-20">
+
+            {/* TOP POINTERS */}
+            <div
+              className="
+                absolute
+                top-[-56px]
+                left-1/2
+                -translate-x-1/2
+                flex flex-col
+                items-center
+                justify-end
+                gap-1
+                min-h-[48px]
+                w-20
+                z-10
+              "
+            >
               {isLow && (
-                <span className="bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded shadow-lg shadow-emerald-500/20 animate-bounce">
+                <motion.span
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="
+                    bg-emerald-50
+                    border border-emerald-200
+                    text-emerald-600
+                    text-[9px]
+                    font-bold
+                    px-2.5
+                    py-1
+                    rounded-md
+                    shadow-sm
+                  "
+                >
                   LOW
-                </span>
+                </motion.span>
               )}
+
               {isMid && (
-                <span className="bg-yellow-500 text-black text-[9px] font-black px-2 py-0.5 rounded shadow-lg shadow-yellow-500/20 animate-bounce">
+                <motion.span
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="
+                    bg-amber-50
+                    border border-amber-200
+                    text-amber-600
+                    text-[9px]
+                    font-bold
+                    px-2.5
+                    py-1
+                    rounded-md
+                    shadow-sm
+                  "
+                >
                   MID
-                </span>
+                </motion.span>
               )}
+
               {isHigh && (
-                <span className="bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded shadow-lg shadow-red-500/20 animate-bounce">
+                <motion.span
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="
+                    bg-rose-50
+                    border border-rose-200
+                    text-rose-600
+                    text-[9px]
+                    font-bold
+                    px-2.5
+                    py-1
+                    rounded-md
+                    shadow-sm
+                  "
+                >
                   HIGH
-                </span>
+                </motion.span>
               )}
+
               {isHighlit && !isMid && (
-                <div className="text-purple-400 text-xl animate-pulse leading-none">
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="
+                    text-indigo-500
+                    text-lg
+                    leading-none
+                  "
+                >
                   ↓
-                </div>
+                </motion.div>
               )}
             </div>
 
-            {/* 2. THE ARRAY BOX */}
+            {/* ARRAY BOX */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0, y: 20 }}
               animate={{
-                scale: isMid || isHighlit ? 1.1 : 1,
+                scale: isMid || isHighlit ? 1.06 : 1,
                 opacity: 1,
                 y: 0,
               }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.35 }}
               className={`
-              w-16 h-16 flex items-center justify-center rounded-2xl text-xl font-black transition-all duration-300 border-2
-                      ${
-                        isSorted
-                          ? "bg-green-500 border-green-300 text-black"
-                          : isComparing || isMid || isHighlit
-                            ? "bg-yellow-500 border-yellow-300 text-black"
-                            : isPivot
-                              ? "bg-red-500 border-red-300 text-white"
-                              : inActiveRange
-                                ? "bg-blue-500/20 border-blue-400 text-white"
-                                : "bg-gray-900/40 border-white/10 text-gray-300"
-                      }
-            `}
+                w-16 h-16
+                sm:w-[68px] sm:h-[68px]
+                flex items-center justify-center
+                rounded-xl
+                text-lg
+                font-bold
+                transition-all duration-300
+                border
+
+                ${
+                  isSorted
+                    ? `
+                      bg-emerald-50
+                      border-emerald-300
+                      text-emerald-700
+                      shadow-sm
+                    `
+                    : isComparing || isMid || isHighlit
+                      ? `
+                        bg-indigo-600
+                        border-indigo-500
+                        text-white
+                        shadow-md
+                        shadow-indigo-100
+                      `
+                      : isPivot
+                        ? `
+                          bg-rose-50
+                          border-rose-300
+                          text-rose-600
+                          shadow-sm
+                        `
+                        : inActiveRange
+                          ? `
+                            bg-indigo-50
+                            border-indigo-200
+                            text-indigo-700
+                          `
+                          : `
+                            bg-white
+                            border-slate-200
+                            text-slate-700
+                            shadow-sm
+                            hover:border-indigo-300
+                            hover:shadow-md
+                          `
+                }
+              `}
             >
               {item}
             </motion.div>
 
-            {/* 3. INDEX LABEL */}
-            <div className="mt-4 flex flex-col items-center opacity-40 group-hover:opacity-100 transition-opacity">
-              <div className="h-2 w-px bg-gray-600 mb-1"></div>
-              <span className="text-[9px] font-mono font-bold text-gray-400 tracking-tighter">
+            {/* INDEX LABEL */}
+            <div
+              className="
+                mt-4
+                flex flex-col
+                items-center
+                opacity-70
+                group-hover:opacity-100
+                transition-opacity
+              "
+            >
+              <div className="h-2 w-px bg-slate-300 mb-1" />
+
+              <span
+                className="
+                  text-[9px]
+                  font-mono
+                  font-semibold
+                  text-slate-400
+                  tracking-tight
+                "
+              >
                 IDX {index}
               </span>
             </div>
+
           </div>
         );
       })}
     </div>
-  );
+  </div>
+);
 
   const renderLinkedList = () => (
-    <div className="flex items-center gap-2 py-24 min-h-[400px] w-full overflow-x-auto scrollbar-hide px-20">
+  <div
+    className="
+      w-full
+      min-h-[420px]
+      flex
+      items-center
+      overflow-x-auto
+      overflow-y-visible
+      scrollbar-hide
+      px-10
+      sm:px-16
+      py-28
+    "
+  >
+
+    <div className="flex items-center min-w-max">
+
       {structure.map((item, index) => {
         const isHead = index === 0;
         const isTail = index === structure.length - 1;
@@ -917,111 +1415,341 @@ const Visualizer = () => {
         const isHighlight = llHighlightIndex === index;
 
         return (
-          <div key={index} className="relative flex items-center shrink-0">
-            {/* 1. POINTER TRACKS (Head, Temp, Tail) */}
-            <div className="absolute inset-0 flex flex-col items-center pointer-events-none">
-              {/* TOP TRACK (Head & Temp) */}
-              <div className="absolute -top-20 h-20 flex flex-col items-center justify-end pb-2">
+          <div
+            key={index}
+            className="
+              relative
+              flex
+              items-center
+              shrink-0
+            "
+          >
+
+            {/* POINTER TRACKS */}
+            <div
+              className="
+                absolute
+                inset-0
+                flex
+                flex-col
+                items-center
+                pointer-events-none
+                z-20
+              "
+            >
+
+              {/* HEAD / TEMP */}
+              <div
+                className="
+                  absolute
+                  bottom-full
+                  left-1/2
+                  -translate-x-1/2
+                  mb-2
+                  min-h-[64px]
+                  flex
+                  flex-col
+                  items-center
+                  justify-end
+                "
+              >
                 {isHead && (
-                  <span className="bg-purple-600 text-white text-[9px] font-black px-2 py-0.5 rounded shadow-[0_0_15px_rgba(147,51,234,0.3)] mb-1 uppercase tracking-tighter">
+                  <span
+                    className="
+                      bg-indigo-50
+                      border border-indigo-200
+                      text-indigo-600
+                      text-[9px]
+                      font-bold
+                      px-2.5
+                      py-1
+                      rounded-md
+                      uppercase
+                      tracking-wider
+                    "
+                  >
                     HEAD
                   </span>
                 )}
+
                 {isTemp && (
                   <motion.span
-                    animate={{ y: [0, -4, 0], scale: [1, 1.05, 1] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                    className="bg-yellow-500 text-black text-[9px] font-black px-2 py-0.5 rounded shadow-[0_0_15px_rgba(234,179,8,0.4)] uppercase tracking-tighter"
+                    animate={{
+                      y: [0, -3, 0],
+                      scale: [1, 1.03, 1],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1.5,
+                    }}
+                    className="
+                      bg-amber-50
+                      border border-amber-200
+                      text-amber-600
+                      text-[9px]
+                      font-bold
+                      px-2.5
+                      py-1
+                      rounded-md
+                      uppercase
+                      tracking-wider
+                      mt-1
+                    "
                   >
                     TEMP
                   </motion.span>
                 )}
+
                 {(isHead || isTemp) && (
-                  <div className="w-[2px] h-4 bg-gray-700 mt-1"></div>
+                  <div className="w-px h-4 bg-slate-300 mt-1" />
                 )}
               </div>
 
-              {/* BOTTOM TRACK (Tail & Index) */}
-              <div className="absolute -bottom-16 h-16 flex flex-col items-center justify-start pt-2">
+              {/* TAIL + INDEX */}
+              <div
+                className="
+                  absolute
+                  top-full
+                  left-1/2
+                  -translate-x-1/2
+                  mt-2
+                  min-h-[64px]
+                  flex
+                  flex-col
+                  items-center
+                "
+              >
                 {isTail && (
                   <>
-                    <div className="w-[2px] h-4 bg-gray-700 mb-1"></div>
-                    <span className="bg-pink-500/10 text-pink-400 border border-pink-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-tighter">
+                    <div className="w-px h-4 bg-slate-300" />
+
+                    <span
+                      className="
+                        bg-rose-50
+                        border border-rose-200
+                        text-rose-600
+                        text-[9px]
+                        font-bold
+                        px-2.5
+                        py-1
+                        rounded-md
+                        uppercase
+                        tracking-wider
+                        mt-1
+                      "
+                    >
                       TAIL
                     </span>
                   </>
                 )}
-                <span className="mt-2 text-[8px] font-mono text-gray-700 font-bold">
+
+                <span
+                  className="
+                    mt-2
+                    text-[8px]
+                    font-mono
+                    font-semibold
+                    text-slate-400
+                  "
+                >
                   [{index}]
                 </span>
               </div>
+
             </div>
 
-            {/* 2. THE NODE MODULE */}
+            {/* NODE */}
             <motion.div
-              initial={{ scale: 0, x: -30 }}
+              initial={{ scale: 0, x: -25 }}
               animate={{
-                scale: isHighlight ? 1.1 : 1,
+                scale: isHighlight ? 1.06 : 1,
                 x: 0,
-                boxShadow: isHighlight
-                  ? "0 0 30px rgba(234,179,8,0.3)"
-                  : "0 0 0px rgba(0,0,0,0)",
               }}
-              transition={{ duration: 0.4, type: "spring" }}
+              transition={{
+                duration: 0.35,
+                type: "spring",
+              }}
               className={`
-              relative w-20 h-16 flex items-center justify-center rounded-2xl text-xl font-black transition-all duration-500 border-2 z-10
-              ${
-                isHighlight
-                  ? "bg-yellow-500 border-yellow-300 text-black shadow-2xl"
-                  : "bg-gray-900/60 border-white/10 text-white backdrop-blur-md hover:border-pink-500/40"
-              }
-            `}
+                relative
+                w-20
+                h-16
+                flex
+                items-center
+                justify-center
+                rounded-xl
+                text-lg
+                font-bold
+                border
+                transition-all
+                duration-300
+                z-10
+
+                ${
+                  isHighlight
+                    ? `
+                      bg-indigo-600
+                      border-indigo-500
+                      text-white
+                      shadow-lg
+                      shadow-indigo-100
+                    `
+                    : `
+                      bg-white
+                      border-slate-200
+                      text-slate-700
+                      shadow-sm
+                      hover:border-indigo-200
+                      hover:shadow-md
+                    `
+                }
+              `}
             >
-              {/* Visual Partition */}
-              <div className="absolute left-0 w-1.5 h-8 bg-pink-500/20 rounded-r-full"></div>
+
+              {/* DATA AREA */}
+              <div
+                className={`
+                  absolute
+                  left-0
+                  w-1.5
+                  h-8
+                  rounded-r-full
+                  ${
+                    isHighlight
+                      ? "bg-indigo-300"
+                      : "bg-indigo-100"
+                  }
+                `}
+              />
+
               {item}
-              {/* Pointer field indicator */}
-              <div className="absolute right-0 w-4 h-full border-l border-white/5 bg-white/5 rounded-r-2xl"></div>
+
+              {/* NEXT POINTER AREA */}
+              <div
+                className={`
+                  absolute
+                  right-0
+                  w-4
+                  h-full
+                  border-l
+                  rounded-r-xl
+                  ${
+                    isHighlight
+                      ? "border-indigo-400 bg-indigo-500/20"
+                      : "border-slate-100 bg-slate-50"
+                  }
+                `}
+              />
+
             </motion.div>
 
-            {/* 3. THE CONNECTOR (Next Pointer) */}
+            {/* CONNECTOR */}
             {!isTail ? (
               <div className="flex items-center px-1">
-                <div className="w-10 h-[2px] bg-gradient-to-r from-pink-500/40 via-pink-500/20 to-gray-800 rounded-full"></div>
-                <div className="w-2 h-2 rounded-full bg-gray-800 border border-pink-500/40 -ml-1"></div>
+
+                <div
+                  className="
+                    w-10
+                    sm:w-14
+                    h-px
+                    bg-indigo-200
+                  "
+                />
+
+                <div
+                  className="
+                    w-2.5
+                    h-2.5
+                    rounded-full
+                    bg-white
+                    border-2
+                    border-indigo-300
+                    -ml-1
+                  "
+                />
+
               </div>
             ) : (
               <div className="flex items-center px-1">
-                <div className="w-8 h-[2px] bg-gradient-to-r from-pink-500/40 to-transparent opacity-50"></div>
+
+                <div
+                  className="
+                    w-8
+                    h-px
+                    bg-gradient-to-r
+                    from-indigo-200
+                    to-transparent
+                  "
+                />
+
               </div>
             )}
+
           </div>
         );
       })}
 
-      {/* 4. TERMINATOR (NULL) */}
+      {/* NULL TERMINATOR */}
       {structure.length > 0 && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex flex-col items-center ml-2 shrink-0"
+          initial={{ opacity: 0, x: -5 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="
+            flex
+            flex-col
+            items-center
+            ml-2
+            shrink-0
+          "
         >
-          <div className="w-12 h-12 rounded-full border-2 border-dashed border-gray-800 flex items-center justify-center bg-gray-900/20 shadow-inner">
-            <span className="text-[9px] font-black text-gray-700 tracking-widest uppercase">
-              Null
+          <div
+            className="
+              w-12
+              h-12
+              rounded-full
+              border-2
+              border-dashed
+              border-slate-300
+              flex
+              items-center
+              justify-center
+              bg-slate-50
+            "
+          >
+            <span
+              className="
+                text-[9px]
+                font-bold
+                text-slate-400
+                tracking-widest
+                uppercase
+              "
+            >
+              NULL
             </span>
           </div>
         </motion.div>
       )}
 
-      {/* Empty State */}
+      {/* EMPTY STATE */}
       {structure.length === 0 && (
-        <div className="w-full text-center text-gray-700 font-black italic tracking-[0.3em] uppercase opacity-40">
+        <div
+          className="
+            w-full
+            text-center
+            text-slate-300
+            font-black
+            italic
+            tracking-[0.25em]
+            uppercase
+          "
+        >
           Empty Chain
         </div>
       )}
+
     </div>
-  );
+  </div>
+);
 
   const parseInput = (input) => {
     return input
@@ -1237,7 +1965,7 @@ const Visualizer = () => {
               </button>
 
               {speedOpen && (
-                <div className="absolute w-full bg-gray-900/90 border border-white/10 mt-3 rounded-2xl shadow-2xl z-50 max-h-48 overflow-y-auto backdrop-blur-2xl">
+                <div className="absolute w-full bg-gray-400/90 border border-white/10 mt-3 rounded-2xl shadow-2xl z-50 max-h-48 overflow-y-auto backdrop-blur-2xl">
                   {[
                     { label: "Default (Auto)", value: null },
                     { label: "Fast", value: 200 },
@@ -1252,7 +1980,7 @@ const Visualizer = () => {
                       }}
                       className="
   px-4 py-3
-  text-sm font-medium text-slate-600
+  text-sm font-medium text-white
   hover:bg-indigo-50 hover:text-indigo-600
   cursor-pointer transition-colors
   border-b border-slate-100 last:border-0
