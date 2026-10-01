@@ -8,6 +8,20 @@ import { collection, getDocs } from "firebase/firestore";
 import { useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import {
+  Clock3,
+  CheckCircle2,
+  Circle,
+  Flag,
+  ChevronLeft,
+  ChevronRight,
+  Send,
+  Trophy,
+  Target,
+  ShieldCheck,
+  AlertTriangle,
+  BookOpen,
+} from "lucide-react";
 
 const Quiz = () => {
   const { type } = useParams();
@@ -264,312 +278,601 @@ const Quiz = () => {
   }
 
   if (showResult) {
-    return (
-      <div className="h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-6 font-sans overflow-hidden">
-        {/* Consistent Background Glows */}
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
-        </div>
+  const percentage = Math.round(
+    (score / questions.length) * 100
+  );
 
-        <div className="relative z-10 w-full max-w-lg text-center">
-          {/* Decorative Icon */}
-          <div className="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 border border-white/10 shadow-2xl">
-            <span className="text-4xl">
-              {score === questions.length
-                ? "👑"
-                : score >= questions.length / 2
-                  ? "⭐"
-                  : "🎯"}
-            </span>
-          </div>
-
-          {/* Title Section */}
-          <h1 className="text-4xl font-black uppercase italic tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500 mb-2">
-            Mission Briefing
-          </h1>
-          <p className="text-gray-500 font-mono text-[10px] uppercase tracking-[0.4em] mb-8">
-            Challenge Results Compiled
-          </p>
-
-          {/* Results Card */}
-          <div className="relative group mb-8">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/30 to-blue-600/30 rounded-[2rem] blur-md"></div>
-
-            <div className="relative bg-black/60 border border-white/10 rounded-[2rem] p-8 backdrop-blur-2xl">
-              <div className="flex flex-col items-center">
-                <span className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1">
-                  Final Score
-                </span>
-                <div className="text-7xl font-black tracking-tighter text-white flex items-baseline">
-                  {score}
-                  <span className="text-2xl text-gray-600 ml-2">
-                    / {questions.length}
-                  </span>
-                </div>
-
-                {/* Feedback Tag */}
-                <div className="mt-6">
-                  {score === questions.length && (
-                    <span className="px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/50 text-green-400 text-xs font-bold uppercase tracking-widest">
-                      Perfect Accuracy 🔥
-                    </span>
-                  )}
-                  {score >= questions.length / 2 &&
-                    score < questions.length && (
-                      <span className="px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/50 text-yellow-400 text-xs font-bold uppercase tracking-widest">
-                        Elite Performance 👍
-                      </span>
-                    )}
-                  {score < questions.length / 2 && (
-                    <span className="px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/50 text-red-400 text-xs font-bold uppercase tracking-widest">
-                      System Reboot Required 💪
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button
-              onClick={() => window.location.reload()}
-              className="px-8 py-3 bg-white text-black rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-transform active:scale-95"
-            >
-              Retry Mission
-            </button>
-            <button
-              onClick={() => (window.location.href = "/")}
-              className="px-8 py-3 bg-white/5 border border-white/10 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-transform active:scale-95"
-            >
-              Exit
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (isAdminQuiz && alreadyAttempted) {
-    return (
-      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-6 font-sans relative overflow-hidden">
-        {/* Background Decorative Glows */}
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-red-600/10 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-orange-600/5 blur-[120px] rounded-full"></div>
-
-        <div className="relative z-10 w-full max-w-md">
-          <div className="bg-gray-900/60 border border-red-500/20 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-2xl text-center relative overflow-hidden group">
-            {/* Warning Icon Section */}
-            <div className="mb-8 flex flex-col items-center">
-              <div className="relative mb-6">
-                <div className="w-20 h-20 bg-red-500/10 border-2 border-red-500/30 rounded-full flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(239,68,68,0.2)] animate-pulse">
-                  🚫
-                </div>
-              </div>
-
-              <h2 className="text-3xl font-black tracking-tighter uppercase italic text-red-400">
-                Access <span className="text-white">Denied</span>
-              </h2>
-              <div className="h-1 w-12 bg-red-600 mt-3 rounded-full opacity-50"></div>
-            </div>
-
-            {/* Message Body */}
-            <div className="space-y-4 mb-10">
-              <p className="text-gray-300 text-lg font-bold leading-tight">
-                Attempt Limit Reached ❌
-              </p>
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-[0.2em] leading-relaxed">
-                Our records show you have already <br />
-                completed this evaluation module.
-              </p>
-            </div>
-
-            {/* Action Button */}
-            <button
-              onClick={() => navigate("/progress")}
-              className="w-full py-4 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all active:scale-95 flex items-center justify-center gap-3 group"
-            >
-              <span className="group-hover:-translate-x-1 transition-transform">
-                ←
-              </span>
-              Return to Progress Page
-            </button>
-
-            {/* Terminal Detail */}
-            <div className="mt-8 flex items-center justify-center gap-2 opacity-20">
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-              <p className="text-[8px] font-black uppercase tracking-widest text-gray-400">
-                Validation Error: 0xRE_ATTEMPT_LOCKED
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const isPerfect = score === questions.length;
+  const isPassed = score >= questions.length / 2;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex flex-col items-center p-4 md:p-8 font-sans">
-      {/* Static Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
-      </div>
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center py-24 px-4 sm:px-6 py-10 font-sans">
 
-      <div className="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 gap-12 mt-24">
-        {/* Left Column: Stats & Grid */}
-        <div className="lg:col-span-4 order-2 lg:order-1 mt-18">
-          <div className="relative group">
-            {/* Subtle outer glow to match the right side */}
-            <div className="absolute -inset-0.5 bg-gradient-to-b from-white/10 to-transparent rounded-[2rem] blur-sm"></div>
+      <div className="w-full max-w-2xl">
 
-            <div className="relative bg-black/40 border border-white/10 rounded-[2rem] p-6 backdrop-blur-2xl">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
-                  Neural Map
-                </h3>
-                <div className="flex gap-1">
-                  <div className="w-1 h-1 rounded-full bg-purple-500 animate-pulse"></div>
-                  <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse delay-75"></div>
+        {/* Header */}
+        <div className="text-center mb-7">
+          <div
+            className={`mx-auto h-16 w-16 rounded-2xl flex items-center justify-center border shadow-sm ${
+              isPerfect
+                ? "bg-amber-50 border-amber-200"
+                : isPassed
+                ? "bg-emerald-50 border-emerald-200"
+                : "bg-indigo-50 border-indigo-200"
+            }`}
+          >
+            {isPerfect ? (
+              <Trophy
+                size={28}
+                className="text-amber-500"
+              />
+            ) : isPassed ? (
+              <CheckCircle2
+                size={28}
+                className="text-emerald-500"
+              />
+            ) : (
+              <BookOpen
+                size={28}
+                className="text-indigo-500"
+              />
+            )}
+          </div>
+
+          <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-500">
+            Assessment Complete
+          </p>
+
+          <h1 className="mt-2 text-3xl sm:text-4xl font-black tracking-tight text-slate-950">
+            Quiz Results
+          </h1>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Your performance summary is ready.
+          </p>
+        </div>
+
+        {/* Main Result Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+
+          {/* Score Section */}
+          <div className="p-7 sm:p-9 text-center border-b border-slate-100">
+
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+              Final Score
+            </p>
+
+            <div className="mt-3 flex items-baseline justify-center">
+              <span className="text-6xl sm:text-7xl font-black tracking-tight text-slate-950">
+                {score}
+              </span>
+
+              <span className="ml-2 text-2xl font-bold text-slate-300">
+                / {questions.length}
+              </span>
+            </div>
+
+            {/* Percentage */}
+            <div className="mt-5 flex justify-center">
+              <div
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold ${
+                  isPerfect
+                    ? "bg-amber-50 border-amber-200 text-amber-700"
+                    : isPassed
+                    ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                    : "bg-rose-50 border-rose-200 text-rose-600"
+                }`}
+              >
+                <Target size={13} />
+                {percentage}% Accuracy
+              </div>
+            </div>
+
+            {/* Progress */}
+            <div className="mt-7 max-w-md mx-auto">
+              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-700 ${
+                    isPerfect
+                      ? "bg-amber-500"
+                      : isPassed
+                      ? "bg-emerald-500"
+                      : "bg-indigo-600"
+                  }`}
+                  style={{
+                    width: `${percentage}%`,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Feedback */}
+          <div className="p-6 sm:p-7">
+
+            <div
+              className={`rounded-xl border p-4 ${
+                isPerfect
+                  ? "bg-amber-50 border-amber-100"
+                  : isPassed
+                  ? "bg-emerald-50 border-emerald-100"
+                  : "bg-indigo-50 border-indigo-100"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+
+                <div
+                  className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${
+                    isPerfect
+                      ? "bg-white text-amber-500"
+                      : isPassed
+                      ? "bg-white text-emerald-500"
+                      : "bg-white text-indigo-500"
+                  }`}
+                >
+                  {isPerfect ? (
+                    <Trophy size={17} />
+                  ) : isPassed ? (
+                    <CheckCircle2 size={17} />
+                  ) : (
+                    <BookOpen size={17} />
+                  )}
                 </div>
+
+                <div>
+                  <p className="text-sm font-bold text-slate-800">
+                    {isPerfect
+                      ? "Perfect accuracy"
+                      : isPassed
+                      ? "Solid performance"
+                      : "Keep building your foundation"}
+                  </p>
+
+                  <p className="mt-1 text-xs leading-5 text-slate-500">
+                    {isPerfect
+                      ? "You answered every question correctly."
+                      : isPassed
+                      ? "You answered at least half of the questions correctly."
+                      : "Review the concepts and try the assessment again."}
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="grid grid-cols-2 gap-3 mt-5">
+
+              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                  Correct
+                </p>
+
+                <p className="mt-1 text-xl font-black text-emerald-600">
+                  {score}
+                </p>
               </div>
 
-              {/* Grid with glass tiles */}
-              <div className="grid grid-cols-5 gap-3">
-                {questions.map((_, index) => {
-                  const isActive = current === index;
-                  const isMarked = marked[index];
-                  const isAnswered = answers[index];
+              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                  Questions
+                </p>
 
-                  let stateStyles =
-                    "border-white/5 bg-white/[0.03] text-gray-500";
-                  if (isMarked)
-                    stateStyles =
-                      "border-yellow-500/50 bg-yellow-500/10 text-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.1)]";
-                  else if (isAnswered)
-                    stateStyles =
-                      "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.1)]";
+                <p className="mt-1 text-xl font-black text-slate-800">
+                  {questions.length}
+                </p>
+              </div>
+
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+
+              <button
+                onClick={() => window.location.reload()}
+                className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 active:scale-[0.98] transition-all shadow-sm"
+              >
+                <BookOpen size={15} />
+                Retry Quiz
+              </button>
+
+              <button
+                onClick={() => (window.location.href = "/progress")}
+                className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-bold hover:bg-slate-50 active:scale-[0.98] transition-all"
+              >
+                Exit
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-5 flex items-center justify-center gap-2 text-[10px] font-medium text-slate-400">
+          <ShieldCheck
+            size={13}
+            className="text-emerald-500"
+          />
+          Assessment completed securely
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+  if (isAdminQuiz && alreadyAttempted) {
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center px-4 sm:px-6 py-10 font-sans">
+
+      <div className="w-full max-w-md">
+
+        {/* Status Icon */}
+        <div className="flex justify-center mb-6">
+          <div className="h-16 w-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center shadow-sm">
+            <AlertTriangle
+              size={28}
+              className="text-amber-500"
+            />
+          </div>
+        </div>
+
+        {/* Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+
+          {/* Header */}
+          <div className="p-7 sm:p-8 text-center border-b border-slate-100">
+
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200">
+              <ShieldCheck
+                size={12}
+                className="text-emerald-500"
+              />
+
+              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
+                Assessment Status
+              </span>
+            </div>
+
+            <h2 className="mt-5 text-2xl sm:text-3xl font-black tracking-tight text-slate-950">
+              Attempt Already Used
+            </h2>
+
+            <p className="mt-3 text-sm leading-6 text-slate-500">
+              Our records show that you have already completed this assessment.
+              A second attempt is not available.
+            </p>
+
+          </div>
+
+          {/* Details */}
+          <div className="p-6 sm:p-7">
+
+            <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+
+                <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center shrink-0">
+                  <AlertTriangle
+                    size={16}
+                    className="text-amber-500"
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm font-bold text-slate-800">
+                    Attempt limit reached
+                  </p>
+
+                  <p className="mt-1 text-xs leading-5 text-slate-500">
+                    This quiz can only be submitted once. Your previous
+                    submission has already been recorded.
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Quiz Type */}
+            <div className="mt-4 flex items-center justify-between px-4 py-3 rounded-xl bg-slate-50 border border-slate-100">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                Assessment
+              </span>
+
+              <span className="text-xs font-bold capitalize text-slate-700">
+                {type}
+              </span>
+            </div>
+
+            {/* Action */}
+            <button
+              onClick={() => navigate("/progress")}
+              className="mt-6 w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 active:scale-[0.98] transition-all"
+            >
+              <ChevronLeft size={16} />
+              Return to Progress
+            </button>
+
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-5 flex items-center justify-center gap-2 text-[10px] font-medium text-slate-400">
+          <CheckCircle2
+            size={13}
+            className="text-emerald-500"
+          />
+          Previous attempt securely recorded
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+  return (
+  <div className="min-h-screen bg-slate-50 text-slate-900 px-4 sm:px-6 pt-28 pb-10 font-sans">
+    <div className="w-full max-w-6xl mx-auto">
+
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-8 w-8 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                <BookOpen size={15} className="text-indigo-600" />
+              </div>
+
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-500">
+                Assessment
+              </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950">
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+              <span className="text-indigo-600"> Challenge</span>
+            </h1>
+
+            <p className="mt-1.5 text-sm text-slate-500">
+              Question {current + 1} of {questions.length}
+            </p>
+          </div>
+
+          {/* Timer */}
+          <div
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border font-mono text-sm font-bold transition-all ${
+              timeLeft < 10
+                ? "bg-red-50 border-red-200 text-red-600 animate-pulse"
+                : "bg-white border-slate-200 text-slate-700 shadow-sm"
+            }`}
+          >
+            <Clock3 size={16} />
+
+            <span>{formattedTime}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+        {/* Question Navigator */}
+        <aside className="lg:col-span-4 order-2 lg:order-1">
+
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm lg:sticky lg:top-24">
+
+            {/* Navigator Header */}
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h3 className="text-sm font-bold text-slate-800">
+                  Question Map
+                </h3>
+
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Navigate through the assessment
+                </p>
+              </div>
+
+              <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center">
+                <Flag size={14} className="text-slate-400" />
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-wrap gap-3 mb-5 text-[10px] font-medium text-slate-400">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-indigo-500" />
+                Current
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                Answered
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                Marked
+              </div>
+            </div>
+
+            {/* Question Grid */}
+            <div className="grid grid-cols-5 gap-2.5">
+              {questions.map((_, index) => {
+                const isActive = current === index;
+                const isMarked = marked[index];
+                const isAnswered = answers[index];
+
+                let stateStyles =
+                  "bg-slate-50 border-slate-200 text-slate-400";
+
+                if (isMarked) {
+                  stateStyles =
+                    "bg-amber-50 border-amber-200 text-amber-600";
+                } else if (isAnswered) {
+                  stateStyles =
+                    "bg-emerald-50 border-emerald-200 text-emerald-600";
+                }
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setCurrent(index)}
+                    className={`relative aspect-square rounded-xl flex items-center justify-center text-xs font-semibold border transition-all duration-200 ${stateStyles} ${
+                      isActive
+                        ? "bg-indigo-600 border-indigo-600 text-white shadow-sm scale-[1.04] z-10"
+                        : "hover:border-indigo-200 hover:bg-indigo-50"
+                    }`}
+                  >
+                    {index + 1}
+
+                    {isActive && (
+                      <span className="absolute -bottom-1 h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Progress Summary */}
+            <div className="mt-6 pt-5 border-t border-slate-100">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-semibold text-slate-500">
+                  Completion
+                </span>
+
+                <span className="text-[11px] font-bold text-slate-700">
+                  {Object.keys(answers).length}/{questions.length}
+                </span>
+              </div>
+
+              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${
+                      (Object.keys(answers).length / questions.length) * 100
+                    }%`,
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Submit */}
+            <div className="mt-5 pt-5 border-t border-slate-100">
+              <button
+                onClick={calculateScore}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 active:scale-[0.98] transition-all shadow-sm"
+              >
+                <Send size={15} />
+                Submit Quiz
+              </button>
+
+              <p className="mt-2 text-center text-[10px] text-slate-400">
+                Make sure you've reviewed your answers.
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        {/* Question Area */}
+        <main className="lg:col-span-8 order-1 lg:order-2">
+
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+
+            {/* Question Header */}
+            <div className="px-5 sm:px-7 py-4 border-b border-slate-100 flex items-center justify-between">
+
+              <div className="flex items-center gap-2">
+                <span className="h-7 w-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold">
+                  {current + 1}
+                </span>
+
+                <span className="text-xs font-semibold text-slate-500">
+                  Question
+                </span>
+              </div>
+
+              {marked[current] && (
+                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                  <Flag size={12} />
+                  Marked for review
+                </div>
+              )}
+            </div>
+
+            {/* Question Content */}
+            <div className="p-5 sm:p-8">
+
+              <h2 className="text-xl sm:text-2xl font-bold leading-relaxed text-slate-900 mb-7">
+                {questions[current].question}
+              </h2>
+
+              {/* Options */}
+              <div className="space-y-3">
+                {questions[current].options.map((opt, i) => {
+                  const selected = answers[current] === opt;
 
                   return (
                     <button
-                      key={index}
-                      onClick={() => setCurrent(index)}
-                      className={`relative w-full aspect-square rounded-xl flex items-center justify-center text-[11px] font-mono transition-all duration-300 border ${stateStyles} ${
-                        isActive
-                          ? "ring-1 ring-purple-500 border-purple-500/50 scale-110 z-10 bg-white/10 text-white"
-                          : "hover:bg-white/10 hover:border-white/20"
+                      key={i}
+                      onClick={() => handleAnswer(opt)}
+                      className={`group flex items-center w-full p-4 rounded-xl border text-left transition-all duration-200 ${
+                        selected
+                          ? "bg-indigo-50 border-indigo-500 shadow-sm"
+                          : "bg-white border-slate-200 hover:border-indigo-200 hover:bg-slate-50"
                       }`}
                     >
-                      {index + 1}
-                      {isActive && (
-                        <div className="absolute -bottom-1 w-1 h-1 bg-purple-500 rounded-full shadow-[0_0_5px_#a855f7]"></div>
-                      )}
+                      <div
+                        className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 mr-4 text-xs font-bold border transition-all ${
+                          selected
+                            ? "bg-indigo-600 border-indigo-600 text-white"
+                            : "bg-slate-50 border-slate-200 text-slate-500 group-hover:border-indigo-200 group-hover:text-indigo-600"
+                        }`}
+                      >
+                        {String.fromCharCode(65 + i)}
+                      </div>
+
+                      <span
+                        className={`text-sm sm:text-base font-medium ${
+                          selected
+                            ? "text-indigo-900"
+                            : "text-slate-700"
+                        }`}
+                      >
+                        {opt}
+                      </span>
+
+                      <div className="ml-auto">
+                        {selected ? (
+                          <CheckCircle2
+                            size={19}
+                            className="text-indigo-600"
+                          />
+                        ) : (
+                          <Circle
+                            size={19}
+                            className="text-slate-300 group-hover:text-indigo-300"
+                          />
+                        )}
+                      </div>
                     </button>
                   );
                 })}
               </div>
 
-              {/* Sleeker Submit Button */}
-              <div className="mt-8 pt-6 border-t border-white/5">
+              {/* Navigation */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mt-8 pt-6 border-t border-slate-100">
+
                 <button
-                  onClick={calculateScore}
-                  className="group/btn relative w-full overflow-hidden rounded-xl p-[1px] transition-all active:scale-[0.98]"
+                  disabled={current === 0}
+                  onClick={() => setCurrent(current - 1)}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 transition-all group-hover/btn:opacity-90"></div>
-                  <div className="relative bg-black/20 backdrop-blur-md py-3 rounded-[11px] flex items-center justify-center gap-2 transition-all group-hover/btn:bg-transparent">
-                    <span className="text-xs font-black uppercase tracking-widest text-emerald-50">
-                      Terminate Session
-                    </span>
-                    <svg
-                      className="w-4 h-4 text-emerald-400 group-hover/btn:translate-x-1 transition-transform"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </div>
+                  <ChevronLeft size={16} />
+                  Previous
                 </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Quiz Card */}
-        <div className="lg:col-span-8 order-1 lg:order-2">
-          {/* Header Info */}
-          <div className="flex justify-between items-end mb-4 px-2">
-            <div>
-              <h1 className="text-2xl font-black uppercase italic tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">
-                {type} Challenge
-              </h1>
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
-                Progress: {current + 1} / {questions.length}
-              </span>
-            </div>
-            <div
-              className={`px-4 py-2 rounded-xl border text-sm font-mono transition-all ${
-                timeLeft < 10
-                  ? "bg-red-500/20 border-red-500 text-red-400 animate-pulse"
-                  : "bg-white/5 border-white/10 text-gray-400"
-              }`}
-            >
-              {formattedTime}
-            </div>
-          </div>
-
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-[2rem] blur-sm"></div>
-            <div className="relative bg-black/60 border border-white/10 rounded-[2rem] p-6 md:p-10 backdrop-blur-xl shadow-2xl">
-              <h2 className="text-xl md:text-2xl font-bold leading-tight text-white mb-8 min-h-[2rem]">
-                <span className="text-purple-500 mr-2 opacity-50">Q.</span>
-                {questions[current].question}
-              </h2>
-
-              <div className="grid gap-3">
-                {questions[current].options.map((opt, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handleAnswer(opt)}
-                    className={`group/opt relative flex items-center w-full p-4 rounded-xl transition-all duration-200 text-left active:scale-[0.99] border ${
-                      answers[current] === opt
-                        ? "bg-purple-600/20 border-purple-500"
-                        : "bg-white/[0.03] border-white/5 hover:border-white/20 hover:bg-white/[0.06]"
-                    }`}
-                  >
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 text-gray-500 font-mono text-xs font-bold mr-4 group-hover/opt:bg-purple-600 group-hover/opt:text-white">
-                      {String.fromCharCode(65 + i)}
-                    </div>
-                    <span className="text-base font-medium text-gray-300 group-hover/opt:text-white">
-                      {opt}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-3 justify-between mt-10">
-                <div className="flex gap-2">
-                  <button
-                    disabled={current === 0}
-                    onClick={() => setCurrent(current - 1)}
-                    className="px-6 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 rounded-lg text-sm font-bold transition-all"
-                  >
-                    ← Prev
-                  </button>
-                  <button
-                    disabled={current === questions.length - 1}
-                    onClick={() => setCurrent(current + 1)}
-                    className="px-6 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 rounded-lg text-sm font-bold transition-all"
-                  >
-                    Next →
-                  </button>
-                </div>
 
                 <button
                   onClick={() =>
@@ -578,30 +881,67 @@ const Quiz = () => {
                       [current]: !prev[current],
                     }))
                   }
-                  className={`px-4 py-2 rounded-lg text-sm font-bold border transition-all ${
+                  className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
                     marked[current]
-                      ? "bg-yellow-500 text-black border-yellow-500"
-                      : "bg-yellow-500/10 border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/20"
+                      ? "bg-amber-50 border-amber-300 text-amber-700"
+                      : "bg-white border-slate-200 text-slate-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600"
                   }`}
                 >
-                  {marked[current] ? "★ Marked" : "☆ Mark for Review"}
+                  <Flag size={15} />
+                  {marked[current]
+                    ? "Marked for Review"
+                    : "Mark for Review"}
+                </button>
+
+                <button
+                  disabled={current === questions.length - 1}
+                  onClick={() => setCurrent(current + 1)}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  Next
+                  <ChevronRight size={16} />
                 </button>
               </div>
 
-              <div className="mt-8 w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500"
-                  style={{
-                    width: `${((current + 1) / questions.length) * 100}%`,
-                  }}
-                ></div>
+              {/* Question Progress */}
+              <div className="mt-7">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                    Question Progress
+                  </span>
+
+                  <span className="text-[10px] font-bold text-slate-500">
+                    {Math.round(
+                      ((current + 1) / questions.length) * 100
+                    )}
+                    %
+                  </span>
+                </div>
+
+                <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${
+                        ((current + 1) / questions.length) * 100
+                      }%`,
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+
+          {/* Security Notice */}
+          <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-medium text-slate-400">
+            <ShieldCheck size={13} className="text-emerald-500" />
+            Assessment session is securely monitored
+          </div>
+        </main>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default Quiz;

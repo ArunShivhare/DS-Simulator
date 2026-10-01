@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  Trophy,
+  BarChart3,
+  Layers3,
+  ChevronDown,
+  Medal,
+  Users,
+  Target,
+  Crown,
+  Search,
+} from "lucide-react";import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
 const Leaderboard = () => {
@@ -73,134 +83,700 @@ const Leaderboard = () => {
     });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white px-6 py-24 font-sans selection:bg-purple-500/30">
-      {/* 1. Header Section */}
-      <div className="max-w-4xl mx-auto text-center mb-16">
-        <h1 className="text-5xl md:text-6xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-purple-400 to-blue-400 tracking-tighter">
-          Hall of Fame 🏆
-        </h1>
-        <p className="text-gray-400 text-lg uppercase tracking-[0.3em] font-light">
-          Global Leaderboard
-        </p>
-      </div>
+  <div
+    className="
+      min-h-screen
+      bg-slate-50
+      text-slate-900
+      px-4
+      sm:px-6
+      pt-28
+      pb-14
+      font-sans
+    "
+  >
 
-      <div className="max-w-4xl mx-auto">
-        {/* 2. DATA STRUCTURE TABS */}
-        <div className="flex justify-center gap-3 mb-10 flex-wrap">
-          {["array", "stack", "queue", "linkedlist"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2.5 rounded-2xl capitalize font-bold transition-all duration-300 border-2 ${
-                activeTab === tab
-                  ? "bg-purple-600 border-purple-400 text-white shadow-[0_0_20px_rgba(147,51,234,0.3)] scale-105"
-                  : "bg-gray-900/50 border-white/5 text-gray-400 hover:border-white/20 hover:text-white"
-              }`}
+    {/* ===================================================== */}
+    {/* HEADER */}
+    {/* ===================================================== */}
+
+    <div className="max-w-5xl mx-auto mb-8">
+
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+
+        <div>
+
+          <div className="flex items-center gap-2.5 mb-3">
+
+            <div
+              className="
+                h-9 w-9
+                rounded-xl
+                bg-amber-50
+                border border-amber-100
+                flex items-center justify-center
+              "
             >
-              {tab}
-            </button>
-          ))}
+              <Trophy
+                size={17}
+                className="text-amber-500"
+              />
+            </div>
+
+            <span
+              className="
+                text-[10px]
+                font-bold
+                uppercase
+                tracking-[0.16em]
+                text-indigo-500
+              "
+            >
+              Competitive Learning
+            </span>
+
+          </div>
+
+          <h1
+            className="
+              text-3xl
+              sm:text-4xl
+              md:text-5xl
+              font-black
+              tracking-tight
+              text-slate-950
+            "
+          >
+            Leaderboard
+          </h1>
+
+          <p
+            className="
+              mt-3
+              max-w-xl
+              text-sm
+              leading-6
+              text-slate-500
+            "
+          >
+            See how learners are performing across each
+            data structure and quiz.
+          </p>
+
         </div>
 
-        {/* 3. QUIZ SELECTOR */}
-        {quizList.length > 0 && (
-          <div className="flex justify-center gap-3 mb-12 flex-wrap animate-fadeIn">
-            {quizList.map((quiz, index) => (
+
+        {/* PARTICIPANTS */}
+        <div
+          className="
+            self-start
+            md:self-auto
+            inline-flex
+            items-center
+            gap-2.5
+            px-4
+            py-2.5
+            rounded-xl
+            bg-white
+            border border-slate-200
+            shadow-sm
+          "
+        >
+
+          <Users
+            size={15}
+            className="text-slate-400"
+          />
+
+          <div>
+
+            <p className="text-sm font-black text-slate-800">
+              {sortedUsers.length}
+            </p>
+
+            <p
+              className="
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-wider
+                text-slate-400
+              "
+            >
+              Participants
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    {/* ===================================================== */}
+    {/* CONTROLS */}
+    {/* ===================================================== */}
+
+    <div className="max-w-5xl mx-auto mb-6">
+
+      <div
+        className="
+          bg-white
+          border border-slate-200
+          rounded-2xl
+          shadow-sm
+          p-3
+        "
+      >
+
+        {/* STRUCTURE TABS */}
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+
+          {["array", "stack", "queue", "linkedlist"].map((tab) => {
+
+            const isActive = activeTab === tab;
+
+            return (
               <button
-                key={quiz.id}
-                onClick={() => setSelectedQuizId(quiz.id)}
-                className={`px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                  selectedQuizId === quiz.id
-                    ? "bg-blue-500 text-white shadow-lg shadow-blue-900/20"
-                    : "bg-white/5 text-gray-500 hover:bg-white/10"
-                }`}
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`
+                  shrink-0
+                  flex
+                  items-center
+                  gap-2
+                  px-4
+                  py-2.5
+                  rounded-xl
+                  text-xs
+                  font-bold
+                  transition-all
+
+                  ${
+                    isActive
+                      ? `
+                        bg-indigo-600
+                        text-white
+                        shadow-sm
+                      `
+                      : `
+                        text-slate-500
+                        hover:text-slate-800
+                        hover:bg-slate-50
+                      `
+                  }
+                `}
               >
-                Quiz {index + 1}
+
+                <Layers3 size={13} />
+
+                {tab === "linkedlist"
+                  ? "Linked List"
+                  : tab.charAt(0).toUpperCase() +
+                    tab.slice(1)}
+
               </button>
-            ))}
+            );
+
+          })}
+
+        </div>
+
+
+        {/* QUIZ SELECTOR */}
+        {quizList.length > 0 && (
+          <div
+            className="
+              mt-3
+              pt-3
+              border-t
+              border-slate-100
+              flex
+              flex-wrap
+              items-center
+              gap-2
+            "
+          >
+
+            <span
+              className="
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-wider
+                text-slate-400
+                mr-1
+              "
+            >
+              Quiz
+            </span>
+
+            {quizList.map((quiz, index) => {
+
+              const isSelected =
+                selectedQuizId === quiz.id;
+
+              return (
+                <button
+                  key={quiz.id}
+                  onClick={() =>
+                    setSelectedQuizId(quiz.id)
+                  }
+                  className={`
+                    px-3
+                    py-1.5
+                    rounded-lg
+                    text-[10px]
+                    font-bold
+                    transition-all
+                    border
+
+                    ${
+                      isSelected
+                        ? `
+                          bg-indigo-50
+                          border-indigo-200
+                          text-indigo-600
+                        `
+                        : `
+                          bg-white
+                          border-slate-200
+                          text-slate-400
+                          hover:text-slate-600
+                          hover:border-slate-300
+                        `
+                    }
+                  `}
+                >
+                  Quiz {index + 1}
+                </button>
+              );
+
+            })}
+
           </div>
         )}
 
-        {/* 4. LEADERBOARD LIST */}
-        <div className="space-y-4 relative">
-          {/* Decorative Glow behind list */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-purple-500/5 blur-[120px] pointer-events-none"></div>
+      </div>
+
+    </div>
+
+
+    {/* ===================================================== */}
+    {/* CURRENT QUIZ SUMMARY */}
+    {/* ===================================================== */}
+
+    <div className="max-w-5xl mx-auto mb-6">
+
+      <div
+        className="
+          bg-white
+          border border-slate-200
+          rounded-2xl
+          shadow-sm
+          px-5
+          sm:px-6
+          py-5
+          flex
+          flex-col
+          sm:flex-row
+          sm:items-center
+          sm:justify-between
+          gap-4
+        "
+      >
+
+        <div className="flex items-center gap-3">
+
+          <div
+            className="
+              h-10
+              w-10
+              rounded-xl
+              bg-indigo-50
+              border border-indigo-100
+              flex
+              items-center
+              justify-center
+            "
+          >
+            <Target
+              size={18}
+              className="text-indigo-600"
+            />
+          </div>
+
+          <div>
+
+            <p
+              className="
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-[0.14em]
+                text-slate-400
+              "
+            >
+              Current ranking
+            </p>
+
+            <h2 className="text-base font-black text-slate-800">
+              {activeTab === "linkedlist"
+                ? "Linked List"
+                : activeTab.charAt(0).toUpperCase() +
+                  activeTab.slice(1)}{" "}
+              {selectedQuizId
+                ? "Quiz"
+                : "Assessment"}
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div className="flex items-center gap-5">
+
+          <div className="text-right">
+
+            <p className="text-xl font-black text-slate-900">
+              {sortedUsers.length}
+            </p>
+
+            <p
+              className="
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-wider
+                text-slate-400
+              "
+            >
+              Ranked
+            </p>
+
+          </div>
+
+          <div className="h-8 w-px bg-slate-200" />
+
+          <div className="flex items-center gap-2">
+
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+
+            <span
+              className="
+                text-[10px]
+                font-semibold
+                text-slate-400
+              "
+            >
+              Live results
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    {/* ===================================================== */}
+    {/* LEADERBOARD */}
+    {/* ===================================================== */}
+
+    <div className="max-w-5xl mx-auto">
+
+      {sortedUsers.length > 0 && (
+
+        <div className="space-y-2.5">
 
           {sortedUsers.map((user, index) => {
-            const scoreData = getQuizScore(user, activeTab, selectedQuizId);
-            const isTopThree = index < 3;
+
+            const scoreData = getQuizScore(
+              user,
+              activeTab,
+              selectedQuizId,
+            );
+
+            const isFirst = index === 0;
+            const isSecond = index === 1;
+            const isThird = index === 2;
 
             return (
               <div
                 key={user.id}
-                className={`relative group flex justify-between items-center p-5 md:p-6 rounded-[2rem] border transition-all duration-500 backdrop-blur-md ${
-                  isTopThree
-                    ? "bg-white/10 border-yellow-500/30 shadow-xl shadow-yellow-900/5"
-                    : "bg-gray-900/40 border-white/5 hover:border-white/20"
-                }`}
+                className={`
+                  group
+                  relative
+                  flex
+                  items-center
+                  justify-between
+                  gap-4
+                  px-4
+                  sm:px-5
+                  py-4
+                  rounded-xl
+                  border
+                  bg-white
+                  transition-all
+                  duration-200
+
+                  ${
+                    isFirst
+                      ? `
+                        border-amber-200
+                        shadow-sm
+                      `
+                      : `
+                        border-slate-200
+                        hover:border-indigo-200
+                        hover:shadow-sm
+                      `
+                  }
+                `}
               >
-                <div className="flex items-center gap-6">
-                  {/* Rank Icon/Number */}
+
+                {/* LEFT */}
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+
+                  {/* RANK */}
                   <div
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner ${
-                      index === 0
-                        ? "bg-gradient-to-br from-yellow-300 to-yellow-600 text-gray-900 shadow-yellow-400/50"
-                        : index === 1
-                          ? "bg-gradient-to-br from-gray-300 to-gray-500 text-gray-900"
-                          : index === 2
-                            ? "bg-gradient-to-br from-orange-400 to-orange-700 text-gray-900"
-                            : "bg-gray-800 text-gray-400"
-                    }`}
+                    className={`
+                      h-10
+                      w-10
+                      sm:h-11
+                      sm:w-11
+                      rounded-xl
+                      flex
+                      items-center
+                      justify-center
+                      shrink-0
+                      font-black
+                      text-sm
+
+                      ${
+                        isFirst
+                          ? `
+                            bg-amber-50
+                            border border-amber-200
+                            text-amber-600
+                          `
+                          : isSecond
+                            ? `
+                              bg-slate-100
+                              border border-slate-200
+                              text-slate-500
+                            `
+                            : isThird
+                              ? `
+                                bg-orange-50
+                                border border-orange-200
+                                text-orange-600
+                              `
+                              : `
+                                bg-slate-50
+                                border border-slate-200
+                                text-slate-400
+                              `
+                      }
+                    `}
                   >
-                    {index + 1}
+
+                    {isFirst ? (
+                      <Crown size={17} />
+                    ) : (
+                      index + 1
+                    )}
+
                   </div>
 
-                  {/* User Name */}
-                  <div className="flex flex-col">
-                    <span
-                      className={`text-lg font-bold tracking-tight ${isTopThree ? "text-white" : "text-gray-300"}`}
-                    >
-                      {user.name || "Anonymous User"}
-                    </span>
-                    {index === 0 && (
-                      <span className="text-[10px] text-yellow-500 font-black uppercase tracking-widest">
-                        Master of {activeTab}
+
+                  {/* USER */}
+                  <div className="min-w-0">
+
+                    <div className="flex items-center gap-2">
+
+                      <span
+                        className="
+                          text-sm
+                          sm:text-base
+                          font-bold
+                          text-slate-800
+                          truncate
+                        "
+                      >
+                        {user.name || "Anonymous User"}
                       </span>
+
+                      {isFirst && (
+                        <Medal
+                          size={14}
+                          className="text-amber-500 shrink-0"
+                        />
+                      )}
+
+                    </div>
+
+
+                    {isFirst ? (
+                      <p
+                        className="
+                          mt-0.5
+                          text-[9px]
+                          font-bold
+                          uppercase
+                          tracking-wider
+                          text-amber-500
+                        "
+                      >
+                        Highest score
+                      </p>
+                    ) : (
+                      <p
+                        className="
+                          mt-0.5
+                          text-[9px]
+                          text-slate-400
+                        "
+                      >
+                        Ranked participant
+                      </p>
                     )}
+
                   </div>
+
                 </div>
 
-                {/* Score Display */}
-                <div className="text-right">
+
+                {/* SCORE */}
+                <div className="text-right shrink-0">
+
                   <div
-                    className={`text-2xl font-black italic ${isTopThree ? "text-purple-400" : "text-gray-400"}`}
+                    className={`
+                      text-xl
+                      sm:text-2xl
+                      font-black
+                      tracking-tight
+
+                      ${
+                        isFirst
+                          ? "text-amber-600"
+                          : "text-slate-800"
+                      }
+                    `}
                   >
+
                     {scoreData?.score ?? 0}
-                    <span className="text-sm font-normal opacity-40 not-italic ml-1">
+
+                    <span
+                      className="
+                        text-xs
+                        font-medium
+                        text-slate-300
+                        ml-1
+                      "
+                    >
                       / {scoreData?.total ?? 0}
                     </span>
+
                   </div>
-                  <p className="text-[10px] text-gray-600 font-bold uppercase tracking-tighter">
-                    Points Earned
+
+                  <p
+                    className="
+                      text-[9px]
+                      font-bold
+                      uppercase
+                      tracking-wider
+                      text-slate-400
+                    "
+                  >
+                    Score
                   </p>
+
                 </div>
+
               </div>
             );
+
           })}
 
-          {/* Empty State */}
-          {sortedUsers.length === 0 && (
-            <div className="text-center py-20 bg-gray-900/30 rounded-[3rem] border border-dashed border-white/10">
-              <div className="text-5xl mb-4">🔭</div>
-              <p className="text-gray-500 font-medium italic">
-                No legends have claimed the {activeTab} board yet...
-              </p>
-            </div>
-          )}
         </div>
-      </div>
+
+      )}
+
+
+      {/* ===================================================== */}
+      {/* EMPTY STATE */}
+      {/* ===================================================== */}
+
+      {sortedUsers.length === 0 && (
+        <div
+          className="
+            bg-white
+            border border-dashed
+            border-slate-200
+            rounded-2xl
+            py-20
+            px-6
+            text-center
+          "
+        >
+
+          <div
+            className="
+              mx-auto
+              h-14
+              w-14
+              rounded-2xl
+              bg-slate-50
+              border border-slate-200
+              flex
+              items-center
+              justify-center
+            "
+          >
+            <Trophy
+              size={24}
+              className="text-slate-300"
+            />
+          </div>
+
+          <h3
+            className="
+              mt-5
+              text-sm
+              font-bold
+              text-slate-700
+            "
+          >
+            No scores yet
+          </h3>
+
+          <p
+            className="
+              mt-1
+              text-xs
+              text-slate-400
+              max-w-sm
+              mx-auto
+              leading-5
+            "
+          >
+            No learners have submitted this quiz yet.
+            Complete the assessment to appear on the board.
+          </p>
+
+        </div>
+      )}
+
     </div>
-  );
+
+  </div>
+);
 };
 
 export default Leaderboard;
