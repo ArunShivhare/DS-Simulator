@@ -13,6 +13,7 @@ import {
   Braces,
   Trophy,
   Target,
+  GitBranch,
   AlertTriangle,
   Lightbulb,
 } from "lucide-react";
@@ -74,12 +75,8 @@ const ArrayPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 px-4 sm:px-6 pt-28 pb-16 font-sans relative overflow-hidden">
-      {/* Subtle page atmosphere */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-100/40 blur-3xl rounded-full pointer-events-none" />
-      <div className="absolute top-[30%] left-[-180px] w-80 h-80 bg-sky-100/30 blur-3xl rounded-full pointer-events-none" />
-
       <div className="relative z-10">
-        {/* Learning Header */}
+        {/*1. Learning Header */}
         <div className="max-w-7xl mx-auto mb-16">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
             <div className="max-w-4xl">
@@ -132,7 +129,7 @@ const ArrayPage = () => {
         </div>
       </div>
 
-      {/* Core Concept — Contiguous Memory */}
+      {/*2. Core Concept — Contiguous Memory */}
       <section className="max-w-7xl mx-auto mb-20">
         <div className="grid lg:grid-cols-2 gap-6 items-stretch">
           {/* Explanation */}
@@ -248,7 +245,7 @@ const ArrayPage = () => {
         </div>
       </section>
 
-      {/* Types of Arrays */}
+      {/*3. Types of Arrays */}
       <section className="max-w-7xl mx-auto mb-20">
         {/* Section Header */}
         <div className="mb-8 max-w-3xl">
@@ -427,7 +424,7 @@ const ArrayPage = () => {
         </div>
       </section>
 
-      {/* Hardware Deep Dive */}
+      {/*4. Hardware Deep Dive */}
       <section className="max-w-7xl mx-auto mb-20">
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
           {/* Top Bar */}
@@ -581,7 +578,7 @@ const ArrayPage = () => {
         </div>
       </section>
 
-      {/* Static vs Dynamic Arrays */}
+      {/*4. Static vs Dynamic Arrays */}
       <section className="max-w-7xl mx-auto mb-20">
         {/* Section Header */}
         <div className="mb-8">
@@ -770,7 +767,7 @@ const ArrayPage = () => {
         </div>
       </section>
 
-      {/* Choosing Between Array Types */}
+      {/*5. Choosing Between Array Types */}
       <section className="max-w-7xl mx-auto mb-20">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
           {/* Header */}
@@ -1436,7 +1433,586 @@ arr.append(3)`}
         </div>
       </section>
 
-      {/* 9. Essential Array Patterns */}
+      {/* 9. Subarray vs Subsequence vs Subset */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Target className="w-4 h-4" />
+            <span>Problem-Solving Fundamentals</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Subarray vs Subsequence vs Subset
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Many array problems become much easier once you identify what kind
+            of collection the problem is asking you to consider.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-5">
+          {/* Subarray */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center">
+                <Layers3 className="w-5 h-5 text-indigo-600" />
+              </div>
+
+              <span className="text-xs font-semibold text-indigo-600">
+                CONTIGUOUS
+              </span>
+            </div>
+
+            <h3 className="text-xl font-bold text-slate-900 mt-6">Subarray</h3>
+
+            <p className="text-sm text-slate-500 leading-6 mt-2">
+              A contiguous portion of an array. The selected elements must
+              appear next to each other.
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-slate-950 p-4 font-mono text-sm">
+              <p className="text-slate-400">[1, 2, 3, 4]</p>
+              <p className="text-indigo-300 mt-2">[2, 3]</p>
+            </div>
+
+            <p className="text-xs text-slate-400 mt-4">
+              Common with prefix sums, sliding windows and Kadane's algorithm.
+            </p>
+          </div>
+
+          {/* Subsequence */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="w-11 h-11 rounded-xl bg-violet-50 flex items-center justify-center">
+                <GitBranch className="w-5 h-5 text-violet-600" />
+              </div>
+
+              <span className="text-xs font-semibold text-violet-600">
+                ORDER PRESERVED
+              </span>
+            </div>
+
+            <h3 className="text-xl font-bold text-slate-900 mt-6">
+              Subsequence
+            </h3>
+
+            <p className="text-sm text-slate-500 leading-6 mt-2">
+              Elements are selected in their original order, but they do not
+              need to be contiguous.
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-slate-950 p-4 font-mono text-sm">
+              <p className="text-slate-400">[1, 2, 3, 4]</p>
+              <p className="text-violet-300 mt-2">[1, 3, 4]</p>
+            </div>
+
+            <p className="text-xs text-slate-400 mt-4">
+              Common in dynamic programming and sequence problems.
+            </p>
+          </div>
+
+          {/* Subset */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center">
+                <Braces className="w-5 h-5 text-sky-600" />
+              </div>
+
+              <span className="text-xs font-semibold text-sky-600">
+                SELECTION
+              </span>
+            </div>
+
+            <h3 className="text-xl font-bold text-slate-900 mt-6">Subset</h3>
+
+            <p className="text-sm text-slate-500 leading-6 mt-2">
+              A selection of elements where ordering is generally not the
+              defining property.
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-slate-950 p-4 font-mono text-sm">
+              <p className="text-slate-400">[1, 2, 3, 4]</p>
+              <p className="text-sky-300 mt-2">{`{1, 4}`}</p>
+            </div>
+
+            <p className="text-xs text-slate-400 mt-4">
+              Common in backtracking, combinations and subset-sum problems.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 bg-slate-950 rounded-3xl p-6 sm:p-7 text-white">
+          <div className="flex items-start gap-3">
+            <Lightbulb className="w-5 h-5 text-amber-300 mt-0.5 shrink-0" />
+
+            <div>
+              <p className="font-semibold">Interview shortcut</p>
+              <p className="text-sm text-slate-400 leading-6 mt-1">
+                If the problem says contiguous, immediately think subarray,
+                sliding window, prefix sum or Kadane's algorithm. If it says
+                subsequence, think about preserving order without requiring
+                adjacency.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 10. Prefix Sum */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Zap className="w-4 h-4" />
+            <span>Core Array Technique</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Prefix Sum
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Prefix sums transform repeated range-sum calculations into
+            constant-time queries after one preprocessing pass.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+            <p className="text-sm font-semibold text-slate-900">Example</p>
+
+            <div className="mt-5 grid grid-cols-5 gap-2">
+              {[2, 4, 1, 7, 3].map((value, index) => (
+                <div key={index} className="text-center">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="font-mono font-bold text-slate-900">
+                      {value}
+                    </p>
+                  </div>
+
+                  <p className="text-[10px] text-slate-400 mt-2">
+                    index {index}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Prefix array
+              </p>
+
+              <div className="grid grid-cols-6 gap-2 mt-3">
+                {[0, 2, 6, 7, 14, 17].map((value, index) => (
+                  <div
+                    key={index}
+                    className="rounded-xl bg-indigo-50 border border-indigo-100 p-3 text-center"
+                  >
+                    <p className="font-mono font-bold text-indigo-700">
+                      {value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-950 rounded-3xl p-6 sm:p-8 text-white">
+            <p className="text-xs font-semibold text-indigo-300">THE FORMULA</p>
+
+            <div className="mt-5 rounded-2xl bg-white/5 border border-white/10 p-5 font-mono text-sm leading-8">
+              <p className="text-slate-300">prefix[0] = 0</p>
+
+              <p className="text-indigo-300">
+                prefix[i + 1] = prefix[i] + arr[i]
+              </p>
+
+              <p className="text-emerald-300 mt-3">rangeSum(l, r) =</p>
+
+              <p className="text-emerald-300">prefix[r + 1] - prefix[l]</p>
+            </div>
+
+            <div className="mt-6 space-y-3 text-sm text-slate-400">
+              <p>• Build prefix array: O(n)</p>
+              <p>• Each range sum: O(1)</p>
+              <p>• Excellent when many range queries are required</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 11. Difference Array */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <ArrowRight className="w-4 h-4" />
+            <span>Range Update Technique</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Difference Array
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Prefix sums answer repeated range queries. Difference arrays solve
+            the opposite style of problem: performing many range updates
+            efficiently.
+          </p>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+          <div className="grid lg:grid-cols-3 gap-5">
+            <div>
+              <p className="text-xs font-semibold text-indigo-600">STEP 01</p>
+              <h3 className="text-lg font-bold text-slate-900 mt-2">
+                Mark the start
+              </h3>
+              <p className="text-sm text-slate-500 leading-6 mt-2">
+                Add the update value at the left boundary.
+              </p>
+
+              <div className="mt-4 rounded-xl bg-slate-950 p-4 font-mono text-sm text-indigo-300">
+                diff[l] += x;
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-indigo-600">STEP 02</p>
+              <h3 className="text-lg font-bold text-slate-900 mt-2">
+                Mark the end
+              </h3>
+              <p className="text-sm text-slate-500 leading-6 mt-2">
+                Cancel the update immediately after the right boundary.
+              </p>
+
+              <div className="mt-4 rounded-xl bg-slate-950 p-4 font-mono text-sm text-amber-300">
+                diff[r + 1] -= x;
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-indigo-600">STEP 03</p>
+              <h3 className="text-lg font-bold text-slate-900 mt-2">
+                Prefix the difference
+              </h3>
+              <p className="text-sm text-slate-500 leading-6 mt-2">
+                Accumulate the difference array to recover the final values.
+              </p>
+
+              <div className="mt-4 rounded-xl bg-slate-950 p-4 font-mono text-sm text-emerald-300">
+                diff[i] += diff[i - 1];
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-7 pt-6 border-t border-slate-100 flex items-start gap-3">
+            <Lightbulb className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
+
+            <p className="text-sm text-slate-500 leading-6">
+              Think of a difference array as recording where a range update
+              <strong className="text-slate-700"> starts and stops</strong>,
+              rather than updating every element immediately.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 12. Binary Search */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Target className="w-4 h-4" />
+            <span>Search Technique</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Binary Search
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Binary search repeatedly removes half of the remaining search space.
+            The key requirement is that the search space has a usable ordering
+            or monotonic property.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+            <p className="text-sm font-semibold text-slate-900">
+              Basic mental model
+            </p>
+
+            <div className="mt-5 space-y-3">
+              {[
+                ["01", "Choose the middle element"],
+                ["02", "Compare it with the target"],
+                ["03", "Discard the impossible half"],
+                ["04", "Repeat until found or exhausted"],
+              ].map(([num, text]) => (
+                <div
+                  key={num}
+                  className="flex items-center gap-4 rounded-2xl bg-slate-50 border border-slate-200 p-4"
+                >
+                  <span className="w-8 h-8 rounded-lg bg-indigo-600 text-white text-xs font-bold flex items-center justify-center shrink-0">
+                    {num}
+                  </span>
+
+                  <p className="text-sm font-medium text-slate-700">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-slate-950 rounded-3xl p-6 sm:p-8 text-white">
+            <p className="text-xs font-semibold text-indigo-300">
+              SAFE MIDPOINT
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-white/5 border border-white/10 p-5 font-mono text-sm leading-7">
+              <p className="text-slate-400">while (left &lt;= right) {"{"}</p>
+
+              <p className="text-indigo-300 pl-4">
+                mid = left + (right - left) / 2;
+              </p>
+
+              <p className="text-slate-400">{"}"}</p>
+            </div>
+
+            <div className="mt-6">
+              <p className="font-semibold">Complexity</p>
+
+              <p className="text-sm text-slate-400 mt-2 leading-6">
+                Time:{" "}
+                <span className="text-emerald-300 font-mono">O(log n)</span>
+                <br />
+                Space: <span className="text-emerald-300 font-mono">O(1)</span>
+                for the iterative version.
+              </p>
+            </div>
+
+            <div className="mt-6 pt-5 border-t border-white/10">
+              <p className="text-sm text-slate-400 leading-6">
+                Advanced binary search does not always search for an exact
+                value. It can search for the first valid position, last valid
+                position, or the minimum answer satisfying a condition.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 13. Kadane's Algorithm */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Zap className="w-4 h-4" />
+            <span>Classic Array Pattern</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Kadane's Algorithm
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Kadane's algorithm finds the maximum sum of a contiguous subarray in
+            linear time by deciding whether to extend the current subarray or
+            start a new one.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-6">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+            <p className="text-sm font-semibold text-slate-900">The decision</p>
+
+            <div className="mt-5 rounded-2xl bg-slate-50 border border-slate-200 p-5">
+              <p className="text-sm text-slate-500">At every element:</p>
+
+              <p className="font-mono text-lg font-bold text-indigo-700 mt-3">
+                extend
+              </p>
+
+              <p className="text-sm text-slate-500 mt-1">or</p>
+
+              <p className="font-mono text-lg font-bold text-violet-700 mt-1">
+                restart
+              </p>
+            </div>
+
+            <div className="mt-5 space-y-2 text-sm text-slate-500">
+              <p>• `current` = best sum ending here</p>
+              <p>• `best` = best sum seen overall</p>
+            </div>
+          </div>
+
+          <div className="bg-slate-950 rounded-3xl p-6 sm:p-8 text-white">
+            <p className="text-xs font-semibold text-indigo-300">
+              CORE TRANSITION
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-white/5 border border-white/10 p-5 font-mono text-sm leading-8">
+              <p className="text-indigo-300">
+                current = max(value, current + value);
+              </p>
+
+              <p className="text-emerald-300">best = max(best, current);</p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-3 mt-6">
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs text-slate-500">Time</p>
+                <p className="font-mono text-lg font-bold text-white mt-1">
+                  O(n)
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs text-slate-500">Extra Space</p>
+                <p className="font-mono text-lg font-bold text-white mt-1">
+                  O(1)
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 14. Sorting as a Problem-Solving Tool */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Layers3 className="w-4 h-4" />
+            <span>Problem-Solving Strategy</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Sorting Is More Than Ordering
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            In DSA problems, sorting is often used as a preprocessing step that
+            makes another technique possible.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-5">
+          {[
+            {
+              title: "Sorting + Two Pointers",
+              text: "Useful when you need pairs, triplets or relationships between small and large values.",
+            },
+            {
+              title: "Sorting + Binary Search",
+              text: "Ordering the data allows logarithmic searching and lower-bound style decisions.",
+            },
+            {
+              title: "Sorting + Greedy",
+              text: "Ordering tasks, intervals or values can expose the sequence in which decisions should be made.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+            >
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-indigo-600" />
+              </div>
+
+              <h3 className="text-lg font-bold text-slate-900 mt-5">
+                {item.title}
+              </h3>
+
+              <p className="text-sm text-slate-500 leading-6 mt-2">
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 bg-amber-50 border border-amber-100 rounded-2xl p-5">
+          <p className="text-sm font-semibold text-amber-900">
+            Always ask before sorting
+          </p>
+
+          <p className="text-sm text-amber-800/70 leading-6 mt-1">
+            Does sorting destroy information the problem needs? If original
+            indices, original ordering or stability matter, sorting may require
+            extra handling.
+          </p>
+        </div>
+      </section>
+
+      {/* 15. Array Pattern Decision Guide */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Target className="w-4 h-4" />
+            <span>Pattern Recognition</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Which Technique Should You Think Of?
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            The real skill is not memorizing algorithms. It is recognizing the
+            structure of the problem quickly.
+          </p>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+          {[
+            ["Contiguous range", "Prefix Sum / Sliding Window / Kadane"],
+            ["Sorted data", "Binary Search / Two Pointers"],
+            ["Pair or triplet relationship", "Sorting + Two Pointers"],
+            ["Repeated range sums", "Prefix Sum"],
+            ["Many range updates", "Difference Array"],
+            ["Maximum contiguous sum", "Kadane's Algorithm"],
+            ["Need to remove half the search space", "Binary Search"],
+            ["Need frequency/counting", "Hash Map / Frequency Array"],
+            ["Need nearest greater/smaller", "Monotonic Stack"],
+          ].map(([problem, technique], index) => (
+            <div
+              key={problem}
+              className={`grid sm:grid-cols-2 gap-3 px-6 py-5 ${
+                index !== 8 ? "border-b border-slate-100" : ""
+              }`}
+            >
+              <div>
+                <p className="text-xs text-slate-400 sm:hidden mb-1">
+                  Problem clue
+                </p>
+                <p className="font-semibold text-slate-900">{problem}</p>
+              </div>
+
+              <div>
+                <p className="text-xs text-slate-400 sm:hidden mb-1">
+                  Think about
+                </p>
+                <p className="text-sm text-indigo-600 font-medium">
+                  → {technique}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 bg-slate-950 rounded-3xl p-6 sm:p-8 text-white">
+          <div className="flex items-start gap-3">
+            <Trophy className="w-5 h-5 text-amber-300 mt-0.5 shrink-0" />
+
+            <div>
+              <p className="font-semibold">The goal of this page</p>
+
+              <p className="text-sm text-slate-400 leading-6 mt-2">
+                Move from “I know arrays” to “I can recognize which array
+                technique this problem is asking for.”
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 16. Essential Array Patterns */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
@@ -1675,7 +2251,7 @@ arr.append(3)`}
         </div>
       </section>
 
-      {/* 10. 30-Day Practice Roadmap */}
+      {/* 17. 30-Day Practice Roadmap */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
@@ -1894,7 +2470,7 @@ arr.append(3)`}
         </div>
       </section>
 
-      {/* 11. Interview Pitfalls */}
+      {/* 18. Interview Pitfalls */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-amber-600 text-sm font-semibold mb-3">
@@ -2117,7 +2693,7 @@ arr.append(3)`}
         </div>
       </section>
 
-      {/* 12. Quick-Fire Insights */}
+      {/* 19. Quick-Fire Insights */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
