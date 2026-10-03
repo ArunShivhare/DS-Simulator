@@ -184,6 +184,7 @@ const StackPage = () => {
           </div>
         </div>
       </section>
+
       {/* 2. Core Principle & Visual */}
       <section className="max-w-6xl mx-auto mt-4">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-stretch">
@@ -263,6 +264,7 @@ const StackPage = () => {
           </div>
         </div>
       </section>
+
       {/* 3. Call Stack & Recursion */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
@@ -489,6 +491,7 @@ const StackPage = () => {
           </div>
         </div>
       </section>
+
       {/* 4. Stack Implementation Strategies */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
@@ -713,6 +716,7 @@ const StackPage = () => {
           </div>
         </div>
       </section>
+
       {/* 5. Complexity Matrix */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
@@ -887,8 +891,677 @@ const StackPage = () => {
             </p>
           </div>
         </div>
+        <div className="mt-5 bg-indigo-50 border border-indigo-100 rounded-2xl p-5">
+          <p className="text-sm font-semibold text-indigo-900">
+            Implementation nuance
+          </p>
+
+          <p className="text-sm text-indigo-800/70 leading-6 mt-1">
+            These complexities describe the Stack operations themselves,
+            assuming the underlying top-end operation is O(1). With a dynamic
+            array, an occasional resize can make one push O(n), while repeated
+            pushes are typically amortized O(1).
+          </p>
+        </div>
       </section>
-      {/* 6. Interview Pitfalls */}
+
+      {/* 6. Expression Processing */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Code2 className="w-4 h-4" />
+            <span>Classic Stack Application</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Stacks and Expression Processing
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Stacks are naturally useful when a problem requires you to remember
+            recently opened, started or unresolved items.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-5">
+          {[
+            {
+              title: "Balanced Parentheses",
+              text: "Push opening brackets. When a closing bracket appears, the most recent opening bracket must match it.",
+            },
+            {
+              title: "Infix → Postfix",
+              text: "Operators can be temporarily stored on a stack while respecting precedence and parentheses.",
+            },
+            {
+              title: "Expression Evaluation",
+              text: "Operands and operators can be processed using one or more stacks depending on the expression format.",
+            },
+          ].map((item, index) => (
+            <div
+              key={item.title}
+              className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+                  <span className="text-sm font-bold text-indigo-600">
+                    0{index + 1}
+                  </span>
+                </div>
+
+                <Braces className="w-5 h-5 text-slate-300" />
+              </div>
+
+              <h3 className="text-lg font-bold text-slate-900 mt-5">
+                {item.title}
+              </h3>
+
+              <p className="text-sm text-slate-500 leading-6 mt-2">
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 bg-slate-950 rounded-3xl p-6 sm:p-8 text-white">
+          <p className="text-xs font-semibold text-indigo-300">
+            BRACKET MATCHING MENTAL MODEL
+          </p>
+
+          <div className="mt-5 rounded-2xl bg-white/5 border border-white/10 p-5 font-mono text-sm leading-8">
+            <p className="text-slate-400">opening bracket → push</p>
+
+            <p className="text-indigo-300">closing bracket → check top</p>
+
+            <p className="text-emerald-300">matching pair → pop</p>
+
+            <p className="text-rose-300">mismatch / empty stack → invalid</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Monotonic Stack */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-violet-600 text-sm font-semibold mb-3">
+            <Zap className="w-4 h-4" />
+            <span>Advanced Pattern</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Monotonic Stack
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            A monotonic stack keeps its elements in increasing or decreasing
+            order. It is especially useful when a problem asks for the next
+            greater, next smaller, previous greater or previous smaller element.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+            <p className="text-sm font-semibold text-slate-900">Example</p>
+
+            <div className="flex flex-wrap gap-2 mt-5">
+              {[2, 1, 2, 4, 3].map((value, index) => (
+                <div
+                  key={index}
+                  className="w-12 h-12 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center font-mono font-bold text-slate-900"
+                >
+                  {value}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                For next greater element
+              </p>
+
+              <div className="mt-3 space-y-2 text-sm text-slate-500">
+                <p>1. Scan from left to right.</p>
+                <p>
+                  2. While the current value is greater than the stack top, pop.
+                </p>
+                <p>
+                  3. The current value becomes the answer for the popped
+                  elements.
+                </p>
+                <p>4. Push the current index/value.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-950 rounded-3xl p-6 sm:p-8 text-white">
+            <p className="text-xs font-semibold text-violet-300">
+              THE KEY IDEA
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-white/5 border border-white/10 p-5 font-mono text-sm leading-8">
+              <p className="text-slate-400">while stack is not empty</p>
+
+              <p className="text-violet-300 pl-4">
+                and current &gt; stack.top()
+              </p>
+
+              <p className="text-emerald-300 pl-4">pop unresolved elements</p>
+
+              <p className="text-slate-400">push current</p>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs text-slate-500">Typical time</p>
+                <p className="font-mono font-bold text-white mt-1">O(n)</p>
+              </div>
+
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs text-slate-500">Typical space</p>
+                <p className="font-mono font-bold text-white mt-1">O(n)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Next Greater / Smaller */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <ArrowRight className="w-4 h-4" />
+            <span>Monotonic Stack Applications</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Next Greater & Next Smaller Elements
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            These problems ask you to find the first element on one side that
+            satisfies a greater-than or smaller-than relationship.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-5">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900">
+                Next Greater Element
+              </h3>
+
+              <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
+                MONOTONIC
+              </span>
+            </div>
+
+            <p className="text-sm text-slate-500 leading-6 mt-3">
+              Find the first element to the right that is greater than the
+              current element.
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-slate-950 p-5 font-mono text-sm">
+              <p className="text-slate-400">[2, 1, 2, 4, 3]</p>
+              <p className="text-emerald-300 mt-2">→ [4, 2, 4, -1, -1]</p>
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900">
+                Next Smaller Element
+              </h3>
+
+              <span className="px-3 py-1 rounded-full bg-violet-50 text-violet-700 text-xs font-bold">
+                MONOTONIC
+              </span>
+            </div>
+
+            <p className="text-sm text-slate-500 leading-6 mt-3">
+              Find the first element to the right that is smaller than the
+              current element.
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-slate-950 p-5 font-mono text-sm">
+              <p className="text-slate-400">[4, 8, 5, 2, 25]</p>
+              <p className="text-violet-300 mt-2">→ [2, 5, 2, -1, -1]</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. Histogram & Stock Span */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Trophy className="w-4 h-4" />
+            <span>Pattern Recognition</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Where Monotonic Stacks Show Up
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Once you understand the monotonic-stack pattern, several seemingly
+            unrelated interview problems start looking structurally similar.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-5">
+          {[
+            {
+              title: "Largest Rectangle",
+              text: "Maintain increasing heights and determine when a bar becomes the boundary of a rectangle.",
+            },
+            {
+              title: "Stock Span",
+              text: "Find how many consecutive previous prices are less than or equal to today's price.",
+            },
+            {
+              title: "Trapping Rain Water",
+              text: "Stack-based solutions can track unresolved bars and determine trapped water when a right boundary appears.",
+            },
+          ].map((item, index) => (
+            <div
+              key={item.title}
+              className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm"
+            >
+              <span className="text-xs font-bold text-indigo-600">
+                0{index + 1}
+              </span>
+
+              <h3 className="text-lg font-bold text-slate-900 mt-4">
+                {item.title}
+              </h3>
+
+              <p className="text-sm text-slate-500 leading-6 mt-2">
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 bg-slate-950 rounded-3xl p-6 sm:p-7 text-white">
+          <div className="flex items-start gap-3">
+            <Lightbulb className="w-5 h-5 text-amber-300 mt-0.5 shrink-0" />
+
+            <p className="text-sm text-slate-400 leading-6">
+              <span className="text-white font-semibold">
+                Recognition clue:
+              </span>{" "}
+              if the problem asks for the nearest greater/smaller value or the
+              boundary of an unresolved region, consider a monotonic stack.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 10. Undo / Redo */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-violet-600 text-sm font-semibold mb-3">
+            <Layers3 className="w-4 h-4" />
+            <span>Real-World Application</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Undo & Redo with Two Stacks
+          </h2>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+          <div className="grid md:grid-cols-3 gap-4 items-center">
+            <div className="rounded-2xl bg-indigo-50 border border-indigo-100 p-5">
+              <p className="text-xs font-semibold text-indigo-600">
+                UNDO STACK
+              </p>
+              <p className="text-sm text-slate-600 mt-2">
+                Stores previous actions.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center">
+              <ArrowRight className="w-5 h-5 text-slate-300" />
+            </div>
+
+            <div className="rounded-2xl bg-violet-50 border border-violet-100 p-5">
+              <p className="text-xs font-semibold text-violet-600">
+                REDO STACK
+              </p>
+              <p className="text-sm text-slate-600 mt-2">
+                Stores actions that were undone.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 grid sm:grid-cols-3 gap-3">
+            <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+              <p className="font-semibold text-slate-900">New action</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Push into undo stack.
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+              <p className="font-semibold text-slate-900">Undo</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Pop undo → push redo.
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+              <p className="font-semibold text-slate-900">Redo</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Pop redo → push undo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 11. Browser History */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <ArrowRight className="w-4 h-4" />
+            <span>Real-World Application</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Browser History as a Stack Problem
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Navigation history is another example where the most recent
+            unresolved state is handled first.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-5">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6">
+            <p className="text-xs font-semibold text-indigo-600">VISIT</p>
+            <h3 className="font-bold text-slate-900 mt-2">Push current page</h3>
+            <p className="text-sm text-slate-500 leading-6 mt-2">
+              A newly visited page becomes the latest history state.
+            </p>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-3xl p-6">
+            <p className="text-xs font-semibold text-violet-600">BACK</p>
+            <h3 className="font-bold text-slate-900 mt-2">
+              Pop previous state
+            </h3>
+            <p className="text-sm text-slate-500 leading-6 mt-2">
+              The most recent navigation state is handled first.
+            </p>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-3xl p-6">
+            <p className="text-xs font-semibold text-emerald-600">FORWARD</p>
+            <h3 className="font-bold text-slate-900 mt-2">
+              Restore undone state
+            </h3>
+            <p className="text-sm text-slate-500 leading-6 mt-2">
+              A second stack can maintain the states that were moved backward
+              from.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 12. DFS Using a Stack */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <GitBranch className="w-4 h-4" />
+            <span>Graphs & Trees</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            DFS Using a Stack
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Depth-First Search naturally follows a last-in-first-out exploration
+            pattern. Recursion uses the call stack; an iterative DFS uses an
+            explicit stack.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+            <p className="text-sm font-semibold text-slate-900">
+              Iterative DFS flow
+            </p>
+
+            <div className="mt-5 space-y-3">
+              {[
+                "Push the starting node",
+                "Pop the next node",
+                "Process / mark it visited",
+                "Push its unvisited neighbours",
+                "Continue until the stack is empty",
+              ].map((step, index) => (
+                <div key={step} className="flex items-center gap-3">
+                  <span className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-bold flex items-center justify-center">
+                    {index + 1}
+                  </span>
+
+                  <p className="text-sm text-slate-600">{step}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-slate-950 rounded-3xl p-6 sm:p-8 text-white">
+            <p className="text-xs font-semibold text-indigo-300">PSEUDOCODE</p>
+
+            <div className="mt-5 rounded-2xl bg-white/5 border border-white/10 p-5 font-mono text-sm leading-8">
+              <p className="text-indigo-300">push(start)</p>
+
+              <p className="text-slate-400 mt-2">while stack is not empty:</p>
+
+              <p className="text-emerald-300 pl-4">node = pop()</p>
+
+              <p className="text-slate-400 pl-4">process(node)</p>
+
+              <p className="text-slate-400 pl-4">push(unvisited neighbours)</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 13. Recursive vs Iterative Traversal */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-violet-600 text-sm font-semibold mb-3">
+            <Cpu className="w-4 h-4" />
+            <span>Recursion Connection</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Recursion vs Explicit Stack
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            Recursive tree traversal and iterative traversal solve the same type
+            of problem using different ways to manage the traversal state.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-5">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+            <span className="text-xs font-semibold text-indigo-600">
+              RECURSIVE
+            </span>
+
+            <h3 className="text-xl font-bold text-slate-900 mt-2">
+              Call Stack manages state
+            </h3>
+
+            <p className="text-sm text-slate-500 leading-6 mt-3">
+              Each recursive call creates a stack frame. Returning from the call
+              removes that frame.
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-slate-950 p-5 font-mono text-sm text-indigo-300">
+              function dfs(node) {"{"}
+              <br />
+              &nbsp;&nbsp;dfs(node.left)
+              <br />
+              &nbsp;&nbsp;dfs(node.right)
+              <br />
+              {"}"}
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8">
+            <span className="text-xs font-semibold text-violet-600">
+              ITERATIVE
+            </span>
+
+            <h3 className="text-xl font-bold text-slate-900 mt-2">
+              Your stack manages state
+            </h3>
+
+            <p className="text-sm text-slate-500 leading-6 mt-3">
+              Instead of relying on recursive calls, you explicitly store the
+              nodes that still need to be processed.
+            </p>
+
+            <div className="mt-5 rounded-2xl bg-slate-950 p-5 font-mono text-sm text-violet-300">
+              stack.push(root);
+              <br />
+              while (!stack.empty()) {"{"}
+              <br />
+              &nbsp;&nbsp;node = stack.pop();
+              <br />
+              {"}"}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 14. Overflow vs Underflow */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-amber-600 text-sm font-semibold mb-3">
+            <AlertTriangle className="w-4 h-4" />
+            <span>Safety & Failure Conditions</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            Overflow vs Underflow
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-5">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center">
+                <ArrowUp className="w-5 h-5 text-rose-600" />
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold text-rose-600">OVERFLOW</p>
+                <h3 className="font-bold text-slate-900 mt-1">
+                  Trying to exceed capacity
+                </h3>
+              </div>
+            </div>
+
+            <p className="text-sm text-slate-500 leading-6 mt-4">
+              Relevant to fixed-capacity stack implementations when an insertion
+              is attempted while the stack is full.
+            </p>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                <ArrowDown className="w-5 h-5 text-amber-600" />
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold text-amber-600">
+                  UNDERFLOW
+                </p>
+                <h3 className="font-bold text-slate-900 mt-1">
+                  Trying to remove from empty
+                </h3>
+              </div>
+            </div>
+
+            <p className="text-sm text-slate-500 leading-6 mt-4">
+              Happens when pop or peek is attempted without an available top
+              element.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 15. Stack Decision Guide */}
+      <section className="max-w-6xl mx-auto mt-20">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
+            <Target className="w-4 h-4" />
+            <span>Pattern Recognition</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-950">
+            When Should You Think Stack?
+          </h2>
+
+          <p className="mt-3 max-w-3xl text-slate-500 leading-7">
+            A useful Stack intuition is: when the newest unresolved item should
+            be handled before older unresolved items, LIFO may be the right
+            model.
+          </p>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+          {[
+            ["Matching brackets", "Stack"],
+            ["Undo / backtracking", "Stack"],
+            ["Next greater / smaller", "Monotonic Stack"],
+            ["Largest rectangle", "Monotonic Stack"],
+            ["Stock span", "Monotonic Stack"],
+            ["DFS", "Stack"],
+            ["Iterative tree traversal", "Stack"],
+            ["Expression processing", "Stack"],
+            ["Recursive function calls", "Call Stack"],
+          ].map(([clue, answer], index) => (
+            <div
+              key={clue}
+              className={`grid sm:grid-cols-2 gap-3 px-6 py-5 ${
+                index !== 8 ? "border-b border-slate-100" : ""
+              }`}
+            >
+              <p className="font-semibold text-slate-900">{clue}</p>
+
+              <p className="text-sm text-indigo-600 font-medium">→ {answer}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 bg-slate-950 rounded-3xl p-6 sm:p-8 text-white">
+          <div className="flex items-start gap-3">
+            <Trophy className="w-5 h-5 text-amber-300 mt-0.5 shrink-0" />
+
+            <div>
+              <p className="font-semibold">Final mental model</p>
+
+              <p className="text-sm text-slate-400 leading-6 mt-2">
+                Don't memorize Stack as just push and pop. Recognize it as a
+                tool for managing the most recent unresolved state.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 16. Interview Pitfalls */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-amber-600 text-sm font-semibold mb-3">
@@ -1113,7 +1786,8 @@ const StackPage = () => {
           </div>
         </div>
       </section>
-      {/* 7. Practice Roadmap */}
+
+      {/* 17. Practice Roadmap */}
       <section className="max-w-6xl mx-auto mt-20">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-indigo-600 text-sm font-semibold mb-3">
@@ -1329,7 +2003,8 @@ const StackPage = () => {
           </div>
         </div>
       </section>
-      {/* 8. CTA */}
+      
+      {/* 18. CTA */}
       <section className="max-w-6xl mx-auto mt-16 mb-20">
         <div className="relative overflow-hidden rounded-3xl bg-slate-950 px-6 sm:px-10 py-10 sm:py-12">
           <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none" />
